@@ -1,0 +1,3459 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Master Production Plan - DXL ERP (Odoo 18)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    /* ==============================================================
+       DXL ERP - Odoo 18 Whitelabel UI Framework
+       Module: Lakon Production Planning (Master Production Plan List)
+       Design: 1:1 Pixel-Perfect Replica from Odoo 18 Shopfloor & Planning
+       Zero External Dependencies (100% Pure Inline SVG & System Fonts)
+       ============================================================== */
+
+    :root {
+      /* Sidebar Colors */
+      --sb-bg: #0b1325;              /* Deep Navy Dark */
+      --sb-hover: rgba(255, 255, 255, 0.06);
+      --sb-active-red: #dc2626;      /* Active Menu Red Pill */
+      --sb-text: #94a3b8;
+      --sb-text-bright: #ffffff;
+      --sb-section: #64748b;
+      --sb-border: rgba(255, 255, 255, 0.08);
+
+      /* Main Content Colors */
+      --c-bg: #ffffff;
+      --c-text-main: #1e293b;
+      --c-text-muted: #64748b;
+      --c-text-subtle: #94a3b8;
+      --c-border: #e2e8f0;
+      --c-border-strong: #cbd5e1;
+      --c-link: #0284c7;
+
+      /* Button & Status Colors */
+      --btn-red: #dc2626;
+      --btn-red-hover: #b91c1c;
+      --badge-draft: #0ea5e9;
+
+      --sidebar-w: 240px;
+      --header-h: 46px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ==============================================================
+       TRANSPARENT SCROLLBAR (Bawah, Sisi Kanan & Seluruh Elemen)
+       ============================================================== */
+    * {
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: transparent transparent;
+    }
+
+    *::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: transparent;
+      border-radius: 9999px;
+      transition: background-color 0.2s ease;
+    }
+
+    /* Saat di-hover, scrollbar muncul sangat tipis & elegan */
+    *:hover::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.45) !important;
+    }
+
+    *::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--c-bg);
+      color: var(--c-text-main);
+      font-size: 12px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: transparent transparent;
+    }
+
+    /* ==============================================================
+       1. SIDEBAR KIRI (DESAIN LEBIH RAPI & SEDERHANA, LAYOUT TETAP)
+       ============================================================== */
+    .odoo-sidebar {
+      width: var(--sidebar-w);
+      background-color: var(--sb-bg);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      flex-shrink: 0;
+      z-index: 100;
+      user-select: none;
+    }
+
+    /* Brand Header: Logo DXL ERP + 9-Dots Launcher (Bersih, Luas & Nyaman Dilihat) */
+    .sidebar-brand-row {
+      height: 60px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--sb-border);
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    /* Official Real DXL ERP Brand Logo (images/logo.png) */
+    .brand-real-logo {
+      height: 34px;
+      max-width: 140px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.25));
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      cursor: pointer;
+    }
+
+    .brand-real-logo:hover {
+      opacity: 0.95;
+      transform: scale(1.02);
+    }
+
+    /* 9-Dots App Switcher Launcher (Sedikit Lebih Besar & Enak Dilihat) */
+    .app-launcher-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #94a3b8;
+      background: transparent;
+      border: none;
+      transition: all 0.12s ease;
+      flex-shrink: 0;
+    }
+
+    .app-launcher-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    /* Sidebar Menu Scrollable Area */
+    .sidebar-menu-wrap {
+      flex: 1;
+      padding: 10px 8px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Ultra-thin Minimalist Scrollbar */
+    .sidebar-menu-wrap::-webkit-scrollbar {
+      width: 3px;
+    }
+    .sidebar-menu-wrap::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 3px;
+    }
+
+    .menu-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5px;
+    }
+
+    .menu-section-header {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      text-transform: uppercase;
+      padding: 8px 12px 4px 12px;
+      line-height: 1.3;
+    }
+
+    /* Menu item sedikit lebih tinggi (38px), jelas terlihat dan tetap compact */
+    .menu-item-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      height: 38px;
+      border-radius: 6px;
+      background: transparent;
+      border: none;
+      color: var(--sb-text);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      text-decoration: none;
+      transition: background 0.12s ease, color 0.12s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-sizing: border-box;
+    }
+
+    .menu-item-btn:hover {
+      background: var(--sb-hover);
+      color: #f8fafc;
+    }
+
+    /* ACTIVE MENU ITEM: Bersih, Rata, Flat Crimson Merah Elegan */
+    .menu-item-btn.active {
+      background: var(--sb-active-red);
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: none;
+    }
+
+    .menu-icon {
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .menu-icon svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.12s ease;
+    }
+
+    .menu-text {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -0.01em;
+    }
+
+    /* Sidebar Footer: User Card Administrator Bersih & Sederhana */
+    .sidebar-user-footer {
+      height: 50px;
+      padding: 0 12px;
+      border-top: 1px solid var(--sb-border);
+      background: var(--sb-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .user-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      overflow: hidden;
+    }
+
+    .user-avatar-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #10b981;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 11.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .user-footer-meta {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      line-height: 1.25;
+      justify-content: center;
+    }
+
+    .user-footer-name {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-footer-status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9px;
+      color: #10b981;
+      font-weight: 500;
+    }
+
+    .online-indicator-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    .user-footer-chevron {
+      color: #64748b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+      transition: color 0.12s, background 0.12s;
+      flex-shrink: 0;
+    }
+
+    .user-footer-chevron:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #cbd5e1;
+    }
+
+    .user-footer-chevron svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* ==============================================================
+       2. MAIN CONTENT AREA: ODOO LIST VIEW (MASTER PRODUCTION PLAN)
+       ============================================================== */
+    .odoo-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      max-width: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: #ffffff;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    /* Top Control Panel Header (Height ~46px) */
+    .odoo-topbar {
+      height: var(--header-h);
+      border-bottom: 1px solid var(--c-border);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      flex-shrink: 0;
+    }
+
+    /* Breadcrumb Header: Production Planning > Master Production Plan */
+    .topbar-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .breadcrumb-item {
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .breadcrumb-parent {
+      color: #64748b;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.12s;
+    }
+
+    .breadcrumb-parent:hover {
+      color: #0f172a;
+      text-decoration: underline;
+    }
+
+    .breadcrumb-sep {
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .breadcrumb-active {
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 13.5px;
+    }
+
+    /* Center: Search Box Odoo */
+    .topbar-search-wrap {
+      flex: 1;
+      max-width: 440px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input-box {
+      width: 100%;
+      height: 28px;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 4px;
+      padding: 0 24px 0 28px;
+      font-family: inherit;
+      font-size: 11.5px;
+      color: var(--c-text-main);
+      background: #ffffff;
+      outline: none;
+      transition: border-color 0.12s;
+    }
+
+    .search-input-box:focus {
+      border-color: #0284c7;
+    }
+
+    .search-icon-left {
+      position: absolute;
+      left: 8px;
+      color: #94a3b8;
+      pointer-events: none;
+      display: flex;
+    }
+
+    .search-icon-left svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    .search-dropdown-arrow {
+      position: absolute;
+      right: 8px;
+      color: #64748b;
+      cursor: pointer;
+      display: flex;
+    }
+
+    .search-dropdown-arrow svg {
+      width: 11px;
+      height: 11px;
+      fill: currentColor;
+    }
+
+    /* Right: View Switcher (List, Kanban, Pivot) */
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .view-switcher-group {
+      display: flex;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 4px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .view-btn {
+      width: 28px;
+      height: 26px;
+      background: #ffffff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+
+    .view-btn:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .view-btn.active {
+      background: #e2e8f0;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    .view-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* ==============================================================
+       3. TABLE ACTION TOOLBAR (SORT BY, STATUS FILTER & NEW BUTTON)
+       ============================================================== */
+    .table-toolbar {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--c-border);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .table-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Sort Control */
+    .sort-control-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1px solid var(--c-border);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      transition: border-color 0.12s;
+    }
+
+    .sort-control-wrap:hover {
+      border-color: var(--c-border-strong);
+    }
+
+    .sort-label {
+      color: #64748b;
+      font-weight: 600;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      user-select: none;
+    }
+
+    .sort-label svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .sort-select {
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #0f172a;
+      cursor: pointer;
+      outline: none;
+      padding-right: 4px;
+    }
+
+    /* Status Filter Pills */
+    .filter-status-pills {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .filter-pill {
+      border: 1px solid var(--c-border);
+      background: #ffffff;
+      color: #64748b;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3.5px 11px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.12s;
+      user-select: none;
+    }
+
+    .filter-pill:hover {
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .filter-pill.active {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+      font-weight: 600;
+    }
+
+    /* Status Filter Dropdown (Tampil khusus di Mode Tablet) */
+    .filter-status-select-wrap {
+      display: none; /* Sembunyi secara default di Desktop */
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1px solid var(--c-border);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      transition: border-color 0.12s;
+      flex-shrink: 0;
+    }
+
+    .filter-status-select-wrap:hover {
+      border-color: var(--c-border-strong);
+    }
+
+    .status-select-label {
+      color: #64748b;
+      font-weight: 600;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      user-select: none;
+    }
+
+    .status-select-label svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .status-filter-select {
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #0f172a;
+      cursor: pointer;
+      outline: none;
+      padding-right: 4px;
+    }
+
+    /* Button New (dipindah ke atas samping kanan dari table) */
+    .table-toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-table-new {
+      background: var(--btn-red);
+      color: #ffffff;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(220, 38, 38, 0.2);
+      transition: background 0.12s, transform 0.08s;
+      user-select: none;
+    }
+
+    .btn-table-new:hover {
+      background: var(--btn-red-hover);
+    }
+
+    .btn-table-new:active {
+      transform: scale(0.98);
+    }
+
+    .btn-table-new svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+    }
+
+    /* ==============================================================
+       4. LIST VIEW TABLE AREA (LEBIH BERSIH, NYAMAN & RAPI)
+       ============================================================== */
+    .table-container {
+      flex: 1;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: auto;
+      background: #ffffff;
+      box-sizing: border-box;
+    }
+
+    .odoo-list-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      text-align: left;
+      font-size: 12px;
+    }
+
+    /* Checkbox Styling */
+    .col-checkbox {
+      width: 36px;
+      text-align: center;
+      padding: 0 8px !important;
+    }
+
+    .odoo-checkbox {
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+      accent-color: #dc2626;
+      vertical-align: middle;
+      border-radius: 4px;
+    }
+
+    /* Table Header: Bersih, Kontras Lembut & Elegan */
+    .odoo-list-table thead th {
+      height: 40px;
+      padding: 0 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      text-transform: uppercase;
+      white-space: nowrap;
+      border-bottom: 1px solid #e2e8f0;
+      background: #f8fafc;
+      user-select: none;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .odoo-list-table thead th.sortable-th {
+      cursor: pointer;
+      transition: background 0.1s ease, color 0.1s ease;
+    }
+
+    .odoo-list-table thead th.sortable-th:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .th-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .th-sort-icon {
+      font-size: 9px;
+      color: #94a3b8;
+      display: inline-flex;
+    }
+
+    .sortable-th.sorted-asc .th-sort-icon,
+    .sortable-th.sorted-desc .th-sort-icon {
+      color: #dc2626;
+      font-weight: 800;
+    }
+
+    .th-right {
+      text-align: right;
+    }
+
+    .col-config-icon {
+      width: 32px;
+      text-align: center;
+      padding: 0 4px;
+      cursor: pointer;
+      color: #94a3b8;
+      transition: color 0.12s;
+    }
+
+    .col-config-icon:hover {
+      color: #0f172a;
+    }
+
+    .col-config-icon svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* Table Rows: Tinggi 46px, Jauh Lebih Luas, Bersih & Enak Dibaca */
+    .odoo-list-table tbody tr {
+      height: 46px;
+      transition: background 0.12s ease;
+      cursor: pointer;
+    }
+
+    .odoo-list-table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .odoo-list-table tbody tr.selected {
+      background-color: #fef2f2;
+    }
+
+    .odoo-list-table tbody td {
+      padding: 0 10px;
+      white-space: nowrap;
+      color: #334155;
+      font-size: 12px;
+      vertical-align: middle;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    /* Links: Blue Clickable with Monospace Code */
+    .cell-link-code {
+      color: #0284c7;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      transition: color 0.1s;
+    }
+
+    .cell-link-code:hover {
+      color: #0369a1;
+      text-decoration: underline;
+    }
+
+    .cell-customer {
+      font-weight: 600;
+      color: #0f172a;
+      cursor: pointer;
+      transition: color 0.1s;
+    }
+
+    .cell-customer:hover {
+      color: #0284c7;
+    }
+
+    .cell-date {
+      color: #64748b;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .td-number {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 12.5px;
+    }
+
+    /* Clean Sales Type Badges */
+    .sales-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2.5px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .sales-pill-regular {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+
+    .sales-pill-advance {
+      background: #fff7ed;
+      color: #c2410c;
+      border: 1px solid #ffedd5;
+    }
+
+    /* Soft Clean Status Badges with Status Dot (Modern Clean SaaS Look) */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      line-height: 1.2;
+      text-align: center;
+      letter-spacing: 0.01em;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .status-badge-draft {
+      background: #f0f9ff;
+      color: #0284c7;
+      border: 1px solid #bae6fd;
+    }
+    .status-badge-draft .status-dot {
+      background: #0284c7;
+    }
+
+    .status-badge-confirmed {
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+    }
+    .status-badge-confirmed .status-dot {
+      background: #059669;
+    }
+
+    .status-badge-in-progress {
+      background: #eef2ff;
+      color: #4f46e5;
+      border: 1px solid #c7d2fe;
+    }
+    .status-badge-in-progress .status-dot {
+      background: #4f46e5;
+    }
+
+    .status-badge-done {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+    .status-badge-done .status-dot {
+      background: #64748b;
+    }
+
+    /* Summary Total Row */
+    .odoo-list-table tfoot tr {
+      height: 44px;
+      border-top: 2px solid #cbd5e1;
+      border-bottom: 1px solid var(--c-border);
+      background: #f8fafc;
+      font-weight: 700;
+    }
+
+    .odoo-list-table tfoot td {
+      padding: 0 16px;
+      color: #0f172a;
+      font-size: 12.5px;
+    }
+
+    /* ==============================================================
+       5. TABLE BOTTOM NAVIGATION & PAGINATION
+       ============================================================== */
+    .table-pagination-footer {
+      min-height: 48px;
+      height: auto;
+      padding: 8px 18px;
+      border-top: 1px solid var(--c-border);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      color: #475569;
+      flex-shrink: 0;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .pagination-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .pagination-count-info {
+      font-weight: 500;
+      color: #475569;
+    }
+
+    .per-page-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      font-size: 11.5px;
+    }
+
+    .per-page-select {
+      height: 26px;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 5px;
+      background: #ffffff;
+      font-family: inherit;
+      font-size: 11.5px;
+      color: #0f172a;
+      padding: 0 6px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .pagination-right {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .page-btn {
+      min-width: 28px;
+      height: 28px;
+      padding: 0 8px;
+      border: 1px solid var(--c-border-strong);
+      background: #ffffff;
+      color: #334155;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.12s;
+      user-select: none;
+    }
+
+    .page-btn:hover:not(:disabled):not(.active) {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+      color: #0f172a;
+    }
+
+    .page-btn.active {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+      font-weight: 700;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #f8fafc;
+    }
+
+    .page-btn svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* Toast Notification */
+    .toast-box {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .toast-item {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 9px 14px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: 600;
+      border-left: 3px solid var(--btn-red);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      animation: slideIn 0.15s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ==============================================================
+       6. MODAL UPLOAD DOKUMEN / PDF RENCANA PRODUKSI (ODOO 18 DIALOG)
+       ============================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-dialog {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 12px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transform: scale(0.95) translateY(10px);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-backdrop.active .modal-dialog {
+      transform: scale(1) translateY(0);
+    }
+
+    /* Modal Header */
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #ffffff;
+    }
+
+    .modal-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Logo Icon Header Modal: Hijau Solid & Icon Putih */
+    .modal-icon-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: #16a34a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.28);
+    }
+
+    .modal-icon-badge svg {
+      width: 20px;
+      height: 20px;
+      stroke: #ffffff;
+      stroke-width: 2;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+
+    .modal-subtitle {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .modal-close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s;
+    }
+
+    .modal-close-btn:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .modal-close-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    /* Modal Body */
+    .modal-body {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: calc(88vh - 100px);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /* Template Download Box */
+    .template-download-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 12px;
+      background: #f8fafc;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      font-size: 11px;
+    }
+
+    .template-info-text {
+      color: #64748b;
+    }
+
+    .template-download-link {
+      color: #16a34a;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.12s;
+    }
+
+    .template-download-link:hover {
+      color: #15803d;
+      text-decoration: underline;
+    }
+
+    .template-download-link svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    /* Drag & Drop Upload Zone */
+    .upload-dropzone {
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+      padding: 26px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .upload-dropzone:hover,
+    .upload-dropzone.dragover {
+      border-color: #16a34a;
+      background: #f0fdf4;
+    }
+
+    .dropzone-icon {
+      width: 44px;
+      height: 44px;
+      margin: 0 auto 10px auto;
+      border-radius: 50%;
+      background: #ecfdf5;
+      border: 1px solid #bbf7d0;
+      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #16a34a;
+    }
+
+    .dropzone-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .dropzone-text-primary {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+
+    .dropzone-browse-link {
+      color: #16a34a;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .dropzone-text-sub {
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .dropzone-template-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+      color: #16a34a;
+      font-weight: 600;
+      font-size: 11px;
+      text-decoration: none;
+      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(22, 163, 74, 0.08);
+      transition: all 0.12s;
+    }
+
+    .dropzone-template-link:hover {
+      background: rgba(22, 163, 74, 0.15);
+      color: #15803d;
+    }
+
+    /* File Preview Card (Ketika file dipilih) */
+    .file-preview-card {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 12px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+    }
+
+    .file-preview-card.show {
+      display: flex;
+    }
+
+    .file-preview-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .file-excel-pill {
+      background: #16a34a;
+      color: #ffffff;
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 2.5px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+    }
+
+    .file-info {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .file-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 320px;
+    }
+
+    .file-meta {
+      font-size: 10.5px;
+      color: #16a34a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .file-remove-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 5px;
+      border: none;
+      background: transparent;
+      color: #ef4444;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.1s;
+      flex-shrink: 0;
+    }
+
+    .file-remove-btn:hover {
+      background: #fee2e2;
+    }
+
+    .file-remove-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    /* Modal Form Fields (Meta Data Rencana Produksi Odoo) */
+    .modal-form-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .modal-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .modal-form-group.col-full {
+      grid-column: span 2;
+    }
+
+    .modal-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .modal-input,
+    .modal-select {
+      height: 34px;
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 6px;
+      padding: 0 10px;
+      font-family: inherit;
+      font-size: 12px;
+      color: var(--c-text-main);
+      background: #ffffff;
+      outline: none;
+      transition: border-color 0.12s;
+      box-sizing: border-box;
+      text-overflow: ellipsis;
+    }
+
+    .modal-input:focus,
+    .modal-select:focus {
+      border-color: #16a34a;
+    }
+
+    /* Progress bar upload simulator */
+    .upload-progress-wrap {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .upload-progress-wrap.show {
+      display: flex;
+    }
+
+    .progress-bar-track {
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #16a34a;
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+
+    .progress-text {
+      font-size: 10.5px;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Modal Footer */
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--c-border);
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-modal-cancel {
+      height: 34px;
+      padding: 0 16px;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 6px;
+      background: #ffffff;
+      color: #475569;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+
+    .btn-modal-cancel:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .btn-modal-submit {
+      height: 34px;
+      padding: 0 18px;
+      border: none;
+      border-radius: 6px;
+      background: #16a34a;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 1px 3px rgba(22, 163, 74, 0.3);
+      transition: background 0.12s;
+    }
+
+    .btn-modal-submit:hover {
+      background: #15803d;
+    }
+
+    .btn-modal-submit svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    /* ==============================================================
+       TABLET & TOUCH OPTIMIZATION (Odoo 18 Responsive System)
+       Supports auto @media (max-width: 1024px) & .force-tablet-mode
+       ============================================================== */
+
+    /* Sidebar Backdrop Overlay */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 19, 37, 0.65);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      z-index: 998;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+
+    .sidebar-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Sidebar Close Button */
+    .sidebar-close-btn {
+      display: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--sb-border);
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+
+    .sidebar-close-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .sidebar-close-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    /* Hamburger Menu Toggle Button (Default hidden on desktop) */
+    .topbar-menu-toggle {
+      display: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      border: 1px solid var(--c-border-strong);
+      background: #ffffff;
+      color: #1e293b;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      transition: all 0.15s;
+    }
+
+    .topbar-menu-toggle:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      color: #0f172a;
+    }
+
+    .topbar-menu-toggle svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Device Mode Toggle Button in Topbar */
+    .btn-device-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 11px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #334155;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-device-toggle:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+      color: #0f172a;
+    }
+
+    .btn-device-toggle.active {
+      background: #eff6ff;
+      border-color: #3b82f6;
+      color: #1d4ed8;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+    }
+
+    .btn-device-toggle svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Orientation Switcher Button in Topbar (Portrait 768px / Landscape 1024px) */
+    .btn-orientation-toggle {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #334155;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-orientation-toggle:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+      color: #0f172a;
+    }
+
+    .btn-orientation-toggle.active {
+      background: #fef2f2;
+      border-color: #dc2626;
+      color: #dc2626;
+    }
+
+    .btn-orientation-toggle svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    body.force-tablet-mode .btn-orientation-toggle {
+      display: inline-flex;
+    }
+
+    /* Tablet Portrait Swipe Hint */
+    .tablet-portrait-hint {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--c-border);
+      color: #475569;
+      font-size: 11.5px;
+      line-height: 1.3;
+    }
+
+    .tablet-portrait-hint svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      stroke: #0284c7;
+    }
+
+    /* ==============================================================
+       FREEZE PANE: CHECKBOX & NO. RENCANA STICKY COLUMNS
+       Keeps identification visible during horizontal swipe on tablet
+       ============================================================== */
+    .table-container {
+      padding: 0 0 14px 0 !important;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .odoo-list-table th.col-checkbox,
+    .odoo-list-table td.col-checkbox {
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background: #ffffff;
+      width: 48px;
+      min-width: 48px;
+      max-width: 48px;
+      padding-left: 14px !important;
+      padding-right: 4px !important;
+      box-sizing: border-box;
+    }
+
+    .odoo-list-table thead th.col-checkbox {
+      background: #f8fafc;
+      z-index: 25;
+    }
+
+    .odoo-list-table th.col-code-sticky,
+    .odoo-list-table td.col-code-sticky {
+      position: sticky;
+      left: 48px;
+      z-index: 9;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      box-shadow: none;
+      white-space: nowrap;
+    }
+
+    .odoo-list-table thead th.col-code-sticky {
+      background: #f8fafc;
+      z-index: 24;
+      border-right: 1px solid #e2e8f0;
+      box-shadow: none;
+    }
+
+    .odoo-list-table tbody tr:hover td.col-checkbox,
+    .odoo-list-table tbody tr:hover td.col-code-sticky {
+      background: #f8fafc;
+    }
+
+    .odoo-list-table tbody tr.selected td.col-checkbox,
+    .odoo-list-table tbody tr.selected td.col-code-sticky {
+      background: #eff6ff;
+    }
+
+    .odoo-list-table tfoot td.col-checkbox {
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background: #f8fafc;
+    }
+
+    .odoo-list-table tfoot td.col-code-sticky {
+      position: sticky;
+      left: 48px;
+      z-index: 9;
+      background: #f8fafc;
+      border-right: 1px solid #e2e8f0;
+      box-shadow: none;
+    }
+
+    /* ==============================================================
+       TABLET MEDIA QUERY (<= 1024px) & BASE TABLET MODE
+       ============================================================== */
+    @media (max-width: 1024px) {
+      .sidebar-backdrop {
+        display: block;
+      }
+
+      .sidebar-close-btn {
+        display: flex;
+      }
+
+      .topbar-menu-toggle {
+        display: flex;
+      }
+
+      .odoo-sidebar {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        width: 280px !important;
+        height: 100vh !important;
+        z-index: 1000 !important;
+        transform: translateX(-100%) !important;
+        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.45) !important;
+      }
+
+      .odoo-sidebar.open {
+        transform: translateX(0) !important;
+      }
+
+      .odoo-main {
+        width: 100% !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+      }
+
+      .odoo-topbar {
+        height: 52px;
+        padding: 0 14px;
+        gap: 10px;
+      }
+
+      .topbar-breadcrumb {
+        font-size: 12.5px;
+      }
+
+      .topbar-search-wrap {
+        flex: 1;
+        max-width: 240px;
+        min-width: 120px;
+      }
+
+      .table-toolbar {
+        padding: 12px 14px;
+        gap: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      .table-toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .table-toolbar-right {
+        margin-left: auto;
+      }
+
+      .filter-status-pills {
+        display: none !important;
+      }
+
+      .filter-status-select-wrap {
+        display: inline-flex !important;
+      }
+
+      .status-filter-select {
+        height: 32px;
+        font-size: 11.5px;
+      }
+
+      .sort-control-wrap {
+        flex-shrink: 0;
+      }
+
+      .sort-select {
+        height: 32px;
+        font-size: 11.5px;
+      }
+
+      .btn-table-new {
+        height: 36px;
+        padding: 0 16px;
+        font-size: 12.5px;
+        flex-shrink: 0;
+      }
+
+      .table-container {
+        padding: 0 14px 14px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .odoo-list-table {
+        min-width: 880px;
+      }
+
+      .odoo-list-table tbody tr {
+        height: 50px; /* Touch-optimized row height for tablet */
+      }
+
+      .odoo-list-table tbody td {
+        padding: 12px 10px;
+        font-size: 12px;
+      }
+
+      .col-checkbox {
+        width: 44px;
+        min-width: 44px;
+      }
+
+      .odoo-checkbox {
+        width: 17px;
+        height: 17px;
+      }
+
+      .table-pagination-footer {
+        padding: 12px 14px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .page-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 12.5px;
+      }
+
+      .per-page-select {
+        height: 34px;
+        font-size: 12px;
+      }
+
+      .modal-dialog {
+        max-width: min(520px, calc(100vw - 28px));
+        margin: 16px auto;
+      }
+    }
+
+    /* ==============================================================
+       SPECIALIZED TABLET PORTRAIT MEDIA QUERY (<= 850px / iPad Portrait)
+       ============================================================== */
+    @media (max-width: 850px), (orientation: portrait) and (max-width: 1024px) {
+      .tablet-portrait-hint {
+        display: flex;
+      }
+
+      .topbar-breadcrumb .breadcrumb-parent,
+      .topbar-breadcrumb .breadcrumb-sep {
+        display: none !important;
+      }
+
+      .breadcrumb-active {
+        font-size: 13.5px;
+        white-space: nowrap;
+      }
+
+      .btn-device-toggle span {
+        display: none;
+      }
+
+      .btn-device-toggle {
+        padding: 0 8px;
+      }
+
+      .table-toolbar {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 10px !important;
+        padding: 10px 14px !important;
+        flex-wrap: wrap !important;
+      }
+
+      .table-toolbar-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        flex-wrap: wrap !important;
+      }
+
+      .table-toolbar-right {
+        margin-left: auto !important;
+      }
+
+      .filter-status-pills {
+        display: none !important;
+      }
+
+      .filter-status-select-wrap {
+        display: inline-flex !important;
+      }
+
+      .table-pagination-footer {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+        padding: 8px 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .pagination-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        font-size: 11px !important;
+        min-width: 0 !important;
+        width: auto !important;
+        flex: 1 1 auto !important;
+      }
+
+      .pagination-count-info {
+        white-space: nowrap !important;
+      }
+
+      .per-page-wrap label {
+        display: none !important;
+      }
+
+      .pagination-right {
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        flex-shrink: 0 !important;
+        margin-left: auto !important;
+        width: auto !important;
+      }
+    }
+
+    /* ==============================================================
+       FORCE TABLET MODE (Simulasi Layar Tablet iPad di Desktop)
+       ============================================================== */
+    body.force-tablet-mode {
+      background-color: #0b1329;
+      justify-content: center;
+      transition: background-color 0.2s;
+    }
+
+    body.force-tablet-mode .sidebar-backdrop {
+      display: block;
+    }
+
+    body.force-tablet-mode .sidebar-close-btn {
+      display: flex;
+    }
+
+    body.force-tablet-mode .topbar-menu-toggle {
+      display: flex;
+    }
+
+    body.force-tablet-mode .odoo-sidebar {
+      position: fixed !important;
+      left: 0 !important;
+      top: 0 !important;
+      bottom: 0 !important;
+      width: 280px !important;
+      height: 100vh !important;
+      z-index: 1000 !important;
+      transform: translateX(-100%) !important;
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      box-shadow: 6px 0 28px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    body.force-tablet-mode .odoo-sidebar.open {
+      transform: translateX(0) !important;
+    }
+
+    body.force-tablet-mode .odoo-main {
+      width: 100% !important;
+      max-width: 1024px !important; /* Landscape default */
+      margin: 0 auto !important;
+      min-width: 0 !important;
+      box-shadow: 0 0 60px rgba(0,0,0,0.6) !important;
+      border-left: 1px solid #334155;
+      border-right: 1px solid #334155;
+      transition: max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.force-tablet-mode .odoo-topbar {
+      height: 52px;
+      padding: 0 14px;
+      gap: 10px;
+    }
+
+    body.force-tablet-mode .topbar-breadcrumb {
+      font-size: 12.5px;
+    }
+
+    body.force-tablet-mode .topbar-search-wrap {
+      flex: 1;
+      max-width: 260px;
+      min-width: 130px;
+    }
+
+    body.force-tablet-mode .table-toolbar {
+      padding: 12px 14px;
+      gap: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    body.force-tablet-mode .table-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex: 1;
+      min-width: 0;
+    }
+
+    body.force-tablet-mode .table-toolbar-right {
+      margin-left: auto;
+    }
+
+    body.force-tablet-mode .filter-status-pills {
+      display: none !important;
+    }
+
+    body.force-tablet-mode .filter-status-select-wrap {
+      display: inline-flex !important;
+    }
+
+    body.force-tablet-mode .status-filter-select {
+      height: 32px;
+      font-size: 11.5px;
+    }
+
+    body.force-tablet-mode .sort-control-wrap {
+      flex-shrink: 0;
+    }
+
+    body.force-tablet-mode .sort-select {
+      height: 32px;
+      font-size: 11.5px;
+    }
+
+    body.force-tablet-mode .btn-table-new {
+      height: 36px;
+      padding: 0 16px;
+      font-size: 12.5px;
+      flex-shrink: 0;
+    }
+
+    body.force-tablet-mode .table-container {
+      padding: 0 14px 14px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    body.force-tablet-mode .odoo-list-table {
+      min-width: 880px;
+    }
+
+    body.force-tablet-mode .odoo-list-table tbody tr {
+      height: 50px;
+    }
+
+    body.force-tablet-mode .odoo-list-table tbody td {
+      padding: 12px 10px;
+      font-size: 12px;
+    }
+
+    body.force-tablet-mode .col-checkbox {
+      width: 44px;
+      min-width: 44px;
+    }
+
+    body.force-tablet-mode .odoo-checkbox {
+      width: 17px;
+      height: 17px;
+    }
+
+    body.force-tablet-mode .table-pagination-footer {
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    body.force-tablet-mode .page-btn {
+      width: 36px;
+      height: 36px;
+      font-size: 12.5px;
+    }
+
+    body.force-tablet-mode .per-page-select {
+      height: 34px;
+      font-size: 12px;
+    }
+
+    body.force-tablet-mode .modal-dialog {
+      max-width: min(520px, calc(100vw - 28px));
+      margin: 16px auto;
+    }
+
+    /* ==============================================================
+       SIMULATED TABLET PORTRAIT MODE (768px iPad Canvas)
+       ============================================================== */
+    body.tablet-portrait.force-tablet-mode .odoo-main {
+      max-width: 768px !important; /* Exact iPad portrait width! */
+    }
+
+    body.tablet-portrait .tablet-portrait-hint {
+      display: flex;
+    }
+
+    body.tablet-portrait .topbar-breadcrumb .breadcrumb-parent,
+    body.tablet-portrait .topbar-breadcrumb .breadcrumb-sep {
+      display: none !important;
+    }
+
+    body.tablet-portrait .topbar-search-wrap {
+      flex: 1;
+      min-width: 120px;
+      max-width: 200px;
+    }
+
+    body.tablet-portrait .btn-device-toggle span {
+      display: none;
+    }
+
+    body.tablet-portrait .table-toolbar {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 10px !important;
+      padding: 10px 14px !important;
+      flex-wrap: wrap !important;
+    }
+
+    body.tablet-portrait .table-toolbar-left {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      flex-wrap: wrap !important;
+    }
+
+    body.tablet-portrait .table-toolbar-right {
+      margin-left: auto !important;
+    }
+
+    body.tablet-portrait .filter-status-pills {
+      display: none !important;
+    }
+
+    body.tablet-portrait .filter-status-select-wrap {
+      display: inline-flex !important;
+    }
+
+    body.tablet-portrait .table-pagination-footer {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 8px !important;
+      padding: 8px 14px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    body.tablet-portrait .pagination-left {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      min-width: 0 !important;
+      width: auto !important;
+      flex: 1 1 auto !important;
+    }
+
+    body.tablet-portrait .per-page-wrap label {
+      display: none !important;
+    }
+
+    body.tablet-portrait .pagination-right {
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      flex-shrink: 0 !important;
+      margin-left: auto !important;
+      width: auto !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Backdrop untuk Drawer Sidebar Tablet -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+  <!-- ==============================================================
+       1. SIDEBAR KIRI: TEMA NAVY GELAP & MERAH DXL ERP
+       ============================================================== -->
+  <aside class="odoo-sidebar" id="odooSidebar">
+    
+    <!-- Brand Header: Logo DXL ERP, 9-Dots Launcher & Tombol Tutup Tablet -->
+    <div class="sidebar-brand-row">
+      <div class="brand-left">
+        <!-- Official Real DXL ERP Brand Logo (images/logo.png) -->
+        <a href="index.html" title="DXL ERP - Master Production Plan" style="display: flex; align-items: center; text-decoration: none;">
+          <img src="images/logo.png" alt="DXL ERP Logo" class="brand-real-logo">
+        </a>
+      </div>
+
+      <div class="brand-actions-right" style="display: flex; align-items: center; gap: 8px;">
+        <!-- 9-Dots App Switcher Launcher -->
+        <button class="app-launcher-btn" title="App Switcher" onclick="showToast('Buka App Switcher Odoo 18')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="4" cy="4" r="2.2"/>
+            <circle cx="12" cy="4" r="2.2"/>
+            <circle cx="20" cy="4" r="2.2"/>
+            <circle cx="4" cy="12" r="2.2"/>
+            <circle cx="12" cy="12" r="2.2"/>
+            <circle cx="20" cy="12" r="2.2"/>
+            <circle cx="4" cy="20" r="2.2"/>
+            <circle cx="12" cy="20" r="2.2"/>
+            <circle cx="20" cy="20" r="2.2"/>
+          </svg>
+        </button>
+
+        <!-- Tombol Tutup Drawer Tablet (✕) -->
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" onclick="closeSidebar()" title="Tutup Menu Sidebar">
+          <svg viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scrollable Navigation Menu -->
+    <div class="sidebar-menu-wrap">
+      
+      <!-- SECTION 1: PERENCANAAN & EKSEKUSI -->
+      <div class="menu-section">
+        <div class="menu-section-header">PERENCANAAN &amp; EKSEKUSI</div>
+
+        <!-- [ACTIVE] Master Production Plan -->
+        <button class="menu-item-btn active" onclick="activateMenu(this, 'Master Production Plan')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+          </div>
+          <span class="menu-text">Master Production Plan</span>
+        </button>
+
+        <!-- Production Requests (Slots) -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Production Requests (Slots)')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 12 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>
+          </div>
+          <span class="menu-text">Production Requests (Slots)</span>
+        </button>
+
+        <!-- Daily Orders (Perintah Harian) -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Daily Orders (Perintah Harian)')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <span class="menu-text">Daily Orders (Perintah Harian)</span>
+        </button>
+
+        <!-- Kebutuhan Bahan (Material Ord...) -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Kebutuhan Bahan (Material Order)')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="m12 12 8-4.5"/><path d="m12 12-8-4.5"/><path d="M12 12v9"/></svg>
+          </div>
+          <span class="menu-text">Kebutuhan Bahan (Material Ord...</span>
+        </button>
+
+        <!-- Manufacturing Orders (MO) -->
+        <a href="manufacturing.html" class="menu-item-btn" style="text-decoration: none;" title="Buka Manufacturing Orders">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><path d="M2 20h20"/><path d="M5 20V8l5 4V8l5 4V4h4v16"/></svg>
+          </div>
+          <span class="menu-text">Manufacturing Orders (MO)</span>
+        </a>
+      </div>
+
+      <!-- SECTION 2: LOGISTIK & TIME CHART -->
+      <div class="menu-section">
+        <div class="menu-section-header">LOGISTIK &amp; TIME CHART</div>
+
+        <!-- Time Chart Logistik -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Time Chart Logistik')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <span class="menu-text">Time Chart Logistik</span>
+        </button>
+      </div>
+
+      <!-- SECTION 3: KALENDER & SHIFT -->
+      <div class="menu-section">
+        <div class="menu-section-header">KALENDER &amp; SHIFT</div>
+
+        <!-- Master Shift Kerja -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Master Shift Kerja')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <span class="menu-text">Master Shift Kerja</span>
+        </button>
+
+        <!-- Kalender Libur & Overtime -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Kalender Libur & Overtime')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="10" y1="14" x2="14" y2="18"/><line x1="14" y1="14" x2="10" y2="18"/></svg>
+          </div>
+          <span class="menu-text">Kalender Libur &amp; Overtime</span>
+        </button>
+
+        <!-- Periode Perencanaan -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Periode Perencanaan')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <span class="menu-text">Periode Perencanaan</span>
+        </button>
+      </div>
+
+      <!-- SECTION 4: MASTER DATA & KONFIGURASI -->
+      <div class="menu-section">
+        <div class="menu-section-header">MASTER DATA &amp; KONFIGURASI</div>
+
+        <!-- Workcenters / Mesin -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Workcenters / Mesin')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+          <span class="menu-text">Workcenters / Mesin</span>
+        </button>
+
+        <!-- Bill of Materials (BoM) -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Bill of Materials (BoM)')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </div>
+          <span class="menu-text">Bill of Materials (BoM)</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- User Profile Footer: Administrator -->
+    <div class="sidebar-user-footer">
+      <div class="user-footer-left">
+        <div class="user-avatar-circle">A</div>
+        <div class="user-footer-meta">
+          <span class="user-footer-name">Administrator</span>
+          <span class="user-footer-status">
+            <span class="online-indicator-dot"></span> Online
+          </span>
+        </div>
+      </div>
+      <div class="user-footer-chevron" onclick="showToast('Menu Akun Administrator')">
+        <svg viewBox="0 0 24 24" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ==============================================================
+       2. MAIN CONTENT AREA: ODOO 18 LIST VIEW TABLE
+       ============================================================== -->
+  <main class="odoo-main">
+
+    <!-- Topbar Header Panel: Breadcrumb, Search, Mode Tablet Toggle & View Switcher -->
+    <header class="odoo-topbar">
+      
+      <!-- Hamburger Toggle Menu (Muncul Otomatis di Mode Tablet & Mobile) -->
+      <button class="topbar-menu-toggle" id="menuToggleBtn" onclick="toggleSidebar()" title="Buka/Tutup Menu Sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+
+      <!-- Left: Breadcrumb Navigation: Production Planning > Master Production Plan -->
+      <div class="topbar-breadcrumb">
+        <span class="breadcrumb-item breadcrumb-parent" onclick="showToast('Navigasi: Production Planning')">Production Planning</span>
+        <span class="breadcrumb-sep">&gt;</span>
+        <span class="breadcrumb-item breadcrumb-active">Master Production Plan</span>
+      </div>
+
+      <!-- Center: Search Input Bar -->
+      <div class="topbar-search-wrap">
+        <span class="search-icon-left">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <input type="text" class="search-input-box" placeholder="Search Master Production Plan..." oninput="handleSearch(this.value)" id="searchInput">
+        <span class="search-dropdown-arrow" title="Filter &amp; Group By" onclick="showToast('Filter &amp; Group By Odoo')">
+          <svg viewBox="0 0 10 6"><polygon points="0,0 10,0 5,6"/></svg>
+        </span>
+      </div>
+
+      <!-- Right: Device Mode Toggle & View Switcher Odoo 18 (List, Kanban, Pivot) -->
+      <div class="topbar-right">
+        <!-- Tombol Simulasi Mode Tablet / Desktop -->
+        <button class="btn-device-toggle" id="deviceToggleBtn" onclick="toggleTabletMode()" title="Simulasi Mode Tablet / Desktop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <span id="deviceToggleText">Mode Tablet</span>
+        </button>
+
+        <!-- Tombol Rotasi Tablet (Portrait 768px / Landscape 1024px) -->
+        <button class="btn-orientation-toggle active" id="orientationToggleBtn" onclick="toggleTabletOrientation()" title="Ubah Orientasi Tablet (Portrait 768px / Landscape 1024px)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+          <span id="orientationToggleText">Portrait (768px)</span>
+        </button>
+
+        <div class="view-switcher-group">
+          <button class="view-btn active" title="List View" onclick="showToast('Tampilan List View Aktif')">
+            <svg viewBox="0 0 24 24" fill="none"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+          <button class="view-btn" title="Kanban View" onclick="showToast('Beralih ke Tampilan Kanban')">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          </button>
+          <button class="view-btn" title="Pivot View" onclick="showToast('Beralih ke Tampilan Pivot')">
+            <svg viewBox="0 0 24 24" fill="none"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </header>
+
+    <!-- Table Action Toolbar: Sort By + Filter Status di Kiri, Import Data MP di Kanan -->
+    <div class="table-toolbar">
+      <div class="table-toolbar-left">
+        <!-- Sort Control -->
+        <div class="sort-control-wrap">
+          <span class="sort-label">
+            <svg viewBox="0 0 24 24" fill="none"><line x1="4" y1="6" x2="11" y2="6"/><line x1="4" y1="12" x2="16" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+            Sort by:
+          </span>
+          <select class="sort-select" id="sortSelect" onchange="handleSortSelect(this.value)">
+            <option value="code_desc">No. Rencana (Terbaru)</option>
+            <option value="code_asc">No. Rencana (Terlama)</option>
+            <option value="customer_asc">Customer (A-Z)</option>
+            <option value="month_desc">Bulan Forecast (Terbaru)</option>
+            <option value="month_asc">Bulan Forecast (Terlama)</option>
+            <option value="plan_desc">Total Rencana (Terbesar)</option>
+            <option value="status_asc">Status</option>
+          </select>
+        </div>
+
+        <!-- Filter Status Pills: Tampil di Desktop -->
+        <div class="filter-status-pills">
+          <button class="filter-pill active" onclick="filterByStatus('all', this)">Semua</button>
+          <button class="filter-pill" onclick="filterByStatus('Draft', this)">Draft</button>
+          <button class="filter-pill" onclick="filterByStatus('Confirmed', this)">Confirmed</button>
+          <button class="filter-pill" onclick="filterByStatus('In Progress', this)">In Progress</button>
+          <button class="filter-pill" onclick="filterByStatus('Done', this)">Done</button>
+        </div>
+
+        <!-- Filter Status Dropdown: Tampil Otomatis di Mode Tablet -->
+        <div class="filter-status-select-wrap">
+          <span class="status-select-label">
+            <svg viewBox="0 0 24 24" fill="none"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            Status:
+          </span>
+          <select class="status-filter-select" id="statusFilterSelect" onchange="handleStatusFilterSelect(this.value)">
+            <option value="all">Semua Status</option>
+            <option value="Draft">Draft</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Done">Done</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-toolbar-right">
+        <!-- Button Import Data MP (Dipindah ke sisi kanan) -->
+        <button class="btn-table-new" onclick="openUploadModal()" title="Import Data Master Production Plan">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Import Data MP</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tablet Portrait Swipe Hint Banner -->
+    <div class="tablet-portrait-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      <span><b>Mode Tablet Portrait:</b> Kolom No. Rencana &amp; Checkbox terkunci (freeze pane). Geser tabel ke samping untuk melihat ETA Port, Rencana Netto &amp; Status.</span>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+      <table class="odoo-list-table">
+        
+        <!-- Table Columns Definition Header -->
+        <thead>
+          <tr>
+            <th class="col-checkbox">
+              <input type="checkbox" class="odoo-checkbox" id="headerCheckbox" onchange="toggleSelectAll(this.checked)">
+            </th>
+            <th class="sortable-th col-code-sticky" onclick="sortByColumn('code')">
+              <span class="th-content">No. Rencana <span class="th-sort-icon" id="sortIcon-code">▼</span></span>
+            </th>
+            <th class="sortable-th" onclick="sortByColumn('month')">
+              <span class="th-content">Forecast <span class="th-sort-icon" id="sortIcon-month">↕</span></span>
+            </th>
+            <th class="sortable-th" onclick="sortByColumn('customer')">
+              <span class="th-content">Customer <span class="th-sort-icon" id="sortIcon-customer">↕</span></span>
+            </th>
+            <th class="sortable-th" onclick="sortByColumn('salesType')">
+              <span class="th-content">Tipe <span class="th-sort-icon" id="sortIcon-salesType">↕</span></span>
+            </th>
+            <th class="sortable-th" onclick="sortByColumn('etaPort')">
+              <span class="th-content">ETA Port <span class="th-sort-icon" id="sortIcon-etaPort">↕</span></span>
+            </th>
+            <th class="th-right sortable-th" onclick="sortByColumn('totalRencana')">
+              <span class="th-content" style="justify-content: flex-end;">Rencana Netto <span class="th-sort-icon" id="sortIcon-totalRencana">↕</span></span>
+            </th>
+            <th class="th-right sortable-th" onclick="sortByColumn('totalTerjadwal')">
+              <span class="th-content" style="justify-content: flex-end;">Terjadwal <span class="th-sort-icon" id="sortIcon-totalTerjadwal">↕</span></span>
+            </th>
+            <th class="sortable-th" onclick="sortByColumn('status')">
+              <span class="th-content">Status <span class="th-sort-icon" id="sortIcon-status">↕</span></span>
+            </th>
+            <th class="col-config-icon" title="Customize Columns" onclick="showToast('Konfigurasi Kolom Tampilan')">
+              <svg viewBox="0 0 24 24" fill="none"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+            </th>
+          </tr>
+        </thead>
+
+        <!-- Table Rows Body -->
+        <tbody id="tableBody"></tbody>
+
+        <!-- Table Summary Total Footer -->
+        <tfoot>
+          <tr>
+            <td class="col-checkbox"></td>
+            <td class="col-code-sticky" style="font-weight: 700; color: #334155; white-space: nowrap;">Total Keseluruhan (Data Terfilter)</td>
+            <td colspan="4"></td>
+            <td class="td-number" id="summaryTotalRencana">0.00</td>
+            <td class="td-number" id="summaryTotalTerjadwal">0.00</td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tfoot>
+
+      </table>
+    </div>
+
+    <!-- Table Bottom Navigation & Pagination Sesuai Permintaan -->
+    <div class="table-pagination-footer">
+      <div class="pagination-left">
+        <span class="pagination-count-info" id="paginationInfoText">Menampilkan 1-5 dari 10 data</span>
+        <div class="per-page-wrap">
+          <label for="perPageSelect">Baris per halaman:</label>
+          <select id="perPageSelect" class="per-page-select" onchange="changePerPage(this.value)">
+            <option value="5" selected>5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Navigation Page Buttons (Previous, 1, 2, ..., Next) -->
+      <div class="pagination-right" id="paginationControls"></div>
+    </div>
+
+  </main>
+
+  <!-- ==============================================================
+       MODAL IMPORT DATA MP: EXCEL / SPREADSHEET (ODOO 18 DIALOG)
+       ============================================================== -->
+  <div class="modal-backdrop" id="uploadModal" onclick="handleBackdropClick(event)">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18"/>
+              <path d="M3 15h18"/>
+              <path d="M9 3v18"/>
+              <path d="M15 3v18"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title" id="modalTitle">Import Data MP (Excel)</h3>
+            <p class="modal-subtitle">Unggah file spreadsheet Excel (.xlsx, .xls) rencana produksi</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeUploadModal()" title="Tutup (Esc)">
+          <svg viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Modal Body: Hanya Drop Zone Excel & File Preview -->
+      <div class="modal-body">
+        
+        <!-- Drag & Drop Zone Excel -->
+        <div class="upload-dropzone" id="dropZone" onclick="triggerFileInput()">
+          <input type="file" id="excelFileInput" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleFileSelect(this.files)">
+          <div class="dropzone-icon">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+          </div>
+          <div class="dropzone-text-primary">
+            Tarik &amp; lepas file Excel di sini, atau <span class="dropzone-browse-link">Telusuri File</span>
+          </div>
+          <div class="dropzone-text-sub">
+            Mendukung format: Microsoft Excel (.xlsx, .xls) atau CSV (Maksimal 25 MB)
+          </div>
+          <div>
+            <a class="dropzone-template-link" onclick="event.stopPropagation(); downloadExcelTemplate();" title="Unduh format spreadsheet standar">
+              <svg viewBox="0 0 24 24" fill="none" style="width: 12px; height: 12px; stroke: currentColor; stroke-width: 2.2;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Unduh Template Master Plan (.xlsx)</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- File Selected Preview Card (Excel) -->
+        <div class="file-preview-card" id="filePreviewCard">
+          <div class="file-preview-left">
+            <span class="file-excel-pill" id="fileTypeBadge">XLSX</span>
+            <div class="file-info">
+              <span class="file-name" id="fileNameDisplay">MPP_Master_Production_Plan_Nov2026.xlsx</span>
+              <span class="file-meta">
+                <span id="fileSizeDisplay">1.4 MB</span> • <span id="fileRowsDisplay">48 Baris Terbaca</span> • <span>● Siap diimport</span>
+              </span>
+            </div>
+          </div>
+          <button class="file-remove-btn" onclick="clearSelectedFile(event)" title="Ganti / Hapus file">
+            <svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+        </div>
+
+        <!-- Progress Bar (Simulation saat import Excel) -->
+        <div class="upload-progress-wrap" id="uploadProgressWrap">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+          </div>
+          <div class="progress-text">
+            <span id="progressStatusText">Membaca data spreadsheet Excel...</span>
+            <span id="progressPercentText">0%</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" onclick="closeUploadModal()">Batal</button>
+        <button class="btn-modal-submit btn-modal-excel" id="btnSubmitUpload" onclick="processUploadAndCreatePlan()">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Import Data Excel ke MP</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Stack -->
+  <div class="toast-box" id="toastBox"></div>
+
+  <!-- ==============================================================
+       INTERACTIVE JAVASCRIPT (ZERO EXTERNAL LIBRARIES, ODOO 18 READY)
+       ============================================================== -->
+  <script>
+    // 1. Dataset Realistis Rencana Produksi (PT Dolpin Putra Sejati / DXL-ERP)
+    const initialPlans = [
+      { id: 1, code: 'PLN/2026/10/0001 - REV.0', month: '10/01/2026', customer: 'PT. Dolpin Putra Sejati', salesType: 'Advance', etaPort: '15/10/2026', totalRencana: 25000.00, totalTerjadwal: 25000.00, status: 'Confirmed', selected: false },
+      { id: 2, code: 'PLN/2026/10/0002 - REV.0', month: '10/01/2026', customer: 'PT. Mayora Indah Tbk', salesType: 'Regular', etaPort: '18/10/2026', totalRencana: 18500.00, totalTerjadwal: 18500.00, status: 'In Progress', selected: false },
+      { id: 3, code: 'PLN/2026/10/0003 - REV.0', month: '10/01/2026', customer: 'PT. Indofood CBP Sukses Makmur', salesType: 'Regular', etaPort: '22/10/2026', totalRencana: 32000.00, totalTerjadwal: 20000.00, status: 'In Progress', selected: false },
+      { id: 4, code: 'PLN/2026/10/0004 - REV.0', month: '10/01/2026', customer: 'PT. Wings Surya', salesType: 'Advance', etaPort: '28/10/2026', totalRencana: 14200.00, totalTerjadwal: 0.00, status: 'Draft', selected: false },
+      { id: 5, code: 'PLN/2026/10/0005 - REV.0', month: '10/01/2026', customer: 'PT. Santos Jaya Abadi', salesType: 'Regular', etaPort: '05/11/2026', totalRencana: 40000.00, totalTerjadwal: 40000.00, status: 'Done', selected: false },
+      { id: 6, code: 'PLN/2026/11/0006 - REV.0', month: '11/01/2026', customer: 'PT. Kalbe Farma Tbk', salesType: 'Advance', etaPort: '10/11/2026', totalRencana: 9800.00, totalTerjadwal: 0.00, status: 'Draft', selected: false },
+      { id: 7, code: 'PLN/2026/11/0007 - REV.0', month: '11/01/2026', customer: 'PT. Unilever Indonesia Tbk', salesType: 'Regular', etaPort: '15/11/2026', totalRencana: 55000.00, totalTerjadwal: 55000.00, status: 'Confirmed', selected: false },
+      { id: 8, code: 'PLN/2026/11/0008 - REV.0', month: '11/01/2026', customer: 'PT. Ultra Jaya Milk Industry', salesType: 'Regular', etaPort: '20/11/2026', totalRencana: 21500.00, totalTerjadwal: 15000.00, status: 'In Progress', selected: false },
+      { id: 9, code: 'PLN/2026/12/0009 - REV.0', month: '12/01/2026', customer: 'PT. Forisa Nusapersada', salesType: 'Advance', etaPort: '02/12/2026', totalRencana: 11000.00, totalTerjadwal: 0.00, status: 'Draft', selected: false },
+      { id: 10, code: 'PLN/2026/12/0010 - REV.0', month: '12/01/2026', customer: 'PT. Ajinomoto Indonesia', salesType: 'Regular', etaPort: '10/12/2026', totalRencana: 28400.00, totalTerjadwal: 28400.00, status: 'Done', selected: false }
+    ];
+
+    let planData = [...initialPlans];
+    let searchQuery = '';
+    let statusFilter = 'all';
+    let currentSortColumn = 'code';
+    let currentSortDir = 'desc'; // 'asc' or 'desc'
+    let currentPage = 1;
+    let itemsPerPage = 5;
+
+    // Helper: Format Angka Ribuan Odoo
+    function formatNumber(num) {
+      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Helper: Format Status Badge CSS dengan Status Dot Modern
+    function getStatusBadgeHtml(status) {
+      let badgeClass = 'status-badge-draft';
+      if (status === 'Confirmed') badgeClass = 'status-badge-confirmed';
+      else if (status === 'In Progress') badgeClass = 'status-badge-in-progress';
+      else if (status === 'Done') badgeClass = 'status-badge-done';
+      return `<span class="status-badge ${badgeClass}"><span class="status-dot"></span>${status}</span>`;
+    }
+
+    // Helper: Format Tipe Penjualan Pill Badge Bersih
+    function getSalesTypeBadge(salesType) {
+      if (salesType === 'Advance') {
+        return `<span class="sales-pill sales-pill-advance">Advance</span>`;
+      }
+      return `<span class="sales-pill sales-pill-regular">Regular</span>`;
+    }
+
+    // 2. Render Table dengan Sorting, Filtering, & Pagination
+    function renderTable() {
+      // Step A: Filter
+      let filtered = planData.filter(item => {
+        const matchesStatus = (statusFilter === 'all') || (item.status === statusFilter);
+        const q = searchQuery.toLowerCase().trim();
+        const matchesSearch = !q || (
+          item.code.toLowerCase().includes(q) ||
+          item.customer.toLowerCase().includes(q) ||
+          item.salesType.toLowerCase().includes(q) ||
+          item.status.toLowerCase().includes(q)
+        );
+        return matchesStatus && matchesSearch;
+      });
+
+      // Step B: Sort
+      filtered.sort((a, b) => {
+        let valA = a[currentSortColumn];
+        let valB = b[currentSortColumn];
+
+        if (typeof valA === 'string') {
+          return currentSortDir === 'asc' 
+            ? valA.localeCompare(valB) 
+            : valB.localeCompare(valA);
+        } else {
+          return currentSortDir === 'asc' ? valA - valB : valB - valA;
+        }
+      });
+
+      // Step C: Summary Totals
+      const totalRencanaNetto = filtered.reduce((acc, cur) => acc + cur.totalRencana, 0);
+      const totalTerjadwal = filtered.reduce((acc, cur) => acc + cur.totalTerjadwal, 0);
+      document.getElementById('summaryTotalRencana').textContent = formatNumber(totalRencanaNetto);
+      document.getElementById('summaryTotalTerjadwal').textContent = formatNumber(totalTerjadwal);
+
+      // Step D: Pagination Slices
+      const totalItems = filtered.length;
+      const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const pageItems = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+      // Update Pagination Text
+      const infoText = totalItems === 0 
+        ? 'Tidak ada data ditemukan' 
+        : `Menampilkan ${startIndex + 1} - ${Math.min(startIndex + itemsPerPage, totalItems)} dari ${totalItems} data`;
+      document.getElementById('paginationInfoText').textContent = infoText;
+
+      // Render Pagination Buttons
+      renderPaginationControls(totalPages);
+
+      // Render Table Rows
+      const tbody = document.getElementById('tableBody');
+      if (pageItems.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" style="text-align: center; padding: 36px; color: #94a3b8; font-size: 13px;">
+              Tidak ada data yang sesuai dengan pencarian atau filter status.
+            </td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = pageItems.map(item => `
+          <tr id="row-${item.id}" class="${item.selected ? 'selected' : ''}" onclick="selectRow(${item.id})">
+            <td class="col-checkbox" onclick="event.stopPropagation()">
+              <input type="checkbox" class="odoo-checkbox row-cb" ${item.selected ? 'checked' : ''} onchange="toggleRowSelection(${item.id}, this.checked)">
+            </td>
+            <td class="col-code-sticky">
+              <a class="cell-link-code" onclick="openPlanDetail('${item.code}')">${item.code}</a>
+            </td>
+            <td class="cell-date">${item.month}</td>
+            <td>
+              <span class="cell-customer" onclick="openCustomerDetail('${item.customer}')">${item.customer}</span>
+            </td>
+            <td>${getSalesTypeBadge(item.salesType)}</td>
+            <td class="cell-date">${item.etaPort || '-'}</td>
+            <td class="td-number">${formatNumber(item.totalRencana)}</td>
+            <td class="td-number">${formatNumber(item.totalTerjadwal)}</td>
+            <td>${getStatusBadgeHtml(item.status)}</td>
+            <td class="col-config-icon" onclick="event.stopPropagation(); showToast('Tindakan untuk ${item.code}')">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Update Header Checkbox State
+      updateHeaderCheckboxState(pageItems);
+      updateSortHeaderIcons();
+    }
+
+    // 3. Render Pagination Controls (Previous, 1, 2, ..., Next)
+    function renderPaginationControls(totalPages) {
+      const container = document.getElementById('paginationControls');
+      if (totalPages <= 1) {
+        container.innerHTML = `
+          <button class="page-btn active">1</button>
+        `;
+        return;
+      }
+
+      let html = `
+        <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})" title="Halaman Sebelumnya">
+          <svg viewBox="0 0 24 24" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+      `;
+
+      for (let p = 1; p <= totalPages; p++) {
+        html += `
+          <button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="changePage(${p})">${p}</button>
+        `;
+      }
+
+      html += `
+        <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})" title="Halaman Selanjutnya">
+          <svg viewBox="0 0 24 24" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function changePage(page) {
+      currentPage = page;
+      renderTable();
+    }
+
+    function changePerPage(val) {
+      itemsPerPage = parseInt(val, 10);
+      currentPage = 1;
+      renderTable();
+    }
+
+    // 4. Sorting Functionality
+    function sortByColumn(colKey) {
+      if (currentSortColumn === colKey) {
+        currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSortColumn = colKey;
+        currentSortDir = (colKey === 'totalRencana' || colKey === 'totalTerjadwal') ? 'desc' : 'asc';
+      }
+      syncSortSelectDropdown();
+      renderTable();
+    }
+
+    function handleSortSelect(val) {
+      const parts = val.split('_');
+      const sortMap = {
+        code: 'code',
+        customer: 'customer',
+        month: 'month',
+        plan: 'totalRencana',
+        status: 'status'
+      };
+      currentSortColumn = sortMap[parts[0]] || 'code';
+      currentSortDir = parts[1] || 'asc';
+      renderTable();
+    }
+
+    function syncSortSelectDropdown() {
+      const select = document.getElementById('sortSelect');
+      if (!select) return;
+      if (currentSortColumn === 'code' && currentSortDir === 'desc') select.value = 'code_desc';
+      else if (currentSortColumn === 'code' && currentSortDir === 'asc') select.value = 'code_asc';
+      else if (currentSortColumn === 'customer' && currentSortDir === 'asc') select.value = 'customer_asc';
+      else if (currentSortColumn === 'month' && currentSortDir === 'desc') select.value = 'month_desc';
+      else if (currentSortColumn === 'month' && currentSortDir === 'asc') select.value = 'month_asc';
+      else if (currentSortColumn === 'totalRencana' && currentSortDir === 'desc') select.value = 'plan_desc';
+      else if (currentSortColumn === 'status') select.value = 'status_asc';
+    }
+
+    function updateSortHeaderIcons() {
+      const cols = ['code', 'month', 'customer', 'salesType', 'etaPort', 'totalRencana', 'totalTerjadwal', 'status'];
+      cols.forEach(c => {
+        const iconEl = document.getElementById(`sortIcon-${c}`);
+        if (!iconEl) return;
+        if (c === currentSortColumn) {
+          iconEl.textContent = currentSortDir === 'asc' ? '▲' : '▼';
+        } else {
+          iconEl.textContent = '↕';
+        }
+      });
+    }
+
+    // 5. Status Filter (Pills di Desktop & Dropdown di Mode Tablet)
+    function filterByStatus(status, pillEl) {
+      statusFilter = status;
+      document.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
+      if (pillEl) {
+        pillEl.classList.add('active');
+      } else {
+        document.querySelectorAll('.filter-pill').forEach(btn => {
+          if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${status}'`)) {
+            btn.classList.add('active');
+          }
+        });
+      }
+      const selectEl = document.getElementById('statusFilterSelect');
+      if (selectEl && selectEl.value !== status) {
+        selectEl.value = status;
+      }
+      currentPage = 1;
+      renderTable();
+      showToast(`Filter Status: ${status === 'all' ? 'Semua Status' : status}`);
+    }
+
+    function handleStatusFilterSelect(status) {
+      filterByStatus(status, null);
+    }
+
+    // 6. Search Filter
+    function handleSearch(val) {
+      searchQuery = val;
+      currentPage = 1;
+      renderTable();
+    }
+
+    // 7. Checkbox Selection
+    function selectRow(id) {
+      const item = planData.find(x => x.id === id);
+      if (item) {
+        item.selected = !item.selected;
+        renderTable();
+      }
+    }
+
+    function toggleRowSelection(id, checked) {
+      const item = planData.find(x => x.id === id);
+      if (item) {
+        item.selected = checked;
+        renderTable();
+      }
+    }
+
+    function toggleSelectAll(checked) {
+      planData.forEach(item => item.selected = checked);
+      renderTable();
+    }
+
+    function updateHeaderCheckboxState(pageItems) {
+      const headerCb = document.getElementById('headerCheckbox');
+      if (!headerCb) return;
+      if (pageItems.length === 0) {
+        headerCb.checked = false;
+        headerCb.indeterminate = false;
+        return;
+      }
+      const allChecked = pageItems.every(i => i.selected);
+      const someChecked = pageItems.some(i => i.selected);
+      headerCb.checked = allChecked;
+      headerCb.indeterminate = someChecked && !allChecked;
+    }
+
+    // 8. Modal Import Data Master Production Plan (Excel)
+    let selectedUploadFile = null;
+
+    function openUploadModal() {
+      const modal = document.getElementById('uploadModal');
+      if (!modal) return;
+      
+      resetUploadModal();
+
+      // Secara default siapkan mock file preview Excel jika belum ada file agar user langsung melihat preview cantik
+      if (!selectedUploadFile) {
+        setMockSelectedFile('MPP_Master_Production_Plan_Nov2026.xlsx', '1.4 MB', 'XLSX', '48 Baris Terbaca');
+      }
+
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeUploadModal() {
+      const modal = document.getElementById('uploadModal');
+      if (modal) {
+        modal.classList.remove('active');
+      }
+      document.body.style.overflow = '';
+    }
+
+    function handleBackdropClick(e) {
+      if (e.target && e.target.id === 'uploadModal') {
+        closeUploadModal();
+      }
+    }
+
+    // Keyboard shortcut Esc untuk tutup modal atau sidebar drawer tablet
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeUploadModal();
+        closeSidebar();
+      }
+    });
+
+    function triggerFileInput() {
+      const input = document.getElementById('excelFileInput') || document.getElementById('pdfFileInput');
+      if (input) input.click();
+    }
+
+    function handleFileSelect(files) {
+      if (!files || files.length === 0) return;
+      const file = files[0];
+      selectedUploadFile = file;
+
+      const fileName = file.name;
+      const fileSize = file.size > 1024 * 1024 
+        ? (file.size / (1024 * 1024)).toFixed(1) + ' MB'
+        : (file.size / 1024).toFixed(0) + ' KB';
+      const ext = fileName.split('.').pop().toUpperCase();
+      const badgeText = ext.includes('XLS') ? 'XLSX' : (ext === 'CSV' ? 'CSV' : 'EXCEL');
+      const rowsText = '52 Baris Terbaca';
+
+      displayFileCard(fileName, fileSize, badgeText, rowsText);
+    }
+
+    function setMockSelectedFile(name, size, type, rowsText) {
+      selectedUploadFile = { name: name, sizeStr: size, typeStr: type };
+      displayFileCard(name, size, type, rowsText || '48 Baris Terbaca');
+    }
+
+    function displayFileCard(name, size, typeBadge, rowsText) {
+      document.getElementById('fileNameDisplay').textContent = name;
+      document.getElementById('fileSizeDisplay').textContent = size;
+      document.getElementById('fileTypeBadge').textContent = typeBadge;
+      const rowsEl = document.getElementById('fileRowsDisplay');
+      if (rowsEl) rowsEl.textContent = rowsText || '48 Baris Terbaca';
+      document.getElementById('filePreviewCard').classList.add('show');
+    }
+
+    function clearSelectedFile(e) {
+      if (e) e.stopPropagation();
+      selectedUploadFile = null;
+      document.getElementById('filePreviewCard').classList.remove('show');
+      const input = document.getElementById('excelFileInput') || document.getElementById('pdfFileInput');
+      if (input) input.value = '';
+    }
+
+    function resetUploadModal() {
+      document.getElementById('uploadProgressWrap').classList.remove('show');
+      document.getElementById('progressBarFill').style.width = '0%';
+      const submitBtn = document.getElementById('btnSubmitUpload');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Import Data Excel ke MP</span>
+      `;
+    }
+
+    // Helper: Unduh Template Excel Master Plan
+    function downloadExcelTemplate() {
+      showToast('Mengunduh template: Template_Master_Production_Plan_Odoo18.xlsx');
+    }
+
+    // Drag and drop event binding
+    function initDropZone() {
+      const dropZone = document.getElementById('dropZone');
+      if (!dropZone) return;
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.add('dragover');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.remove('dragover');
+        }, false);
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFileSelect(files);
+      }, false);
+    }
+
+    // Process Upload & Create Plan dari Excel
+    function processUploadAndCreatePlan() {
+      const fileName = selectedUploadFile ? selectedUploadFile.name : 'MPP_Master_Production_Plan_Nov2026.xlsx';
+      const customerEl = document.getElementById('modalCustomer');
+      const customer = (customerEl && customerEl.value && customerEl.value !== 'auto') ? customerEl.value : 'PT. Dolpin Putra Sejati';
+      const monthEl = document.getElementById('modalMonth');
+      const month = (monthEl && monthEl.value && monthEl.value !== 'auto') ? monthEl.value : '11/01/2026';
+
+      const progressWrap = document.getElementById('uploadProgressWrap');
+      const progressBar = document.getElementById('progressBarFill');
+      const progressPercent = document.getElementById('progressPercentText');
+      const progressStatus = document.getElementById('progressStatusText');
+      const submitBtn = document.getElementById('btnSubmitUpload');
+
+      progressWrap.classList.add('show');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>Memproses Excel...</span>`;
+
+      // Simulasikan progres pembacaan data spreadsheet Excel
+      progressBar.style.width = '30%';
+      progressPercent.textContent = '30%';
+      progressStatus.textContent = 'Membaca baris worksheet Excel...';
+
+      setTimeout(() => {
+        progressBar.style.width = '70%';
+        progressPercent.textContent = '70%';
+        progressStatus.textContent = 'Memvalidasi data kolom & kuantitas...';
+
+        setTimeout(() => {
+          progressBar.style.width = '100%';
+          progressPercent.textContent = '100%';
+          progressStatus.textContent = 'Selesai mengimpor data rencana!';
+
+          setTimeout(() => {
+            // Auto generate nomor rencana baru dari file excel
+            const nextNum = planData.length + 1;
+            const numStr = String(nextNum).padStart(4, '0');
+            const planCode = `PLN/2026/11/${numStr} - REV.0`;
+
+            const newPlan = {
+              id: Date.now(),
+              code: planCode,
+              month: month,
+              customer: customer,
+              salesType: 'Regular',
+              etaPort: '22/11/2026',
+              totalRencana: 35000.00,
+              totalTerjadwal: 0.00,
+              status: 'Draft',
+              selected: false
+            };
+
+            planData.unshift(newPlan);
+            currentPage = 1;
+            renderTable();
+
+            closeUploadModal();
+            showToast(`✓ Berhasil mengimpor file Excel "${fileName}"! Rencana ${planCode} ditambahkan.`);
+          }, 350);
+        }, 300);
+      }, 250);
+    }
+
+    // Fallback legacy function
+    function createNewPlan() {
+      openUploadModal();
+    }
+
+    // 9. Navigation Detail Links
+    function openPlanDetail(code) {
+      showToast(`Membuka Form Detail: ${code}`);
+    }
+
+    function openCustomerDetail(name) {
+      showToast(`Membuka Data Rekanan: ${name}`);
+    }
+
+    // 10. Sidebar Menu Switcher & Tablet Drawer
+    function activateMenu(btnEl, menuTitle) {
+      document.querySelectorAll('.menu-item-btn').forEach(btn => btn.classList.remove('active'));
+      btnEl.classList.add('active');
+      showToast(`Navigasi: ${menuTitle}`);
+      
+      // Auto close sidebar drawer di tablet mode setelah memilih menu
+      if (window.innerWidth <= 1024 || document.body.classList.contains('force-tablet-mode')) {
+        closeSidebar();
+      }
+    }
+
+    // 11. Tablet Off-Canvas Drawer Sidebar Handlers
+    let isTabletSidebarOpen = false;
+
+    function toggleSidebar() {
+      if (isTabletSidebarOpen) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    }
+
+    function openSidebar() {
+      const sidebar = document.getElementById('odooSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (sidebar) sidebar.classList.add('open');
+      if (backdrop) backdrop.classList.add('active');
+      isTabletSidebarOpen = true;
+    }
+
+    function closeSidebar() {
+      const sidebar = document.getElementById('odooSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (sidebar) sidebar.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('active');
+      isTabletSidebarOpen = false;
+    }
+
+    // 12. Toggle Simulasi Mode Tablet / Desktop (Bisa diuji di Desktop kapan saja)
+    function toggleTabletMode() {
+      const isTablet = document.body.classList.toggle('force-tablet-mode');
+      const toggleBtn = document.getElementById('deviceToggleBtn');
+      const toggleText = document.getElementById('deviceToggleText');
+      if (toggleBtn) {
+        if (isTablet) {
+          toggleBtn.classList.add('active');
+          if (toggleText) toggleText.textContent = 'Mode Desktop';
+          // Default ke portrait tablet (768px iPad)
+          document.body.classList.add('tablet-portrait');
+          const orientBtn = document.getElementById('orientationToggleBtn');
+          const orientText = document.getElementById('orientationToggleText');
+          if (orientBtn) orientBtn.classList.add('active');
+          if (orientText) orientText.textContent = 'Portrait (768px)';
+          showToast('Mode Tablet Aktif: Orientasi Portrait (768px) dengan freeze pane');
+        } else {
+          toggleBtn.classList.remove('active');
+          if (toggleText) toggleText.textContent = 'Mode Tablet';
+          document.body.classList.remove('tablet-portrait');
+          closeSidebar();
+          showToast('Mode Desktop Aktif: Layout standar layar penuh');
+        }
+      }
+    }
+
+    // 13. Toggle Orientasi Tablet (Portrait 768px / Landscape 1024px)
+    function toggleTabletOrientation() {
+      const isPortrait = document.body.classList.toggle('tablet-portrait');
+      const orientBtn = document.getElementById('orientationToggleBtn');
+      const orientText = document.getElementById('orientationToggleText');
+      if (isPortrait) {
+        if (orientBtn) orientBtn.classList.add('active');
+        if (orientText) orientText.textContent = 'Portrait (768px)';
+        showToast('Orientasi Tablet: Portrait (768px) - 2-tier toolbar & freeze-pane aktif');
+      } else {
+        if (orientBtn) orientBtn.classList.remove('active');
+        if (orientText) orientText.textContent = 'Landscape (1024px)';
+        showToast('Orientasi Tablet: Landscape (1024px) - Tampilan luas');
+      }
+    }
+
+    // 14. Toast Notification
+    function showToast(msg) {
+      const container = document.getElementById('toastBox');
+      const toast = document.createElement('div');
+      toast.className = 'toast-item';
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.2s';
+        setTimeout(() => toast.remove(), 250);
+      }, 2600);
+    }
+
+    // Initialize Table & Dropzone on Page Load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTable();
+      initDropZone();
+    });
+    // In case DOM is already ready
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      renderTable();
+      initDropZone();
+    }
+  </script>
+</body>
+</html>

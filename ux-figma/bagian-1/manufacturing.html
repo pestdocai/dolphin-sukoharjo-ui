@@ -1,0 +1,2821 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Manufacturing Orders - DXL ERP (Odoo 18)</title>
+  <style>
+    /* ==============================================================
+       DXL ERP - Odoo 18 Manufacturing (mrp.production)
+       Standard: Odoo 18 Community MRP + SOW Fase 1 v2 Dolpin Putra Sejati
+       Design: Dual View (List View & Form View) + Tablet Responsive
+       Zero External Dependencies (100% Inline SVG & System Fonts)
+       ============================================================== */
+
+    :root {
+      /* Sidebar Colors (Navy Dark & Crimson Red Active) */
+      --sb-bg: #0b1325;
+      --sb-hover: rgba(255, 255, 255, 0.06);
+      --sb-active-red: #dc2626;
+      --sb-text: #94a3b8;
+      --sb-text-bright: #ffffff;
+      --sb-section: #64748b;
+      --sb-border: rgba(255, 255, 255, 0.08);
+
+      /* Main Content Colors */
+      --c-bg: #f8fafc;
+      --c-card: #ffffff;
+      --c-text-main: #0f172a;
+      --c-text-muted: #64748b;
+      --c-text-subtle: #94a3b8;
+      --c-border: #e2e8f0;
+      --c-border-strong: #cbd5e1;
+      --c-link: #0284c7;
+
+      /* Primary Theme Buttons (Dolpin / Odoo Red) */
+      --btn-red: #D62828;
+      --btn-red-hover: #b91c1c;
+      --btn-red-light: #fef2f2;
+      --btn-red-border: #fecaca;
+
+      --sidebar-w: 240px;
+      --header-h: 48px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--c-bg);
+      color: var(--c-text-main);
+      font-size: 12px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar minimal transparan */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.28);
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.45);
+    }
+
+    /* ==============================================================
+       1. SIDEBAR KIRI: TEMA NAVY GELAP & MERAH DXL ERP (IDENTIK DENGAN INDEX.HTML)
+       ============================================================== */
+    .odoo-sidebar {
+      width: var(--sidebar-w);
+      background-color: var(--sb-bg);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      flex-shrink: 0;
+      z-index: 100;
+      user-select: none;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Brand Header: Logo DXL ERP + 9-Dots Launcher (Bersih, Luas & Nyaman Dilihat) */
+    .sidebar-brand-row {
+      height: 60px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--sb-border);
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    /* Official Real DXL ERP Brand Logo (images/logo.png) */
+    .brand-real-logo {
+      height: 34px;
+      max-width: 140px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.25));
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      cursor: pointer;
+    }
+
+    .brand-real-logo:hover {
+      opacity: 0.95;
+      transform: scale(1.02);
+    }
+
+    /* 9-Dots App Switcher Launcher */
+    .app-launcher-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #94a3b8;
+      background: transparent;
+      border: none;
+      transition: all 0.12s ease;
+      flex-shrink: 0;
+    }
+
+    .app-launcher-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    /* Tombol Tutup Drawer Tablet (✕) */
+    .sidebar-close-btn {
+      display: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .sidebar-close-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+    .sidebar-close-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    /* Sidebar Menu Scrollable Area */
+    .sidebar-menu-wrap {
+      flex: 1;
+      padding: 10px 8px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Ultra-thin Minimalist Scrollbar */
+    .sidebar-menu-wrap::-webkit-scrollbar {
+      width: 3px;
+    }
+    .sidebar-menu-wrap::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 3px;
+    }
+
+    .menu-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5px;
+    }
+
+    .menu-section-header {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      text-transform: uppercase;
+      padding: 8px 12px 4px 12px;
+      line-height: 1.3;
+    }
+
+    /* Menu item 38px persis index.html */
+    .menu-item-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      height: 38px;
+      border-radius: 6px;
+      background: transparent;
+      border: none;
+      color: var(--sb-text);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      text-decoration: none;
+      transition: background 0.12s ease, color 0.12s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-sizing: border-box;
+    }
+
+    .menu-item-btn:hover {
+      background: var(--sb-hover);
+      color: #f8fafc;
+    }
+
+    /* ACTIVE MENU ITEM: Bersih, Rata, Flat Crimson Merah Elegan */
+    .menu-item-btn.active {
+      background: var(--sb-active-red);
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: none;
+    }
+
+    .menu-icon {
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .menu-icon svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.12s ease;
+    }
+
+    .menu-text {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -0.01em;
+    }
+
+    /* Sidebar Footer: User Card Administrator Bersih & Sederhana */
+    .sidebar-user-footer {
+      height: 50px;
+      padding: 0 12px;
+      border-top: 1px solid var(--sb-border);
+      background: var(--sb-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .user-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      overflow: hidden;
+    }
+
+    .user-avatar-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #10b981;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 11.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .user-footer-meta {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      line-height: 1.25;
+      justify-content: center;
+    }
+
+    .user-footer-name {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-footer-status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9px;
+      color: #10b981;
+      font-weight: 500;
+    }
+
+    .online-indicator-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    .user-footer-chevron {
+      color: #64748b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+      transition: color 0.12s, background 0.12s;
+      flex-shrink: 0;
+    }
+
+    .user-footer-chevron:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #cbd5e1;
+    }
+
+    .user-footer-chevron svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* Backdrop untuk mobile/tablet sidebar */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.5);
+      z-index: 90;
+    }
+
+    /* ==============================================================
+       2. MAIN CONTENT AREA
+       ============================================================== */
+    .odoo-main-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow-y: auto;
+      background-color: var(--c-bg);
+      position: relative;
+    }
+
+    /* Top App Header */
+    .odoo-app-header {
+      height: var(--header-h);
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      flex-shrink: 0;
+      gap: 12px;
+    }
+
+    .header-left-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .sidebar-toggle-btn {
+      display: none;
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid var(--c-border);
+      border-radius: 6px;
+      color: #475569;
+      cursor: pointer;
+    }
+
+    .header-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-breadcrumb a {
+      color: var(--c-text-muted);
+      text-decoration: none;
+      transition: color 0.12s;
+      cursor: pointer;
+    }
+    .header-breadcrumb a:hover {
+      color: var(--c-link);
+    }
+
+    .breadcrumb-separator {
+      color: var(--c-text-subtle);
+    }
+
+    .breadcrumb-current {
+      color: var(--c-text-main);
+      font-weight: 600;
+    }
+
+    .header-right-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .header-icon-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid var(--c-border);
+      border-radius: 6px;
+      color: #475569;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.12s;
+    }
+    .header-icon-btn:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+    .header-icon-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+    }
+
+    /* Container Tampilan Utama */
+    .view-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Sembunyikan view yang tidak aktif */
+    .view-hidden {
+      display: none !important;
+    }
+
+    /* ==============================================================
+       VIEW 1: TAMPILAN TABEL ANTREAN MO (LIST VIEW)
+       ============================================================== */
+    .table-toolbar {
+      padding: 12px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .table-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Search Bar */
+    .search-input-wrap {
+      position: relative;
+      width: 260px;
+      max-width: 100%;
+    }
+
+    .search-icon-svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 15px;
+      stroke: #94a3b8;
+      stroke-width: 2;
+      pointer-events: none;
+    }
+
+    .search-input-field {
+      width: 100%;
+      height: 32px;
+      padding: 0 10px 0 32px;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 6px;
+      font-size: 12px;
+      background: #ffffff;
+      color: var(--c-text-main);
+      outline: none;
+      transition: border-color 0.12s, box-shadow 0.12s;
+    }
+    .search-input-field:focus {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12);
+    }
+
+    /* Filter Status Pills (Desktop) */
+    .filter-status-pills {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #f1f5f9;
+      padding: 3px;
+      border-radius: 6px;
+      border: 1px solid var(--c-border);
+    }
+
+    .filter-pill {
+      height: 26px;
+      padding: 0 10px;
+      border: none;
+      background: transparent;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.12s;
+      white-space: nowrap;
+    }
+    .filter-pill:hover {
+      color: #0f172a;
+    }
+    .filter-pill.active {
+      background: #ffffff;
+      color: #0f172a;
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Filter Dropdown (Tablet / Mobile) */
+    .filter-status-dropdown {
+      display: none;
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #ffffff;
+      color: var(--c-text-main);
+      outline: none;
+    }
+
+    /* Sort Control */
+    .sort-control-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sort-label {
+      font-size: 11px;
+      color: var(--c-text-muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sort-select {
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid var(--c-border);
+      border-radius: 6px;
+      font-size: 11px;
+      background: #ffffff;
+      color: #334155;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .table-toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Tombol "New" / "Buat MO Manual" (Merah #D62828 / #dc2626) */
+    .btn-new-mo {
+      height: 32px;
+      padding: 0 14px;
+      background-color: var(--btn-red);
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(214, 40, 40, 0.25);
+      transition: background-color 0.12s, transform 0.05s;
+      white-space: nowrap;
+    }
+    .btn-new-mo:hover {
+      background-color: var(--btn-red-hover);
+    }
+    .btn-new-mo:active {
+      transform: scale(0.98);
+    }
+    .btn-new-mo svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    /* Table Container */
+    .table-container {
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: auto;
+      background: #ffffff;
+      position: relative;
+    }
+
+    .odoo-list-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .odoo-list-table thead th {
+      position: sticky;
+      top: 0;
+      background: #f8fafc;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--c-border);
+      border-top: 1px solid var(--c-border);
+      z-index: 10;
+      user-select: none;
+    }
+
+    .odoo-list-table tbody tr {
+      border-bottom: 1px solid var(--c-border);
+      transition: background-color 0.1s;
+      cursor: pointer;
+    }
+
+    .odoo-list-table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .odoo-list-table tbody tr.selected {
+      background-color: #f1f5f9;
+    }
+
+    .odoo-list-table td {
+      padding: 9px 12px;
+      color: var(--c-text-main);
+      vertical-align: middle;
+    }
+
+    .col-checkbox {
+      width: 36px;
+      text-align: center;
+      padding-left: 12px !important;
+      padding-right: 6px !important;
+    }
+
+    .odoo-checkbox {
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+      accent-color: var(--btn-red);
+    }
+
+    /* Clickable MO Code Link */
+    .cell-mo-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 700;
+      color: #0284c7;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .cell-mo-code:hover {
+      text-decoration: underline;
+      color: #0369a1;
+    }
+
+    /* Product Cell */
+    .cell-product-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .cell-product-name {
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .cell-product-sub {
+      font-size: 10px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Tag Produk (SFG vs FG) */
+    .badge-product-type {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-type-sfg {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+    .badge-type-fg {
+      background: #fdf2f8;
+      color: #be185d;
+      border: 1px solid #fbcfe8;
+    }
+
+    /* Tahapan / Line Badge */
+    .line-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .line-badge-extruder {
+      background: #fff7ed;
+      color: #c2410c;
+      border: 1px solid #ffedd5;
+    }
+    .line-badge-cutting {
+      background: #f5f3ff;
+      color: #6d28d9;
+      border: 1px solid #ede9fe;
+    }
+
+    /* Status Badges sesuai SOW & Permintaan User:
+       - Draft (Biru muda / Abu-abu)
+       - Confirmed / Ready (Hijau muda / Toska)
+       - In Progress (Ungu / Kuning)
+       - Done (Hijau tua / Abu-abu netral)
+    */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .status-draft {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+    .status-draft .status-dot { background: #64748b; }
+
+    .status-confirmed {
+      background: #f0fdfa;
+      color: #0f766e;
+      border: 1px solid #99f6e4;
+    }
+    .status-confirmed .status-dot { background: #0d9488; }
+
+    .status-in-progress {
+      background: #faf5ff;
+      color: #7e22ce;
+      border: 1px solid #e9d5ff;
+    }
+    .status-in-progress .status-dot { background: #9333ea; }
+
+    .status-done {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+    .status-done .status-dot { background: #16a34a; }
+
+    .status-cancelled {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .status-cancelled .status-dot { background: #dc2626; }
+
+    /* Pagination Footer */
+    .table-pagination-footer {
+      padding: 10px 16px;
+      background: #ffffff;
+      border-top: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .pagination-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--c-text-muted);
+    }
+
+    .per-page-select {
+      height: 28px;
+      padding: 0 6px;
+      border: 1px solid var(--c-border);
+      border-radius: 4px;
+      font-size: 11px;
+      background: #ffffff;
+      color: var(--c-text-main);
+    }
+
+    .pagination-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .page-btn {
+      min-width: 28px;
+      height: 28px;
+      padding: 0 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border: 1px solid var(--c-border);
+      border-radius: 4px;
+      font-size: 11px;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+    .page-btn:hover:not(:disabled) {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .page-btn.active {
+      background: var(--btn-red);
+      border-color: var(--btn-red);
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .page-btn svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    /* ==============================================================
+       VIEW 2: TAMPILAN FORMULIR DETAIL MO (FORM VIEW)
+       ============================================================== */
+    .form-view-container {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-width: 1180px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    /* Header Status & Tombol Aksi Kritis untuk PPIC */
+    .form-action-header {
+      background: #ffffff;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .form-action-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Tombol Aksi Utama Odoo Form View */
+    .btn-action-confirm {
+      height: 32px;
+      padding: 0 16px;
+      background-color: var(--btn-red);
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(214, 40, 40, 0.25);
+      transition: all 0.12s;
+    }
+    .btn-action-confirm:hover {
+      background-color: var(--btn-red-hover);
+    }
+    .btn-action-confirm svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    .btn-action-secondary {
+      height: 32px;
+      padding: 0 14px;
+      background-color: #ffffff;
+      color: #334155;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.12s;
+    }
+    .btn-action-secondary:hover {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    .btn-action-secondary svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+    }
+
+    .btn-back-link {
+      height: 32px;
+      padding: 0 10px;
+      background: transparent;
+      border: 1px solid var(--c-border);
+      border-radius: 5px;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.12s;
+    }
+    .btn-back-link:hover {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    .btn-back-link svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* Status Bar Alur Kerja (Kanan Atas Odoo 18 Form) */
+    .odoo-statusbar {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 4px;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+
+    .statusbar-stage {
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+      transition: all 0.15s;
+    }
+
+    .statusbar-stage:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      border-left: 8px solid #cbd5e1;
+      z-index: 2;
+    }
+
+    .statusbar-stage.active {
+      background-color: #0284c7;
+      color: #ffffff;
+    }
+    .statusbar-stage.active.stage-draft {
+      background-color: #64748b;
+      color: #ffffff;
+    }
+    .statusbar-stage.active.stage-confirmed {
+      background-color: #0d9488;
+      color: #ffffff;
+    }
+    .statusbar-stage.active.stage-progress {
+      background-color: #9333ea;
+      color: #ffffff;
+    }
+    .statusbar-stage.active.stage-done {
+      background-color: #16a34a;
+      color: #ffffff;
+    }
+    .statusbar-stage.active.stage-cancelled {
+      background-color: #dc2626;
+      color: #ffffff;
+    }
+
+    /* Sheet Formulir Utama (Odoo 18 Sheet) */
+    .form-sheet-card {
+      background: #ffffff;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Informasi Utama Dokumen (Bagian Atas Formulir) */
+    .form-doc-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--c-border);
+      padding-bottom: 16px;
+    }
+
+    .doc-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .doc-type-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+    }
+
+    .doc-main-number {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      letter-spacing: -0.02em;
+    }
+
+    .doc-status-large {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Grid Field Formulir */
+    .form-fields-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 24px;
+      row-gap: 14px;
+    }
+
+    .form-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-field-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .form-field-label .required-star {
+      color: #dc2626;
+    }
+
+    .form-field-input, .form-field-select {
+      height: 34px;
+      width: 100%;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 12px;
+      font-family: inherit;
+      color: var(--c-text-main);
+      background: #ffffff;
+      outline: none;
+      transition: border-color 0.12s, box-shadow 0.12s;
+    }
+    .form-field-input:focus, .form-field-select:focus {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+    }
+    .form-field-input[readonly] {
+      background: #f8fafc;
+      color: #475569;
+      cursor: default;
+    }
+
+    .input-with-uom {
+      display: flex;
+      align-items: center;
+    }
+    .input-with-uom input {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .input-uom-suffix {
+      height: 34px;
+      padding: 0 12px;
+      background: #f1f5f9;
+      border: 1px solid var(--c-border-strong);
+      border-left: none;
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    /* Tab Detail Komponen / Bahan & Work Orders (Tabel di Bawah Formulir) */
+    .form-tabs-container {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-tabs-nav {
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid var(--c-border);
+      gap: 20px;
+    }
+
+    .form-tab-btn {
+      padding: 8px 4px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.12s;
+    }
+    .form-tab-btn:hover {
+      color: #0f172a;
+    }
+    .form-tab-btn.active {
+      color: var(--btn-red);
+      border-bottom-color: var(--btn-red);
+    }
+
+    .tab-badge-count {
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #475569;
+      font-size: 10px;
+    }
+    .form-tab-btn.active .tab-badge-count {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* Info Callout SOW Fase 1 (Validasi Stok Dinonaktifkan) */
+    .sow-notice-callout {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid #0284c7;
+      padding: 10px 14px;
+      border-radius: 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 11px;
+      color: #334155;
+      line-height: 1.5;
+    }
+    .sow-notice-callout svg {
+      width: 16px;
+      height: 16px;
+      stroke: #0284c7;
+      stroke-width: 2;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Sub-Table di dalam Tab */
+    .detail-table-card {
+      border: 1px solid var(--c-border);
+      border-radius: 6px;
+      overflow-x: auto;
+      background: #ffffff;
+    }
+
+    .detail-inner-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .detail-inner-table thead th {
+      background: #f8fafc;
+      padding: 9px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+      border-bottom: 1px solid var(--c-border);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .detail-inner-table tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--c-border);
+      vertical-align: middle;
+    }
+
+    .detail-inner-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .col-num {
+      text-align: right;
+    }
+
+    /* Print Preview Modal / Sheet */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printArea, #printArea * {
+        visibility: visible;
+      }
+      #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #ffffff;
+        color: #000000;
+        padding: 20px;
+      }
+      .odoo-sidebar, .odoo-app-header, .form-action-header {
+        display: none !important;
+      }
+    }
+
+    /* Toast Notification Stack */
+    .toast-box {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast-item {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+      pointer-events: auto;
+      animation: slideInToast 0.2s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @keyframes slideInToast {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ==============================================================
+       RESPONSIVE & TABLET ADAPTATION (IDENTIK DENGAN INDEX.HTML)
+       ============================================================== */
+    @media (max-width: 1024px) {
+      :root {
+        --sidebar-w: 200px;
+      }
+      .form-fields-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .sidebar-close-btn {
+        display: flex;
+      }
+      .odoo-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        transform: translateX(-100%);
+        z-index: 1000;
+        box-shadow: 4px 0 16px rgba(0, 0, 0, 0.3);
+      }
+      .odoo-sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-backdrop.active {
+        display: block;
+      }
+      .sidebar-toggle-btn {
+        display: inline-flex;
+      }
+
+      /* Tablet filter status dropdown switch */
+      .filter-status-pills {
+        display: none;
+      }
+      .filter-status-dropdown {
+        display: block;
+      }
+
+      .table-toolbar-left {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-input-wrap {
+        width: 100%;
+      }
+      .sort-control-wrap {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .sort-select {
+        flex: 1;
+      }
+      .table-toolbar-right {
+        width: 100%;
+      }
+      .btn-new-mo {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .form-action-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .form-action-left {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      .odoo-statusbar {
+        width: 100%;
+        overflow-x: auto;
+        justify-content: space-between;
+      }
+      .statusbar-stage {
+        flex: 1;
+        justify-content: center;
+        padding: 6px 8px;
+        font-size: 10px;
+      }
+
+      .table-pagination-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .pagination-right {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Backdrop untuk Sidebar Responsive -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar(false)"></div>
+
+  <!-- ==============================================================
+       1. SIDEBAR KIRI: TEMA GELAP PERSIS SEPERTI INDEX.HTML
+       ============================================================== -->
+  <aside class="odoo-sidebar" id="odooSidebar">
+    
+    <!-- Brand Header: Logo DXL ERP, 9-Dots Launcher & Tombol Tutup Tablet -->
+    <div class="sidebar-brand-row">
+      <div class="brand-left">
+        <!-- Official Real DXL ERP Brand Logo (images/logo.png) -->
+        <a href="index.html" title="DXL ERP - Master Production Plan" style="display: flex; align-items: center; text-decoration: none;">
+          <img src="images/logo.png" alt="DXL ERP Logo" class="brand-real-logo">
+        </a>
+      </div>
+
+      <div class="brand-actions-right" style="display: flex; align-items: center; gap: 8px;">
+        <!-- 9-Dots App Switcher Launcher -->
+        <button class="app-launcher-btn" title="App Switcher" onclick="showToast('Buka App Switcher Odoo 18')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="4" cy="4" r="2.2"/>
+            <circle cx="12" cy="4" r="2.2"/>
+            <circle cx="20" cy="4" r="2.2"/>
+            <circle cx="4" cy="12" r="2.2"/>
+            <circle cx="12" cy="12" r="2.2"/>
+            <circle cx="20" cy="12" r="2.2"/>
+            <circle cx="4" cy="20" r="2.2"/>
+            <circle cx="12" cy="20" r="2.2"/>
+            <circle cx="20" cy="20" r="2.2"/>
+          </svg>
+        </button>
+
+        <!-- Tombol Tutup Drawer Tablet (✕) -->
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" onclick="closeSidebar()" title="Tutup Menu Sidebar">
+          <svg viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scrollable Navigation Menu -->
+    <div class="sidebar-menu-wrap">
+      
+      <!-- SECTION 1: PERENCANAAN & EKSEKUSI -->
+      <div class="menu-section">
+        <div class="menu-section-header">PERENCANAAN &amp; EKSEKUSI</div>
+
+        <!-- Master Production Plan (Link ke index.html) -->
+        <a href="index.html" class="menu-item-btn" style="text-decoration: none;" title="Buka Master Production Plan">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+          </div>
+          <span class="menu-text">Master Production Plan</span>
+        </a>
+
+        <!-- Production Requests (Slots) -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Production Requests (Slots)')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 12 10 5 10-5"/><path d="m2 17 10 5 10-5"/></svg>
+          </div>
+          <span class="menu-text">Production Requests (Slots)</span>
+        </button>
+
+        <!-- Daily Orders (Perintah Harian) -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Daily Orders (Perintah Harian)')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <span class="menu-text">Daily Orders (Perintah Harian)</span>
+        </button>
+
+        <!-- Kebutuhan Bahan (Material Ord...) -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Kebutuhan Bahan (Material Order)')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="m12 12 8-4.5"/><path d="m12 12-8-4.5"/><path d="M12 12v9"/></svg>
+          </div>
+          <span class="menu-text">Kebutuhan Bahan (Material Ord...</span>
+        </button>
+
+        <!-- [ACTIVE] Manufacturing Orders (MO) -->
+        <button class="menu-item-btn active" onclick="activateMenu(this, 'Manufacturing Orders (MO)'); navToListView();" title="Buka Manufacturing Orders">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><path d="M2 20h20"/><path d="M5 20V8l5 4V8l5 4V4h4v16"/></svg>
+          </div>
+          <span class="menu-text">Manufacturing Orders (MO)</span>
+        </button>
+      </div>
+
+      <!-- SECTION 2: LOGISTIK & TIME CHART -->
+      <div class="menu-section">
+        <div class="menu-section-header">LOGISTIK &amp; TIME CHART</div>
+
+        <!-- Time Chart Logistik -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Time Chart Logistik')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <span class="menu-text">Time Chart Logistik</span>
+        </button>
+      </div>
+
+      <!-- SECTION 3: KALENDER & SHIFT -->
+      <div class="menu-section">
+        <div class="menu-section-header">KALENDER &amp; SHIFT</div>
+
+        <!-- Master Shift Kerja -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Master Shift Kerja')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <span class="menu-text">Master Shift Kerja</span>
+        </button>
+
+        <!-- Kalender Libur & Overtime -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Kalender Libur & Overtime')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="10" y1="14" x2="14" y2="18"/><line x1="14" y1="14" x2="10" y2="18"/></svg>
+          </div>
+          <span class="menu-text">Kalender Libur &amp; Overtime</span>
+        </button>
+
+        <!-- Periode Perencanaan -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Periode Perencanaan')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <span class="menu-text">Periode Perencanaan</span>
+        </button>
+      </div>
+
+      <!-- SECTION 4: MASTER DATA & KONFIGURASI -->
+      <div class="menu-section">
+        <div class="menu-section-header">MASTER DATA &amp; KONFIGURASI</div>
+
+        <!-- Workcenters / Mesin -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Workcenters / Mesin')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+          <span class="menu-text">Workcenters / Mesin</span>
+        </button>
+
+        <!-- Bill of Materials (BoM) -->
+        <button class="menu-item-btn" onclick="activateMenu(this, 'Bill of Materials (BoM)')">
+          <div class="menu-icon">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </div>
+          <span class="menu-text">Bill of Materials (BoM)</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- User Profile Footer: Administrator -->
+    <div class="sidebar-user-footer">
+      <div class="user-footer-left">
+        <div class="user-avatar-circle">A</div>
+        <div class="user-footer-meta">
+          <span class="user-footer-name">Administrator</span>
+          <span class="user-footer-status">
+            <span class="online-indicator-dot"></span> Online
+          </span>
+        </div>
+      </div>
+      <div class="user-footer-chevron" onclick="showToast('Menu Akun Administrator')">
+        <svg viewBox="0 0 24 24" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ==============================================================
+       2. MAIN CONTENT AREA
+       ============================================================== -->
+  <main class="odoo-main-content">
+    
+    <!-- Top Header: Dynamic Breadcrumb -->
+    <header class="odoo-app-header">
+      <div class="header-left-group">
+        <!-- Mobile/Tablet Sidebar Toggle Button -->
+        <button class="sidebar-toggle-btn" onclick="toggleSidebar(true)" title="Menu Navigasi">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+
+        <div class="header-breadcrumb" id="headerBreadcrumb">
+          <a href="index.html">Production Planning</a>
+          <span class="breadcrumb-separator">/</span>
+          <a onclick="navToListView()">Manufacturing Orders</a>
+          <span class="breadcrumb-separator" id="bcSepDetail" style="display: none;">/</span>
+          <span class="breadcrumb-current" id="bcCurrent">List View</span>
+        </div>
+      </div>
+
+      <!-- Right Header Tools -->
+      <div class="header-right-tools">
+        <a href="index.html" class="header-icon-btn" title="Buka Master Production Plan (MPP)" style="color: #0284c7;">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </a>
+        <button class="header-icon-btn" title="Refresh Halaman" onclick="refreshCurrentView()">
+          <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ==============================================================
+         VIEW 1: TAMPILAN TABEL ANTREAN MO (LIST VIEW)
+         ============================================================== -->
+    <section class="view-container" id="moListView">
+      
+      <!-- Bilah Atas & Aksi Cepat: Search, Status Filter Pills/Dropdown, Sort by, dan Tombol New -->
+      <div class="table-toolbar">
+        <div class="table-toolbar-left">
+          
+          <!-- Search Bar: Mencari nomor MO atau nama produk -->
+          <div class="search-input-wrap">
+            <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input-field" id="searchInput" placeholder="Cari No. MO atau Nama Produk..." oninput="handleSearch(this.value)">
+          </div>
+
+          <!-- Tab Filter Cepat Status (Desktop Pills) -->
+          <div class="filter-status-pills" id="filterStatusPills">
+            <button class="filter-pill active" onclick="filterStatus('all', this)">Semua</button>
+            <button class="filter-pill" onclick="filterStatus('Draft', this)">Draft</button>
+            <button class="filter-pill" onclick="filterStatus('Confirmed', this)">Confirmed</button>
+            <button class="filter-pill" onclick="filterStatus('In Progress', this)">In Progress</button>
+            <button class="filter-pill" onclick="filterStatus('Done', this)">Done</button>
+          </div>
+
+          <!-- Dropdown Filter Status Cepat (Khusus Mode Tablet / Mobile) -->
+          <select class="filter-status-dropdown" id="tabletStatusSelect" onchange="filterStatus(this.value)">
+            <option value="all">Status: Semua</option>
+            <option value="Draft">Status: Draft</option>
+            <option value="Confirmed">Status: Confirmed</option>
+            <option value="In Progress">Status: In Progress</option>
+            <option value="Done">Status: Done</option>
+          </select>
+
+          <!-- Sort By Selector -->
+          <div class="sort-control-wrap">
+            <span class="sort-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="11" y2="6"/><line x1="4" y1="12" x2="16" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+              Urutkan:
+            </span>
+            <select class="sort-select" id="sortSelect" onchange="handleSortChange(this.value)">
+              <option value="code_desc">Nomor MO (Terbaru)</option>
+              <option value="code_asc">Nomor MO (Terlama)</option>
+              <option value="date_desc">Jadwal Mulai (Terbaru)</option>
+              <option value="date_asc">Jadwal Mulai (Terlama)</option>
+              <option value="product_asc">Nama Produk (A-Z)</option>
+              <option value="qty_desc">Target Kuantitas (Terbesar)</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="table-toolbar-right">
+          <!-- Tombol "New" / "Buat MO Manual" (Merah #D62828 Odoo Style) -->
+          <button class="btn-new-mo" onclick="createNewMO()" title="Buat Manufacturing Order Baru (Manual)">
+            <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>+ Buat MO Manual</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabel Antrean MO (List View SOW) -->
+      <div class="table-container">
+        <table class="odoo-list-table">
+          <thead>
+            <tr>
+              <th class="col-checkbox">
+                <input type="checkbox" class="odoo-checkbox" id="headerCheckbox" onchange="toggleSelectAll(this.checked)">
+              </th>
+              <th>Nomor MO</th>
+              <th>Nama Produk</th>
+              <th style="text-align: right;">Rencana Kuantitas</th>
+              <th>Jadwal Mulai</th>
+              <th>Tahapan / Line</th>
+              <th>Status</th>
+              <th style="text-align: center; width: 60px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="moTableBody">
+            <!-- Data baris dirender dinamis via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Footer -->
+      <div class="table-pagination-footer">
+        <div class="pagination-left">
+          <span id="paginationInfo">Menampilkan 1-8 dari 8 antrean MO</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span>Baris:</span>
+            <select class="per-page-select" id="perPageSelect" onchange="changePerPage(this.value)">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="25">25</option>
+            </select>
+          </div>
+        </div>
+        <div class="pagination-right" id="paginationControls"></div>
+      </div>
+
+    </section>
+
+    <!-- ==============================================================
+         VIEW 2: TAMPILAN FORMULIR DETAIL MO (FORM VIEW)
+         ============================================================== -->
+    <section class="view-container view-hidden" id="moFormView">
+      
+      <div class="form-view-container">
+        
+        <!-- Header Status & Tombol Aksi (Kritis untuk PPIC) -->
+        <div class="form-action-header">
+          
+          <div class="form-action-left">
+            <!-- Tombol Kembali ke Antrean -->
+            <button class="btn-back-link" onclick="navToListView()" title="Kembali ke Daftar Antrean MO">
+              <svg viewBox="0 0 24 24" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+              <span>Antrean MO</span>
+            </button>
+
+            <!-- Tombol "Confirm" (Warna Merah Primer #D62828 saat masih berstatus Draft) -->
+            <button class="btn-action-confirm" id="btnConfirmMO" onclick="confirmCurrentMO()" title="Rilis MO ke lantai produksi pabrik">
+              <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Confirm (Rilis SPK)</span>
+            </button>
+
+            <!-- Tombol "Cancel" -->
+            <button class="btn-action-secondary" id="btnCancelMO" onclick="cancelCurrentMO()" title="Batalkan Perintah Kerja">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              <span>Cancel</span>
+            </button>
+
+            <!-- Tombol "Print SPK" (Mencetak Lembar Kerja Fisik) -->
+            <button class="btn-action-secondary" onclick="printSPK()" title="Cetak Lembar Kerja Fisik SPK Lantai Pabrik">
+              <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span>Print SPK</span>
+            </button>
+          </div>
+
+          <!-- Status Bar Alur Kerja (Kanan Atas): Draft -> Confirmed -> In Progress -> Done -->
+          <div class="odoo-statusbar" id="odooStatusBar">
+            <div class="statusbar-stage" id="stageDraft">Draft</div>
+            <div class="statusbar-stage" id="stageConfirmed">Confirmed</div>
+            <div class="statusbar-stage" id="stageProgress">In Progress</div>
+            <div class="statusbar-stage" id="stageDone">Done</div>
+          </div>
+
+        </div>
+
+        <!-- Sheet Formulir Detail Dokumen MO (Card Konten) -->
+        <div class="form-sheet-card" id="printArea">
+          
+          <!-- Informasi Utama Dokumen (Heading & Nomor MO) -->
+          <div class="form-doc-title-row">
+            <div class="doc-title-wrap">
+              <span class="doc-type-label">Surat Perintah Kerja (Manufacturing Order)</span>
+              <h1 class="doc-main-number" id="formMoCode">WH/MO/00012</h1>
+            </div>
+            <div>
+              <span class="doc-status-large" id="formStatusBadge">Draft</span>
+            </div>
+          </div>
+
+          <!-- Form Fields Grid (Bagian Atas Formulir SOW) -->
+          <div class="form-fields-grid">
+            
+            <!-- Produk (Product Dropdown) -->
+            <div class="form-field-group">
+              <label class="form-field-label" for="formProductSelect">
+                Produk yang Diproduksi <span class="required-star">*</span>
+              </label>
+              <select class="form-field-select" id="formProductSelect" onchange="onFormProductChange(this.value)">
+                <optgroup label="Barang Setengah Jadi (SFG Roll Plastik)">
+                  <option value="[SFG-HD-040] Roll Plastik HDPE 40cm Bening">[SFG-HD-040] Roll Plastik HDPE 40cm Bening</option>
+                  <option value="[SFG-PE-050] Roll Plastik PE 50cm Biru Tebal">[SFG-PE-050] Roll Plastik PE 50cm Biru Tebal</option>
+                  <option value="[SFG-PP-030] Roll Plastik PP 30cm Glossy">[SFG-PP-030] Roll Plastik PP 30cm Glossy</option>
+                  <option value="[SFG-LD-060] Roll Plastik LDPE 60cm Bening Lembaran">[SFG-LD-060] Roll Plastik LDPE 60cm Bening Lembaran</option>
+                </optgroup>
+                <optgroup label="Barang Jadi (FG Kantong Potong)">
+                  <option value="[FG-KNT-01] Kantong Kresek Putih 24x40">[FG-KNT-01] Kantong Kresek Putih 24x40</option>
+                  <option value="[FG-KNT-02] Kantong Plastik HD Bening 30x50">[FG-KNT-02] Kantong Plastik HD Bening 30x50</option>
+                  <option value="[FG-KNT-03] Kantong Sampah Hitam 60x100">[FG-KNT-03] Kantong Sampah Hitam 60x100</option>
+                  <option value="[FG-KNT-04] Kantong Klip Zipper 15x20 Transparan">[FG-KNT-04] Kantong Klip Zipper 15x20 Transparan</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <!-- Bill of Material (BoM) - Auto filled -->
+            <div class="form-field-group">
+              <label class="form-field-label" for="formBomInput">
+                Bill of Material (BoM)
+              </label>
+              <input type="text" class="form-field-input" id="formBomInput" value="BOM/SFG-HD-040/01" readonly>
+            </div>
+
+            <!-- Jumlah yang Akan Diproduksi (Quantity to Produce) -->
+            <div class="form-field-group">
+              <label class="form-field-label" for="formQtyInput">
+                Jumlah yang Akan Diproduksi <span class="required-star">*</span>
+              </label>
+              <div class="input-with-uom">
+                <input type="number" class="form-field-input" id="formQtyInput" value="500.00" step="1" min="1" oninput="updateComponentsDemand()">
+                <span class="input-uom-suffix" id="formUomSuffix">Kg</span>
+              </div>
+            </div>
+
+            <!-- Penanggung Jawab / PIC -->
+            <div class="form-field-group">
+              <label class="form-field-label" for="formPicSelect">
+                Penanggung Jawab / PIC <span class="required-star">*</span>
+              </label>
+              <select class="form-field-select" id="formPicSelect">
+                <option value="Siti Rahma (PPIC)">Siti Rahma (PPIC Officer)</option>
+                <option value="Agus Prasetyo (Karu Extruder)">Agus Prasetyo (Karu Extruder)</option>
+                <option value="Bambang Wijaya (Karu Cutting)">Bambang Wijaya (Karu Cutting)</option>
+                <option value="Dedi Kurniawan (Supervisor Produksi)">Dedi Kurniawan (Supervisor Produksi)</option>
+              </select>
+            </div>
+
+            <!-- Tanggal Terjadwal (Scheduled Date) -->
+            <div class="form-field-group">
+              <label class="form-field-label" for="formDateInput">
+                Tanggal Terjadwal (Target Mulai) <span class="required-star">*</span>
+              </label>
+              <input type="text" class="form-field-input" id="formDateInput" value="27/10/2026 08:00">
+            </div>
+
+            <!-- Tahapan / Line Mesin -->
+            <div class="form-field-group">
+              <label class="form-field-label" for="formLineSelect">
+                Tahapan Utama / Line Mesin
+              </label>
+              <select class="form-field-select" id="formLineSelect">
+                <option value="Extruder (Line 01)">Peniupan Roll - Mesin Extruder 01</option>
+                <option value="Extruder (Line 02)" selected>Peniupan Roll - Mesin Extruder 02</option>
+                <option value="Extruder (Line 03)">Peniupan Roll - Mesin Extruder 03</option>
+                <option value="Cutting (Line 01)">Pemotongan Bag - Mesin Cutting 01</option>
+                <option value="Cutting (Line 02)">Pemotongan Bag - Mesin Cutting 02</option>
+                <option value="Cutting (Line 03)">Pemotongan Bag - Mesin Cutting 03</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- Tab Detail Komponen / Bahan & Operasi Work Orders (Bawah Formulir) -->
+          <div class="form-tabs-container">
+            
+            <div class="form-tabs-nav">
+              <button class="form-tab-btn active" id="tabBtnComponents" onclick="switchFormTab('components')">
+                <span>Components (Kebutuhan Bahan)</span>
+                <span class="tab-badge-count" id="badgeCompCount">3</span>
+              </button>
+              <button class="form-tab-btn" id="tabBtnWorkOrders" onclick="switchFormTab('workorders')">
+                <span>Work Orders / Operasi</span>
+                <span class="tab-badge-count" id="badgeWoCount">2</span>
+              </button>
+            </div>
+
+            <!-- TAB 1: COMPONENTS (KEBUTUHAN BAHAN SESUAI SOW FASE 1) -->
+            <div id="tabContentComponents">
+              
+              <!-- Catatan SOW Ruang Lingkup Fase 1 -->
+              <div class="sow-notice-callout">
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <div>
+                  <strong>Ketentuan SOW Fase 1 v2:</strong>
+                  Sistem tidak memvalidasi ketat apakah stok bahan di gudang mencukupi atau minus (ketersediaan bahan baku diasumsikan selalu siap di lantai produksi). Tidak ada status reservasi stok error / blocker.
+                </div>
+              </div>
+
+              <div class="detail-table-card" style="margin-top: 10px;">
+                <table class="detail-inner-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 40px;">No</th>
+                      <th>Nama Bahan Baku / Komponen</th>
+                      <th>Tipe Bahan</th>
+                      <th class="col-num">Jumlah Kebutuhan (To Consume)</th>
+                      <th style="width: 100px;">Satuan (UoM)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="componentsTableBody">
+                    <!-- Data komponen resep BoM dirender dinamis -->
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+            <!-- TAB 2: WORK ORDERS / OPERASI (JIKA PROSES BERTINGKAT) -->
+            <div id="tabContentWorkOrders" style="display: none;">
+              
+              <div class="detail-table-card">
+                <table class="detail-inner-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 40px;">Urutan</th>
+                      <th>Nama Operasi / Tahapan Kerja</th>
+                      <th>Work Center / Mesin</th>
+                      <th>Operator / Penanggung Jawab</th>
+                      <th>Status Operasi</th>
+                      <th class="col-num">Target Durasi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="workOrdersTableBody">
+                    <!-- Data tahapan operasi dirender dinamis -->
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Toast Notification Stack -->
+  <div class="toast-box" id="toastBox"></div>
+
+  <!-- ==============================================================
+       3. LOGIKA INTERAKTIF JAVASCRIPT LENGKAP
+       ============================================================== -->
+  <script>
+    // Database Resep BoM & Komponen Standar Dolpin Putra Sejati (Plastik)
+    const bomDatabase = {
+      '[SFG-HD-040] Roll Plastik HDPE 40cm Bening': {
+        bomCode: 'BOM/SFG-HD-040/01',
+        defaultUom: 'Kg',
+        defaultLine: 'Extruder (Line 02)',
+        isFG: false,
+        components: [
+          { name: 'Biji Plastik HDPE Virgin (Titanvene HD5218EA)', type: 'Raw Material', ratio: 0.92, uom: 'Kg' },
+          { name: 'Biji Plastik HDPE Recycled Grade A (Dolpin Pellet)', type: 'Raw Material', ratio: 0.06, uom: 'Kg' },
+          { name: 'Masterbatch Additive Anti-Block Slip Agent', type: 'Additive', ratio: 0.02, uom: 'Kg' }
+        ],
+        workOrders: [
+          { seq: '10', op: 'Tahap 1: Peniupan & Penarikan Roll Film (Extruder)', wc: 'Line Mesin Extruder 02', pic: 'Agus Prasetyo', status: 'In Progress', duration: '4.5 Jam' }
+        ]
+      },
+      '[SFG-PE-050] Roll Plastik PE 50cm Biru Tebal': {
+        bomCode: 'BOM/SFG-PE-050/01',
+        defaultUom: 'Kg',
+        defaultLine: 'Extruder (Line 01)',
+        isFG: false,
+        components: [
+          { name: 'Biji Plastik LLDPE Film Grade (Exxon 1002YB)', type: 'Raw Material', ratio: 0.94, uom: 'Kg' },
+          { name: 'Masterbatch Pewarna Biru Ocean (MB-BLUE-02)', type: 'Additive', ratio: 0.04, uom: 'Kg' },
+          { name: 'Pigment Slip UV Stabilizer', type: 'Additive', ratio: 0.02, uom: 'Kg' }
+        ],
+        workOrders: [
+          { seq: '10', op: 'Tahap 1: Peniupan Roll Plastik Tebal (Extruder)', wc: 'Line Mesin Extruder 01', pic: 'Agus Prasetyo', status: 'Ready', duration: '6.0 Jam' }
+        ]
+      },
+      '[SFG-PP-030] Roll Plastik PP 30cm Glossy': {
+        bomCode: 'BOM/SFG-PP-030/01',
+        defaultUom: 'Kg',
+        defaultLine: 'Extruder (Line 03)',
+        isFG: false,
+        components: [
+          { name: 'Biji Plastik PP Homopolymer (Trilene HF401)', type: 'Raw Material', ratio: 0.98, uom: 'Kg' },
+          { name: 'Additive Optical Brightener (Super Clear)', type: 'Additive', ratio: 0.02, uom: 'Kg' }
+        ],
+        workOrders: [
+          { seq: '10', op: 'Tahap 1: Peniupan PP Quenching Water Cooled', wc: 'Line Mesin Extruder 03', pic: 'Agus Prasetyo', status: 'Done', duration: '3.5 Jam' }
+        ]
+      },
+      '[SFG-LD-060] Roll Plastik LDPE 60cm Bening Lembaran': {
+        bomCode: 'BOM/SFG-LD-060/01',
+        defaultUom: 'Kg',
+        defaultLine: 'Extruder (Line 01)',
+        isFG: false,
+        components: [
+          { name: 'Biji Plastik LDPE Film (Cosmothene F210-6)', type: 'Raw Material', ratio: 0.95, uom: 'Kg' },
+          { name: 'Slip & Lubricant Additive', type: 'Additive', ratio: 0.05, uom: 'Kg' }
+        ],
+        workOrders: [
+          { seq: '10', op: 'Tahap 1: Peniupan Lembaran Lebar (Extruder)', wc: 'Line Mesin Extruder 01', pic: 'Agus Prasetyo', status: 'Draft', duration: '5.0 Jam' }
+        ]
+      },
+      '[FG-KNT-01] Kantong Kresek Putih 24x40': {
+        bomCode: 'BOM/FG-KNT-01/01',
+        defaultUom: 'Pcs',
+        defaultLine: 'Cutting (Line 01)',
+        isFG: true,
+        components: [
+          { name: '[SFG-HD-040] Roll Plastik HDPE 40cm Putih', type: 'Semi-Finished Good', ratio: 0.0085, uom: 'Kg' },
+          { name: 'Kemasan Inner Bag & Label Dolpin (Pack 100)', type: 'Packaging', ratio: 0.01, uom: 'Pcs' }
+        ],
+        workOrders: [
+          { seq: '10', op: 'Tahap 1: Peniupan Roll Extruder (Hulu)', wc: 'Line Mesin Extruder 02', pic: 'Agus Prasetyo', status: 'Done', duration: '4.0 Jam' },
+          { seq: '20', op: 'Tahap 2: Pemotongan Bag & Punching Gagang Kresek', wc: 'Line Mesin Cutting 01', pic: 'Bambang Wijaya', status: 'Ready', duration: '3.0 Jam' }
+        ]
+      },
+      '[FG-KNT-02] Kantong Plastik HD Bening 30x50': {
+        bomCode: 'BOM/FG-KNT-02/01',
+        defaultUom: 'Pcs',
+        defaultLine: 'Cutting (Line 03)',
+        isFG: true,
+        components: [
+          { name: '[SFG-HD-040] Roll Plastik HDPE 40cm Bening', type: 'Semi-Finished Good', ratio: 0.012, uom: 'Kg' },
+          { name: 'Packaging Outer Karung Woven Bag', type: 'Packaging', ratio: 0.002, uom: 'Pcs' }
+        ],
+        workOrders: [
+          { seq: '10', op: 'Tahap 1: Peniupan Roll Bening (Extruder)', wc: 'Line Mesin Extruder 01', pic: 'Agus Prasetyo', status: 'Done', duration: '5.0 Jam' },
+          { seq: '20', op: 'Tahap 2: Bottom Sealing & Potong Panas (Cutting)', wc: 'Line Mesin Cutting 03', pic: 'Bambang Wijaya', status: 'In Progress', duration: '4.0 Jam' }
+        ]
+      },
+      '[FG-KNT-03] Kantong Sampah Hitam 60x100': {
+        bomCode: 'BOM/FG-KNT-03/01',
+        defaultUom: 'Pcs',
+        defaultLine: 'Cutting (Line 02)',
+        isFG: true,
+        components: [
+          { name: 'Roll Plastik HDPE Recycled Hitam 60cm', type: 'Semi-Finished Good', ratio: 0.045, uom: 'Kg' },
+          { name: 'Tali Tis Pengikat Sampah', type: 'Packaging', ratio: 0.01, uom: 'Pcs' }
+        ],
+        workOrders: [
+          { seq: '10', op: 'Tahap 1: Peniupan Extruder Daur Ulang', wc: 'Line Mesin Extruder 03', pic: 'Agus Prasetyo', status: 'Done', duration: '6.0 Jam' },
+          { seq: '20', op: 'Tahap 2: Star-Seal Bottom Folding & Cutting', wc: 'Line Mesin Cutting 02', pic: 'Bambang Wijaya', status: 'Done', duration: '4.5 Jam' }
+        ]
+      },
+      '[FG-KNT-04] Kantong Klip Zipper 15x20 Transparan': {
+        bomCode: 'BOM/FG-KNT-04/01',
+        defaultUom: 'Pcs',
+        defaultLine: 'Cutting (Line 01)',
+        isFG: true,
+        components: [
+          { name: '[SFG-PE-050] Roll Plastik PE 50cm Klip Profile', type: 'Semi-Finished Good', ratio: 0.006, uom: 'Kg' },
+          { name: 'Zipper Lock Profile Extrusion Line', type: 'Raw Material', ratio: 0.001, uom: 'Kg' }
+        ],
+        workOrders: [
+          { seq: '10', op: 'Tahap 1: Peniupan Tube Zipper Profil', wc: 'Line Mesin Extruder 01', pic: 'Agus Prasetyo', status: 'Ready', duration: '3.0 Jam' },
+          { seq: '20', op: 'Tahap 2: Side Sealing Zipper Machine (Cutting)', wc: 'Line Mesin Cutting 01', pic: 'Bambang Wijaya', status: 'Ready', duration: '2.5 Jam' }
+        ]
+      }
+    };
+
+    // Dataset Awal MO (Sesuai SOW & Produk Plastik Dolpin)
+    let moList = [
+      {
+        id: 1,
+        code: 'WH/MO/00012',
+        product: '[SFG-HD-040] Roll Plastik HDPE 40cm Bening',
+        qty: 500.00,
+        uom: 'Kg',
+        date: '27/10/2026 08:00',
+        line: 'Extruder (Line 02)',
+        status: 'Draft',
+        pic: 'Siti Rahma (PPIC)',
+        selected: false
+      },
+      {
+        id: 2,
+        code: 'WH/MO/00011',
+        product: '[FG-KNT-01] Kantong Kresek Putih 24x40',
+        qty: 10000.00,
+        uom: 'Pcs',
+        date: '27/10/2026 09:30',
+        line: 'Cutting (Line 01)',
+        status: 'Confirmed',
+        pic: 'Siti Rahma (PPIC)',
+        selected: false
+      },
+      {
+        id: 3,
+        code: 'WH/MO/00010',
+        product: '[SFG-PE-050] Roll Plastik PE 50cm Biru Tebal',
+        qty: 850.00,
+        uom: 'Kg',
+        date: '26/10/2026 07:00',
+        line: 'Extruder (Line 01)',
+        status: 'In Progress',
+        pic: 'Agus Prasetyo (Karu Extruder)',
+        selected: false
+      },
+      {
+        id: 4,
+        code: 'WH/MO/00009',
+        product: '[FG-KNT-02] Kantong Plastik HD Bening 30x50',
+        qty: 25000.00,
+        uom: 'Pcs',
+        date: '26/10/2026 13:00',
+        line: 'Cutting (Line 03)',
+        status: 'In Progress',
+        pic: 'Bambang Wijaya (Karu Cutting)',
+        selected: false
+      },
+      {
+        id: 5,
+        code: 'WH/MO/00008',
+        product: '[SFG-PP-030] Roll Plastik PP 30cm Glossy',
+        qty: 400.00,
+        uom: 'Kg',
+        date: '25/10/2026 08:00',
+        line: 'Extruder (Line 03)',
+        status: 'Done',
+        pic: 'Siti Rahma (PPIC)',
+        selected: false
+      },
+      {
+        id: 6,
+        code: 'WH/MO/00007',
+        product: '[FG-KNT-03] Kantong Sampah Hitam 60x100',
+        qty: 15000.00,
+        uom: 'Pcs',
+        date: '25/10/2026 10:30',
+        line: 'Cutting (Line 02)',
+        status: 'Done',
+        pic: 'Bambang Wijaya (Karu Cutting)',
+        selected: false
+      },
+      {
+        id: 7,
+        code: 'WH/MO/00006',
+        product: '[SFG-LD-060] Roll Plastik LDPE 60cm Bening Lembaran',
+        qty: 600.00,
+        uom: 'Kg',
+        date: '28/10/2026 08:00',
+        line: 'Extruder (Line 01)',
+        status: 'Draft',
+        pic: 'Dedi Kurniawan (Supervisor Produksi)',
+        selected: false
+      },
+      {
+        id: 8,
+        code: 'WH/MO/00005',
+        product: '[FG-KNT-04] Kantong Klip Zipper 15x20 Transparan',
+        qty: 50000.00,
+        uom: 'Pcs',
+        date: '28/10/2026 14:00',
+        line: 'Cutting (Line 01)',
+        status: 'Confirmed',
+        pic: 'Siti Rahma (PPIC)',
+        selected: false
+      }
+    ];
+
+    // State Aplikasi
+    let currentView = 'list'; // 'list' | 'form'
+    let currentMoCode = 'WH/MO/00012';
+    let searchQuery = '';
+    let currentStatusFilter = 'all';
+    let currentSort = 'code_desc';
+    let currentPage = 1;
+    let itemsPerPage = 10;
+    let activeFormTab = 'components';
+
+    // 1. TAMPILAN VIEW SWITCHER
+    function navToListView() {
+      currentView = 'list';
+      document.getElementById('moListView').classList.remove('view-hidden');
+      document.getElementById('moFormView').classList.add('view-hidden');
+      
+      document.getElementById('bcSepDetail').style.display = 'none';
+      document.getElementById('bcCurrent').textContent = 'List View';
+
+      const moBtn = document.querySelector('button[title="Buka Manufacturing Orders"]');
+      if (moBtn) {
+        document.querySelectorAll('.menu-item-btn').forEach(btn => btn.classList.remove('active'));
+        moBtn.classList.add('active');
+      }
+      renderTable();
+      closeSidebar();
+    }
+
+    function navToFormView(code) {
+      currentView = 'form';
+      currentMoCode = code;
+      document.getElementById('moListView').classList.add('view-hidden');
+      document.getElementById('moFormView').classList.remove('view-hidden');
+
+      document.getElementById('bcSepDetail').style.display = 'inline';
+      document.getElementById('bcCurrent').textContent = code;
+
+      loadMOIntoForm(code);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 2. HELPER BADGE
+    function getStatusBadge(status) {
+      if (status === 'Draft') {
+        return `<span class="status-badge status-draft"><span class="status-dot"></span>Draft</span>`;
+      } else if (status === 'Confirmed') {
+        return `<span class="status-badge status-confirmed"><span class="status-dot"></span>Confirmed</span>`;
+      } else if (status === 'In Progress') {
+        return `<span class="status-badge status-in-progress"><span class="status-dot"></span>In Progress</span>`;
+      } else if (status === 'Done') {
+        return `<span class="status-badge status-done"><span class="status-dot"></span>Done</span>`;
+      }
+      return `<span class="status-badge status-cancelled"><span class="status-dot"></span>Cancelled</span>`;
+    }
+
+    function getLineBadge(line) {
+      if (line.includes('Extruder')) {
+        return `<span class="line-badge line-badge-extruder"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/></svg>${line}</span>`;
+      }
+      return `<span class="line-badge line-badge-cutting"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>${line}</span>`;
+    }
+
+    // 3. RENDER TABEL LIST VIEW
+    function renderTable() {
+      // Filter
+      let filtered = moList.filter(item => {
+        const matchesStatus = (currentStatusFilter === 'all') || (item.status === currentStatusFilter);
+        const q = searchQuery.toLowerCase().trim();
+        const matchesSearch = !q || (
+          item.code.toLowerCase().includes(q) ||
+          item.product.toLowerCase().includes(q) ||
+          item.line.toLowerCase().includes(q) ||
+          item.status.toLowerCase().includes(q)
+        );
+        return matchesStatus && matchesSearch;
+      });
+
+      // Sort
+      filtered.sort((a, b) => {
+        if (currentSort === 'code_desc') return b.id - a.id;
+        if (currentSort === 'code_asc') return a.id - b.id;
+        if (currentSort === 'date_desc') return b.date.localeCompare(a.date);
+        if (currentSort === 'date_asc') return a.date.localeCompare(b.date);
+        if (currentSort === 'product_asc') return a.product.localeCompare(b.product);
+        if (currentSort === 'qty_desc') return b.qty - a.qty;
+        return 0;
+      });
+
+      // Pagination
+      const totalItems = filtered.length;
+      const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const pageItems = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+      // Render Baris
+      const tbody = document.getElementById('moTableBody');
+      if (pageItems.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 40px; color: #94a3b8; font-size: 13px;">
+              Tidak ada surat perintah kerja (Manufacturing Order) yang sesuai dengan pencarian atau filter status.
+            </td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = pageItems.map(item => {
+          const isFG = item.product.startsWith('[FG');
+          const typeBadge = isFG 
+            ? `<span class="badge-product-type badge-type-fg">FG Kantong</span>` 
+            : `<span class="badge-product-type badge-type-sfg">SFG Roll</span>`;
+
+          return `
+            <tr id="row-${item.id}" class="${item.selected ? 'selected' : ''}" onclick="navToFormView('${item.code}')">
+              <td class="col-checkbox" onclick="event.stopPropagation()">
+                <input type="checkbox" class="odoo-checkbox" ${item.selected ? 'checked' : ''} onchange="toggleRowSelection(${item.id}, this.checked)">
+              </td>
+              <td>
+                <a class="cell-mo-code" onclick="event.stopPropagation(); navToFormView('${item.code}')">${item.code}</a>
+              </td>
+              <td>
+                <div class="cell-product-wrap">
+                  <span class="cell-product-name">${item.product}</span>
+                  <div class="cell-product-sub">
+                    ${typeBadge}
+                    <span>BoM: ${bomDatabase[item.product] ? bomDatabase[item.product].bomCode : '-'}</span>
+                  </div>
+                </div>
+              </td>
+              <td style="text-align: right; font-weight: 700; color: #0f172a;">
+                ${item.qty.toLocaleString('id-ID', { minimumFractionDigits: 2 })} ${item.uom}
+              </td>
+              <td style="color: #475569; font-size: 11px;">
+                ${item.date}
+              </td>
+              <td>
+                ${getLineBadge(item.line)}
+              </td>
+              <td>
+                ${getStatusBadge(item.status)}
+              </td>
+              <td style="text-align: center;" onclick="event.stopPropagation()">
+                <button class="header-icon-btn" style="width: 26px; height: 26px; margin: 0 auto;" onclick="navToFormView('${item.code}')" title="Buka Detail Formulir">
+                  <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Update Pagination Text & Controls
+      const infoText = totalItems === 0
+        ? 'Tidak ada data antrean'
+        : `Menampilkan ${startIndex + 1} - ${Math.min(startIndex + itemsPerPage, totalItems)} dari ${totalItems} antrean MO`;
+      document.getElementById('paginationInfo').textContent = infoText;
+
+      renderPaginationControls(totalPages);
+      updateHeaderCheckboxState(pageItems);
+    }
+
+    function renderPaginationControls(totalPages) {
+      const container = document.getElementById('paginationControls');
+      if (totalPages <= 1) {
+        container.innerHTML = `<button class="page-btn active">1</button>`;
+        return;
+      }
+
+      let html = `
+        <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})" title="Halaman Sebelumnya">
+          <svg viewBox="0 0 24 24" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+      `;
+
+      for (let p = 1; p <= totalPages; p++) {
+        html += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="changePage(${p})">${p}</button>`;
+      }
+
+      html += `
+        <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})" title="Halaman Selanjutnya">
+          <svg viewBox="0 0 24 24" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function changePage(p) {
+      currentPage = p;
+      renderTable();
+    }
+
+    function changePerPage(val) {
+      itemsPerPage = parseInt(val, 10);
+      currentPage = 1;
+      renderTable();
+    }
+
+    // 4. FILTER STATUS & PENCARIAN
+    function filterStatus(status, btnEl) {
+      currentStatusFilter = status;
+
+      // Sync pills
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+
+      // Sync tablet dropdown
+      const select = document.getElementById('tabletStatusSelect');
+      if (select && select.value !== status) select.value = status;
+
+      currentPage = 1;
+      renderTable();
+      showToast(`Filter Status: ${status === 'all' ? 'Semua' : status}`);
+    }
+
+    function handleSearch(val) {
+      searchQuery = val;
+      currentPage = 1;
+      renderTable();
+    }
+
+    function handleSortChange(val) {
+      currentSort = val;
+      renderTable();
+    }
+
+    // Checkbox selection
+    function toggleRowSelection(id, checked) {
+      const item = moList.find(x => x.id === id);
+      if (item) {
+        item.selected = checked;
+        renderTable();
+      }
+    }
+
+    function toggleSelectAll(checked) {
+      moList.forEach(i => i.selected = checked);
+      renderTable();
+    }
+
+    function updateHeaderCheckboxState(pageItems) {
+      const cb = document.getElementById('headerCheckbox');
+      if (!cb) return;
+      if (pageItems.length === 0) {
+        cb.checked = false;
+        cb.indeterminate = false;
+        return;
+      }
+      const allChecked = pageItems.every(i => i.selected);
+      const someChecked = pageItems.some(i => i.selected);
+      cb.checked = allChecked;
+      cb.indeterminate = someChecked && !allChecked;
+    }
+
+    // ==============================================================
+    // 5. LOGIKA FORMULIR DETAIL MO (FORM VIEW)
+    // ==============================================================
+    function loadMOIntoForm(code) {
+      const mo = moList.find(x => x.code === code);
+      if (!mo) return;
+
+      document.getElementById('formMoCode').textContent = mo.code;
+      document.getElementById('formProductSelect').value = mo.product;
+      document.getElementById('formQtyInput').value = mo.qty;
+      document.getElementById('formUomSuffix').textContent = mo.uom;
+      document.getElementById('formPicSelect').value = mo.pic;
+      document.getElementById('formDateInput').value = mo.date;
+      document.getElementById('formLineSelect').value = mo.line;
+
+      const bomData = bomDatabase[mo.product] || {
+        bomCode: 'BOM/GEN-001/01',
+        components: [],
+        workOrders: []
+      };
+      document.getElementById('formBomInput').value = bomData.bomCode;
+
+      // Update Status Badge & Statusbar Pipeline
+      updateStatusBar(mo.status);
+
+      // Render Components & Work Orders
+      renderComponentsTab(bomData, mo.qty, mo.uom);
+      renderWorkOrdersTab(bomData);
+    }
+
+    function updateStatusBar(status) {
+      const stages = ['stageDraft', 'stageConfirmed', 'stageProgress', 'stageDone'];
+      stages.forEach(id => {
+        const el = document.getElementById(id);
+        el.className = 'statusbar-stage';
+      });
+
+      const badge = document.getElementById('formStatusBadge');
+      badge.textContent = status;
+      badge.className = 'doc-status-large';
+
+      const btnConfirm = document.getElementById('btnConfirmMO');
+      const btnCancel = document.getElementById('btnCancelMO');
+
+      if (status === 'Draft') {
+        document.getElementById('stageDraft').classList.add('active', 'stage-draft');
+        badge.classList.add('status-draft');
+        btnConfirm.style.display = 'inline-flex';
+        btnCancel.style.display = 'inline-flex';
+      } else if (status === 'Confirmed') {
+        document.getElementById('stageConfirmed').classList.add('active', 'stage-confirmed');
+        badge.classList.add('status-confirmed');
+        btnConfirm.style.display = 'none'; // Sudah terkonfirmasi
+        btnCancel.style.display = 'inline-flex';
+      } else if (status === 'In Progress') {
+        document.getElementById('stageProgress').classList.add('active', 'stage-progress');
+        badge.classList.add('status-in-progress');
+        btnConfirm.style.display = 'none';
+        btnCancel.style.display = 'none';
+      } else if (status === 'Done') {
+        document.getElementById('stageDone').classList.add('active', 'stage-done');
+        badge.classList.add('status-done');
+        btnConfirm.style.display = 'none';
+        btnCancel.style.display = 'none';
+      } else {
+        badge.classList.add('status-cancelled');
+        btnConfirm.style.display = 'none';
+        btnCancel.style.display = 'none';
+      }
+    }
+
+    function renderComponentsTab(bomData, targetQty, targetUom) {
+      const tbody = document.getElementById('componentsTableBody');
+      const comps = bomData.components || [];
+      document.getElementById('badgeCompCount').textContent = comps.length;
+
+      if (comps.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 24px;">Tidak ada komponen bahan dalam resep ini.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = comps.map((c, idx) => {
+        const toConsume = (c.ratio * targetQty).toFixed(2);
+        return `
+          <tr>
+            <td style="color: #94a3b8; font-weight: 600;">${idx + 1}</td>
+            <td style="font-weight: 600; color: #0f172a;">${c.name}</td>
+            <td>
+              <span style="font-size: 11px; padding: 2px 7px; border-radius: 4px; background: #f1f5f9; color: #475569;">${c.type}</span>
+            </td>
+            <td class="col-num" style="font-weight: 700; color: #0f172a; font-family: ui-monospace, monospace;">
+              ${parseFloat(toConsume).toLocaleString('id-ID', { minimumFractionDigits: 2 })}
+            </td>
+            <td style="font-weight: 500; color: #475569;">${c.uom}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderWorkOrdersTab(bomData) {
+      const tbody = document.getElementById('workOrdersTableBody');
+      const wos = bomData.workOrders || [];
+      document.getElementById('badgeWoCount').textContent = wos.length;
+
+      if (wos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 24px;">Tidak ada work orders bertingkat.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = wos.map(w => {
+        let stClass = 'status-draft';
+        if (w.status === 'Ready') stClass = 'status-confirmed';
+        else if (w.status === 'In Progress') stClass = 'status-in-progress';
+        else if (w.status === 'Done') stClass = 'status-done';
+
+        return `
+          <tr>
+            <td style="color: #94a3b8; font-weight: 700;">${w.seq}</td>
+            <td style="font-weight: 600; color: #0f172a;">${w.op}</td>
+            <td>
+              <span class="line-badge ${w.wc.includes('Extruder') ? 'line-badge-extruder' : 'line-badge-cutting'}">${w.wc}</span>
+            </td>
+            <td style="color: #475569;">${w.pic}</td>
+            <td>
+              <span class="status-badge ${stClass}"><span class="status-dot"></span>${w.status}</span>
+            </td>
+            <td class="col-num" style="font-weight: 600; color: #334155;">${w.duration}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function switchFormTab(tabName) {
+      activeFormTab = tabName;
+      if (tabName === 'components') {
+        document.getElementById('tabBtnComponents').classList.add('active');
+        document.getElementById('tabBtnWorkOrders').classList.remove('active');
+        document.getElementById('tabContentComponents').style.display = 'block';
+        document.getElementById('tabContentWorkOrders').style.display = 'none';
+      } else {
+        document.getElementById('tabBtnComponents').classList.remove('active');
+        document.getElementById('tabBtnWorkOrders').classList.add('active');
+        document.getElementById('tabContentComponents').style.display = 'none';
+        document.getElementById('tabContentWorkOrders').style.display = 'block';
+      }
+    }
+
+    function onFormProductChange(productName) {
+      const bomData = bomDatabase[productName];
+      if (bomData) {
+        document.getElementById('formBomInput').value = bomData.bomCode;
+        document.getElementById('formUomSuffix').textContent = bomData.defaultUom;
+        document.getElementById('formLineSelect').value = bomData.defaultLine;
+
+        const currentQty = parseFloat(document.getElementById('formQtyInput').value) || 1.0;
+        renderComponentsTab(bomData, currentQty, bomData.defaultUom);
+        renderWorkOrdersTab(bomData);
+
+        // Update in-memory MO if active
+        const mo = moList.find(x => x.code === currentMoCode);
+        if (mo) {
+          mo.product = productName;
+          mo.uom = bomData.defaultUom;
+          mo.line = bomData.defaultLine;
+        }
+      }
+    }
+
+    function updateComponentsDemand() {
+      const productName = document.getElementById('formProductSelect').value;
+      const bomData = bomDatabase[productName];
+      const qty = parseFloat(document.getElementById('formQtyInput').value) || 0;
+      if (bomData) {
+        renderComponentsTab(bomData, qty, bomData.defaultUom);
+        const mo = moList.find(x => x.code === currentMoCode);
+        if (mo) mo.qty = qty;
+      }
+    }
+
+    // Aksi Tombol Kritis PPIC: "Confirm"
+    function confirmCurrentMO() {
+      const mo = moList.find(x => x.code === currentMoCode);
+      if (mo) {
+        mo.status = 'Confirmed';
+        updateStatusBar('Confirmed');
+        showToast(`✓ Berhasil Konfirmasi ${mo.code}. Surat Perintah Kerja dirilis ke lantai pabrik!`);
+      }
+    }
+
+    // Aksi Tombol "Cancel"
+    function cancelCurrentMO() {
+      const mo = moList.find(x => x.code === currentMoCode);
+      if (mo) {
+        if (confirm(`Apakah Anda yakin ingin membatalkan Manufacturing Order ${mo.code}?`)) {
+          mo.status = 'Cancelled';
+          updateStatusBar('Cancelled');
+          showToast(`Manufacturing Order ${mo.code} telah dibatalkan.`);
+        }
+      }
+    }
+
+    // Tombol "Print SPK"
+    function printSPK() {
+      showToast(`Menyiapkan Lembar Kerja Fisik SPK ${currentMoCode}...`);
+      setTimeout(() => {
+        window.print();
+      }, 500);
+    }
+
+    // Buat MO Manual Baru (Aksi Cepat PPIC)
+    function createNewMO() {
+      const nextId = moList.length + 13;
+      const newCode = `WH/MO/000${nextId}`;
+      const defaultProduct = '[SFG-HD-040] Roll Plastik HDPE 40cm Bening';
+
+      const newMo = {
+        id: Date.now(),
+        code: newCode,
+        product: defaultProduct,
+        qty: 500.00,
+        uom: 'Kg',
+        date: '28/10/2026 08:00',
+        line: 'Extruder (Line 02)',
+        status: 'Draft',
+        pic: 'Siti Rahma (PPIC)',
+        selected: false
+      };
+
+      moList.unshift(newMo);
+      navToFormView(newCode);
+      showToast(`Membuat draft surat perintah kerja baru: ${newCode}`);
+    }
+
+    // Refresh view
+    function refreshCurrentView() {
+      if (currentView === 'list') {
+        renderTable();
+        showToast('Antrean MO diperbarui');
+      } else {
+        loadMOIntoForm(currentMoCode);
+        showToast(`Formulir ${currentMoCode} dimuat ulang`);
+      }
+    }
+
+    // Responsive Sidebar Toggle & Close (Tablet Drawer)
+    function toggleSidebar(forceState) {
+      const sidebar = document.getElementById('odooSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (!sidebar) return;
+      const isOpen = sidebar.classList.contains('open');
+      const newState = (typeof forceState === 'boolean') ? forceState : !isOpen;
+      if (newState) {
+        sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+      } else {
+        sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      }
+    }
+
+    function closeSidebar() {
+      toggleSidebar(false);
+    }
+
+    // Sidebar Menu Activation
+    function activateMenu(btnEl, menuName) {
+      document.querySelectorAll('.menu-item-btn').forEach(btn => btn.classList.remove('active'));
+      btnEl.classList.add('active');
+      showToast(`Navigasi: ${menuName}`);
+      closeSidebar();
+    }
+
+    // Toast Notification
+    function showToast(msg) {
+      const container = document.getElementById('toastBox');
+      const toast = document.createElement('div');
+      toast.className = 'toast-item';
+      toast.innerHTML = `
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span>${msg}</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.2s';
+        setTimeout(() => toast.remove(), 250);
+      }, 2800);
+    }
+
+    // Inisialisasi awal
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTable();
+    });
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      renderTable();
+    }
+  </script>
+</body>
+</html>

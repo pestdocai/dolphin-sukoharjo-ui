@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DXL ERP - Portal Prototipe UI | PT Dolpin Putra Sejati</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-900: #0b1325;
+      --navy-800: #131f37;
+      --navy-700: #1e293b;
+      --primary-red: #dc2626;
+      --primary-blue: #0284c7;
+      --accent-cyan: #0ea5e9;
+      --accent-green: #10b981;
+      --bg-slate: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --border-subtle: #edf2f7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-slate);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .top-nav {
+      background: var(--navy-900);
+      color: #ffffff;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 6px;
+      background: #ffffff;
+      padding: 4px;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .nav-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(52, 211, 153, 0.25);
+    }
+
+    .nav-badge .dot {
+      width: 7px;
+      height: 7px;
+      background-color: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(180deg, var(--navy-900) 0%, var(--navy-800) 100%);
+      color: #ffffff;
+      padding: 44px 28px 56px;
+      text-align: center;
+    }
+
+    .hero-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(220, 38, 38, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(220, 38, 38, 0.4);
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: #94a3b8;
+      line-height: 1.6;
+      max-width: 680px;
+      margin: 0 auto 24px;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .stat-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 10px 18px;
+      text-align: left;
+      min-width: 140px;
+    }
+
+    .stat-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .stat-label {
+      font-size: 11.5px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1240px;
+      margin: -24px auto 48px;
+      padding: 0 20px;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* Figma Tips Banner */
+    .figma-banner {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 18px 24px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 10px 25px -5px rgba(30, 27, 75, 0.2);
+    }
+
+    .figma-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .figma-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .figma-text h4 {
+      font-size: 14.5px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .figma-text p {
+      font-size: 12.5px;
+      color: #cbd5e1;
+      line-height: 1.45;
+    }
+
+    /* Modules Grid */
+    .module-group {
+      margin-bottom: 36px;
+    }
+
+    .module-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .module-pill {
+      background: var(--navy-900);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .module-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .screens-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 18px;
+    }
+
+    /* Screen Card */
+    .screen-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      position: relative;
+    }
+
+    .screen-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .card-top {
+      margin-bottom: 14px;
+    }
+
+    .badge-role {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .badge-ppic { background: #e0f2fe; color: #0369a1; }
+    .badge-karu { background: #fef3c7; color: #b45309; }
+    .badge-dash { background: #f3e8ff; color: #7e22ce; }
+    .badge-wh   { background: #ecfdf5; color: #047857; }
+
+    .screen-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+
+    .screen-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .btn-open {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--navy-900);
+      color: #ffffff;
+      padding: 9px 14px;
+      border-radius: 7px;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s ease;
+    }
+
+    .btn-open:hover {
+      background: #1e293b;
+    }
+
+    .btn-copy {
+      background: #f1f5f9;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 9px 12px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-copy:hover {
+      background: #e2e8f0;
+    }
+
+    /* Footer */
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      padding: 24px 28px;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+
+    @media (max-width: 768px) {
+      .screens-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 {
+        font-size: 24px;
+      }
+      .figma-banner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="top-nav">
+    <div class="brand-wrap">
+      <img src="ux-figma/bagian-1/images/logo.png" alt="DXL ERP Logo" class="brand-logo" onerror="this.style.display='none'">
+      <div>
+        <div class="brand-title">DXL ERP Sukoharjo</div>
+        <div class="brand-subtitle">PT Dolpin Putra Sejati &bull; UI Prototype Suite</div>
+      </div>
+    </div>
+    <div class="nav-badge">
+      <span class="dot"></span>
+      Vercel & Figma Ready
+    </div>
+  </nav>
+
+  <!-- Hero Header -->
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-tag">Katalog Antarmuka Sistem</div>
+      <h1>Portal Desain & Prototipe UI ERP</h1>
+      <p>Kompilasi layar antarmuka manufaktur & operasional pabrik yang siap dibuka di browser atau diimpor langsung ke canvas Figma via plugin html.to.design.</p>
+      
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-val">4 Bagian</div>
+          <div class="stat-label">Modul Sistem</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">8 Layar</div>
+          <div class="stat-label">Total Antarmuka UI</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">Odoo 18</div>
+          <div class="stat-label">Framework Rujukan</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">100% SVG</div>
+          <div class="stat-label">Vektor Crisp di Figma</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Figma Tip Banner -->
+    <div class="figma-banner">
+      <div class="figma-info">
+        <div class="figma-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2">
+            <path d="M5 5.5A3.5 3.5 0 0 1 8.5 2H12v7H8.5A3.5 3.5 0 0 1 5 5.5z"/>
+            <path d="M12 2h3.5a3.5 3.5 0 1 1 0 7H12V2z"/>
+            <path d="M12 12.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 1 1-7 0z"/>
+            <path d="M5 19.5A3.5 3.5 0 0 1 8.5 16H12v3.5a3.5 3.5 0 1 1-7 0z"/>
+            <path d="M5 12.5A3.5 3.5 0 0 1 8.5 9H12v7H8.5A3.5 3.5 0 0 1 5 12.5z"/>
+          </svg>
+        </div>
+        <div class="figma-text">
+          <h4>Cara Cepat Import ke Figma</h4>
+          <p>Buka plugin <b>html.to.design</b> di Figma, salin link URL salah satu layar di bawah, lalu paste ke plugin untuk konversi otomatis menjadi Layer & Auto-Layout Figma.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bagian 1: PPIC & Planning -->
+    <div class="module-group">
+      <div class="module-header">
+        <span class="module-pill">Bagian 1</span>
+        <h2 class="module-title">Perencanaan Produksi & BoM (PPIC)</h2>
+      </div>
+      <div class="screens-grid">
+        <!-- Screen 1 -->
+        <div class="screen-card">
+          <div class="card-top">
+            <span class="badge-role badge-ppic">Perencana Produksi (PPIC)</span>
+            <div class="screen-name">Master Production Plan (MPP)</div>
+            <div class="screen-desc">Jadwal perencanaan agregat produksi pabrik, matrix timeline bulanan, filtering status, dan pengaturan kapasitas mesin.</div>
+          </div>
+          <div class="card-actions">
+            <a href="ux-figma/bagian-1/index.html" class="btn-open" target="_blank">Buka Layar UI &rarr;</a>
+            <button class="btn-copy" onclick="copyLink('ux-figma/bagian-1/index.html', this)">Salin URL</button>
+          </div>
+        </div>
+
+        <!-- Screen 2 -->
+        <div class="screen-card">
+          <div class="card-top">
+            <span class="badge-role badge-ppic">Perencana Produksi (PPIC)</span>
+            <div class="screen-name">Manufacturing Orders (MO)</div>
+            <div class="screen-desc">Daftar perintah kerja produksi, status bahan baku, jadwal work center, dan integrasi Bill of Materials (BoM).</div>
+          </div>
+          <div class="card-actions">
+            <a href="ux-figma/bagian-1/manufacturing.html" class="btn-open" target="_blank">Buka Layar UI &rarr;</a>
+            <button class="btn-copy" onclick="copyLink('ux-figma/bagian-1/manufacturing.html', this)">Salin URL</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bagian 2: Karu & Lantai Pabrik -->
+    <div class="module-group">
+      <div class="module-header">
+        <span class="module-pill">Bagian 2</span>
+        <h2 class="module-title">Operasional Lantai Pabrik (Kepala Regu / Karu)</h2>
+      </div>
+      <div class="screens-grid">
+        <!-- Screen 3 -->
+        <div class="screen-card">
+          <div class="card-top">
+            <span class="badge-role badge-karu">Kepala Regu (Karu)</span>
+            <div class="screen-name">Antrean Perintah Kerja (Karu 1)</div>
+            <div class="screen-desc">Tampilan antrean mesin per work center (17 titik kerja) khusus operator pabrik dengan penugasan regu shift.</div>
+          </div>
+          <div class="card-actions">
+            <a href="ux-figma/bagian-2/karu1.html" class="btn-open" target="_blank">Buka Layar UI &rarr;</a>
+            <button class="btn-copy" onclick="copyLink('ux-figma/bagian-2/karu1.html', this)">Salin URL</button>
+          </div>
+        </div>
+
+        <!-- Screen 4 -->
+        <div class="screen-card">
+          <div class="card-top">
+            <span class="badge-role badge-karu">Kepala Regu (Karu)</span>
+            <div class="screen-name">Input Hasil Aktual & BS (Karu 2)</div>
+            <div class="screen-desc">Formulir touch-friendly untuk catat kuantiti aktual, berat timbangan, waktu downtime, serta reject barang afkir (BS).</div>
+          </div>
+          <div class="card-actions">
+            <a href="ux-figma/bagian-2/karu2.html" class="btn-open" target="_blank">Buka Layar UI &rarr;</a>
+            <button class="btn-copy" onclick="copyLink('ux-figma/bagian-2/karu2.html', this)">Salin URL</button>
+          </div>
+        </div>
+
+        <!-- Screen 5 -->
+        <div class="screen-card">
+          <div class="card-top">
+            <span class="badge-role badge-karu">Kepala Regu (Karu)</span>
+            <div class="screen-name">Cetak Label QR & Stiker Pallet</div>
+            <div class="screen-desc">Modal konfirmasi output batch produksi dan template cetak thermal label stiker 76mm lengkap dengan barcode & QR code.</div>
+          </div>
+          <div class="card-actions">
+            <a href="ux-figma/bagian-2/modal.html" class="btn-open" target="_blank">Buka Layar UI &rarr;</a>
+            <button class="btn-copy" onclick="copyLink('ux-figma/bagian-2/modal.html', this)">Salin URL</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bagian 3: Dashboard & Monitoring -->
+    <div class="module-group">
+      <div class="module-header">
+        <span class="module-pill">Bagian 3</span>
+        <h2 class="module-title">Dashboard Analitik & Monitoring Pabrik</h2>
+      </div>
+      <div class="screens-grid">
+        <!-- Screen 6 -->
+        <div class="screen-card">
+          <div class="card-top">
+            <span class="badge-role badge-dash">Manajemen & Eksekutif</span>
+            <div class="screen-name">Dashboard Manajemen Eksekutif</div>
+            <div class="screen-desc">Ringkasan KPI pabrik, OEE (Overall Equipment Effectiveness), Scrap Rate, capaian target tonase, dan tren efisiensi.</div>
+          </div>
+          <div class="card-actions">
+            <a href="ux-figma/bagian-3/dashboard-manajemen.html" class="btn-open" target="_blank">Buka Layar UI &rarr;</a>
+            <button class="btn-copy" onclick="copyLink('ux-figma/bagian-3/dashboard-manajemen.html', this)">Salin URL</button>
+          </div>
+        </div>
+
+        <!-- Screen 7 -->
+        <div class="screen-card">
+          <div class="card-top">
+            <span class="badge-role badge-dash">Supervisor Operasional</span>
+            <div class="screen-name">Dashboard Operasional Live</div>
+            <div class="screen-desc">Monitoring realtime status setiap lini mesin (Running/Idle/Maintenance), telemetri sensor, dan output live per shift.</div>
+          </div>
+          <div class="card-actions">
+            <a href="ux-figma/bagian-3/dashboard-operasional.html" class="btn-open" target="_blank">Buka Layar UI &rarr;</a>
+            <button class="btn-copy" onclick="copyLink('ux-figma/bagian-3/dashboard-operasional.html', this)">Salin URL</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bagian 4: Gudang & Sales -->
+    <div class="module-group">
+      <div class="module-header">
+        <span class="module-pill">Bagian 4</span>
+        <h2 class="module-title">Gudang Barang Jadi & Estimasi Lead Time</h2>
+      </div>
+      <div class="screens-grid">
+        <!-- Screen 8 -->
+        <div class="screen-card">
+          <div class="card-top">
+            <span class="badge-role badge-wh">Logistik & GBJ</span>
+            <div class="screen-name">Pencatatan Barang Keluar GBJ</div>
+            <div class="screen-desc">Pencatatan Surat Jalan (DO), verifikasi scan pallet/barcode barang jadi, nomor armada truk, dan status dispatch pengiriman.</div>
+          </div>
+          <div class="card-actions">
+            <a href="ux-figma/bagian-4/gbj-barang-keluar.html" class="btn-open" target="_blank">Buka Layar UI &rarr;</a>
+            <button class="btn-copy" onclick="copyLink('ux-figma/bagian-4/gbj-barang-keluar.html', this)">Salin URL</button>
+          </div>
+        </div>
+
+        <!-- Screen 9 -->
+        <div class="screen-card">
+          <div class="card-top">
+            <span class="badge-role badge-wh">Sales & Customer Service</span>
+            <div class="screen-name">Portal Simulasi Lead Time</div>
+            <div class="screen-desc">Kalkulator estimasi tanggal kirim pesanan pelanggan berbasis antrean kapasitas mesin cetak dan ketersediaan stok bahan.</div>
+          </div>
+          <div class="card-actions">
+            <a href="ux-figma/bagian-4/simulasi-lead-time.html" class="btn-open" target="_blank">Buka Layar UI &rarr;</a>
+            <button class="btn-copy" onclick="copyLink('ux-figma/bagian-4/simulasi-lead-time.html', this)">Salin URL</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>PT Dolpin Putra Sejati Sukoharjo &bull; DXL ERP UI Prototype Suite &bull; Siap Diintegrasikan ke Vercel & Figma</p>
+  </footer>
+
+  <script>
+    function copyLink(relativePath, button) {
+      const fullUrl = new URL(relativePath, window.location.href).href;
+      navigator.clipboard.writeText(fullUrl).then(() => {
+        const origText = button.innerText;
+        button.innerText = 'Tersalin!';
+        button.style.background = '#10b981';
+        button.style.color = '#ffffff';
+        setTimeout(() => {
+          button.innerText = origText;
+          button.style.background = '#f1f5f9';
+          button.style.color = 'var(--text-main)';
+        }, 1800);
+      }).catch(err => {
+        prompt('Salin link berikut:', fullUrl);
+      });
+    }
+  </script>
+</body>
+</html>
+

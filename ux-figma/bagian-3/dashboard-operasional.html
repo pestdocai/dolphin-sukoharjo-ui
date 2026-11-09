@@ -1,0 +1,3804 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dashboard Operasional Lantai Produksi - DXL ERP (Odoo 18)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ==============================================================
+       DXL ERP - Odoo 18 Backend Whitelabel Design System
+       Modul: Dashboard Operasional Lantai Produksi (Shop Floor Monitoring)
+       Hak Akses: Supervisor Produksi (SPV) & Kepala Pabrik (Scope S05)
+       Pabrik: PT Dolpin Putra Sejati (Plastic Manufacturing)
+       Resolusi Optimal: 1366x768 s/d 1920x1080 (Monitor TV / Desktop)
+       ============================================================== */
+
+    :root {
+      /* Sidebar Colors */
+      --sb-bg: #0B1325;
+      /* Deep Navy Dark */
+      --sb-hover: rgba(255, 255, 255, 0.08);
+      --sb-active-bg: #D62828;
+      /* Full Solid Merah DXL */
+      --sb-active-border: #D62828;
+      /* Merah DXL */
+      --sb-active-text: #FFFFFF;
+      --sb-text: #94A3B8;
+      --sb-text-bright: #F8FAFC;
+      --sb-section: #64748B;
+      --sb-border: rgba(255, 255, 255, 0.08);
+
+      /* Main Background & Card Colors */
+      --c-bg: #F8FAFC;
+      /* Abu-abu terang bersih Odoo 18 */
+      --c-card: #FFFFFF;
+      --c-border: #E2E8F0;
+      --c-border-strong: #CBD5E1;
+      --c-text-main: #0F172A;
+      /* Navy pekat teks utama */
+      --c-text-muted: #64748B;
+      --c-text-subtle: #94A3B8;
+
+      /* Brand Accents */
+      --c-red: #D62828;
+      /* DXL Red Primer */
+      --c-red-hover: #B91C1C;
+      --c-red-light: #FEF2F2;
+      --c-red-border: #FECACA;
+      --c-navy: #0F172A;
+
+      /* Status Colors */
+      --c-green: #10B981;
+      --c-green-dark: #047857;
+      --c-green-light: #ECFDF5;
+      --c-green-border: #A7F3D0;
+      --c-amber: #D97706;
+      --c-amber-light: #FFFBEB;
+      --c-amber-border: #FDE68A;
+      --c-blue: #0284C7;
+      --c-blue-light: #EFF6FF;
+
+      --sidebar-w: 230px;
+      --header-h: 84px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+    }
+
+    *::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 9999px;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.45);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--c-bg);
+      color: var(--c-text-main);
+      font-size: 12px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* ==============================================================
+       1. SIDEBAR NAVIGASI KIRI (230px STICKY - COMPACT)
+       ============================================================== */
+    .app-sidebar {
+      width: var(--sidebar-w);
+      background-color: var(--sb-bg);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      flex-shrink: 0;
+      z-index: 100;
+      user-select: none;
+      border-right: 1px solid var(--sb-border);
+      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.sidebar-collapsed .app-sidebar {
+      margin-left: calc(-1 * var(--sidebar-w));
+    }
+
+    /* Header Sidebar: Logo & Label Sub-Sistem (Tengah / Centered & Padding Lega) */
+    .sidebar-brand-header {
+      padding: 20px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--sb-border);
+      flex-shrink: 0;
+    }
+
+    .brand-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .brand-logo-img {
+      height: 30px;
+      max-width: 130px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .brand-text-fallback {
+      font-size: 15px;
+      font-weight: 800;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-badge {
+      background: var(--c-red);
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: #FFFFFF;
+    }
+
+    .brand-system-labels {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    .brand-mfg-title {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #94A3B8;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    /* Area Menu Sidebar (Beri Jarak Padding Lega & Rapi) */
+    .sidebar-menu-scroll {
+      flex: 1;
+      padding: 14px 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sidebar-section-title {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--sb-section);
+      text-transform: uppercase;
+      padding: 8px 12px 4px;
+    }
+
+    .menu-link-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      height: 38px;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--sb-text);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      position: relative;
+      border: 1px solid transparent;
+    }
+
+    .menu-link-btn:hover {
+      background: var(--sb-hover);
+      color: var(--sb-text-bright);
+    }
+
+    /* Menu Aktif Full Merah Solid DXL dengan Font & Icon Putih (Clean Flat) */
+    .menu-link-btn.active {
+      background: var(--c-red);
+      color: #FFFFFF;
+      font-weight: 700;
+      border: 1px solid var(--c-red);
+      border-radius: 6px;
+    }
+
+    .menu-link-btn.active svg {
+      stroke: #FFFFFF;
+    }
+
+    .menu-link-btn svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      flex-shrink: 0;
+      transition: stroke 0.12s ease;
+    }
+
+    /* Footer Sidebar (User Profile Card - Compact) */
+    .sidebar-user-footer {
+      padding: 10px 12px;
+      border-top: 1px solid var(--sb-border);
+      background: #090E1A;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .user-avatar-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--c-red);
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .user-info-text {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      line-height: 1.25;
+    }
+
+    .user-full-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #F8FAFC;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-role-title {
+      font-size: 10px;
+      color: #94A3B8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-live-status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9.5px;
+      font-weight: 600;
+      color: #34D399;
+      margin-top: 1px;
+    }
+
+    .pulsing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--c-green);
+      display: inline-block;
+    }
+
+    /* ==============================================================
+       2. MAIN CONTENT AREA & HEADER TERPADU
+       ============================================================== */
+    .app-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background-color: var(--c-bg);
+    }
+
+    /* Top Bar & Kontrol Filter */
+    .top-header-panel {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--c-border);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+      flex-shrink: 0;
+    }
+
+    /* Baris 1: Breadcrumb & TV/Full Control (Compact) */
+    .topbar-row-breadcrumb {
+      height: 36px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    .topbar-left-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-sidebar-toggle {
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border: 1px solid var(--c-border);
+      background: #FFFFFF;
+      border-radius: 5px;
+      color: var(--c-text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-sidebar-toggle:hover {
+      background: #F1F5F9;
+      color: var(--c-navy);
+      border-color: var(--c-border-strong);
+    }
+
+    .btn-sidebar-toggle svg {
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.sidebar-collapsed .btn-sidebar-toggle svg {
+      transform: rotate(180deg);
+    }
+
+    .breadcrumb-wrap {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+    }
+
+    .breadcrumb-parent {
+      color: var(--c-text-muted);
+      font-weight: 500;
+    }
+
+    .breadcrumb-sep {
+      color: var(--c-text-subtle);
+    }
+
+    .breadcrumb-current {
+      color: var(--c-navy);
+      font-weight: 700;
+    }
+
+    .topbar-right-quick {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .live-clock-pill {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--c-text-muted);
+      background: #F8FAFC;
+      border: 1px solid var(--c-border);
+      padding: 2px 8px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-tv-mode {
+      height: 28px;
+      padding: 0 9px;
+      background: #FFFFFF;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 5px;
+      color: var(--c-navy);
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .btn-tv-mode:hover {
+      background: #F1F5F9;
+      border-color: var(--c-navy);
+    }
+
+    /* Baris 2: Filter Bar Fleksibel (Compact) */
+    .topbar-row-filters {
+      min-height: 46px;
+      padding: 6px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filters-left-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .input-date-custom {
+      height: 30px;
+      padding: 0 9px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--c-border-strong);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--c-navy);
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .input-date-custom:focus {
+      border-color: var(--c-navy);
+    }
+
+    /* Segmented Shift Controls */
+    .shift-segmented-wrap {
+      display: flex;
+      background: #F1F5F9;
+      border: 1px solid var(--c-border);
+      border-radius: 6px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .btn-shift-segment {
+      height: 28px;
+      padding: 0 10px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--c-text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-shift-segment:hover {
+      color: var(--c-navy);
+    }
+
+    .btn-shift-segment.active {
+      background: var(--c-navy);
+      color: #FFFFFF;
+    }
+
+    /* Dropdown Divisi */
+    .select-division-filter {
+      height: 30px;
+      padding: 0 10px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--c-border-strong);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--c-navy);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .select-division-filter:focus {
+      border-color: var(--c-navy);
+    }
+
+    /* Date Range Picker & Preset Buttons */
+    .date-range-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .date-presets-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: #F1F5F9;
+      border: 1px solid var(--c-border);
+      border-radius: 6px;
+      padding: 2px;
+    }
+
+    .btn-date-preset {
+      height: 26px;
+      padding: 0 8px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--c-text-muted);
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .btn-date-preset:hover {
+      color: var(--c-navy);
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-date-preset.active {
+      background: #FFFFFF;
+      color: var(--c-navy);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Switch Dashboard Button */
+    .btn-switch-dashboard {
+      height: 30px;
+      padding: 0 11px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--c-border-strong);
+      border-radius: 6px;
+      color: var(--c-navy);
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .btn-switch-dashboard:hover {
+      background: #F8FAFC;
+      border-color: #0284C7;
+      color: #0284C7;
+      box-shadow: 0 1px 3px rgba(2, 132, 199, 0.12);
+    }
+
+    /* Badge Pengelompokan Ukuran Produk */
+    .badge-size-group {
+      background: #F1F5F9;
+      color: #334155;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid #CBD5E1;
+      display: inline-block;
+      margin-bottom: 3px;
+      white-space: nowrap;
+    }
+
+    .filters-right-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sync-status-indicator {
+      font-size: 11px;
+      color: var(--c-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 500;
+    }
+
+    .btn-refresh-interactive {
+      height: 30px;
+      padding: 0 11px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--c-border-strong);
+      border-radius: 6px;
+      color: var(--c-navy);
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .btn-refresh-interactive:hover {
+      background: #F8FAFC;
+      border-color: var(--c-navy);
+    }
+
+    .btn-refresh-interactive:active {
+      transform: scale(0.97);
+    }
+
+    .btn-refresh-interactive svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      transition: transform 0.4s ease;
+    }
+
+    .btn-refresh-interactive.is-spinning svg {
+      transform: rotate(360deg);
+    }
+
+    /* ==============================================================
+       CONTAINER KONTEN UTAMA (PADDING & SPASI HARMONIS)
+       ============================================================== */
+    .dashboard-content-body {
+      padding: 16px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 1680px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ==============================================================
+       3. SCORECARD KPI UTAMA (CLEAN, MINIMALIS SESUAI REFERENSI)
+       ============================================================== */
+    .kpi-scorecard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .kpi-modern-card {
+      background: var(--c-card);
+      border: 1px solid var(--c-border);
+      border-radius: 9px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 98px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    /* Varian Kartu Gelap (Dark Navy Solid seperti kartu pertama di acuan) */
+    .kpi-modern-card.card-theme-dark {
+      background: #0F172A;
+      border: 1px solid #1E293B;
+      color: #FFFFFF;
+    }
+
+    .kpi-modern-card.card-theme-dark::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      right: -8px;
+      width: 130px;
+      height: 44px;
+      background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.09), transparent 70%);
+      pointer-events: none;
+    }
+
+    .kpi-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .kpi-card-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--c-text-muted);
+    }
+
+    .kpi-modern-card.card-theme-dark .kpi-card-label {
+      color: #94A3B8;
+    }
+
+    /* Kotak Ikon KPI (34x34px Solid & Flat) */
+    .kpi-card-icon-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      background: #0F172A;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+      box-shadow: none !important;
+    }
+
+    .kpi-card-icon-box svg {
+      width: 18px;
+      height: 18px;
+      stroke: #FFFFFF !important;
+      stroke-width: 2.2;
+      display: block;
+    }
+
+    /* Varian Solid Flat Compact (Tanpa Shadow): Ikon Putih Bersih */
+    /* 1. Target (Paling Kiri): Background Gelap dengan Ikon Putih Bersih */
+    .kpi-modern-card.card-theme-dark .kpi-card-icon-box,
+    .kpi-card-icon-box.icon-box-target {
+      background: rgba(255, 255, 255, 0.14) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      color: #FFFFFF !important;
+      box-shadow: none !important;
+    }
+    .kpi-modern-card.card-theme-dark .kpi-card-icon-box svg,
+    .kpi-card-icon-box.icon-box-target svg {
+      stroke: #FFFFFF !important;
+      color: #FFFFFF !important;
+    }
+
+    /* 2. Hasil Aktual Bagus: Background Solid Hijau Emerald (#16A34A) & Ikon Putih */
+    .kpi-card-icon-box.icon-box-good {
+      background: #16A34A !important;
+      border: none !important;
+      color: #FFFFFF !important;
+      box-shadow: none !important;
+    }
+    .kpi-card-icon-box.icon-box-good svg {
+      stroke: #FFFFFF !important;
+      color: #FFFFFF !important;
+    }
+
+    /* 3. Barang Rusak (BS): Background Solid Merah DXL (#DC2626) & Ikon Putih */
+    .kpi-card-icon-box.icon-box-scrap {
+      background: #DC2626 !important;
+      border: none !important;
+      color: #FFFFFF !important;
+      box-shadow: none !important;
+    }
+    .kpi-card-icon-box.icon-box-scrap svg {
+      stroke: #FFFFFF !important;
+      color: #FFFFFF !important;
+    }
+
+    /* 4. Pencapaian Target / Produktivitas: Background Solid Biru (#2563EB) & Ikon Putih */
+    .kpi-card-icon-box.icon-box-perf {
+      background: #2563EB !important;
+      border: none !important;
+      color: #FFFFFF !important;
+      box-shadow: none !important;
+    }
+    .kpi-card-icon-box.icon-box-perf svg {
+      stroke: #FFFFFF !important;
+      color: #FFFFFF !important;
+    }
+
+    .kpi-card-val-row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin: 3px 0 2px;
+    }
+
+    .kpi-card-val-row .val-number {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--c-navy);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .kpi-modern-card.card-theme-dark .kpi-card-val-row .val-number {
+      color: #FFFFFF;
+    }
+
+    .kpi-card-val-row .val-uom {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--c-text-muted);
+    }
+
+    .kpi-modern-card.card-theme-dark .kpi-card-val-row .val-uom {
+      color: #94A3B8;
+    }
+
+    .kpi-card-bottom {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--c-text-muted);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .kpi-modern-card.card-theme-dark .kpi-card-bottom {
+      color: #CBD5E1;
+    }
+
+    .kpi-card-bottom svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      flex-shrink: 0;
+    }
+
+    .kpi-card-bottom .dot-bullet {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #10B981;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .kpi-modern-card.card-theme-dark .kpi-card-bottom .dot-bullet {
+      background: #FFFFFF;
+    }
+
+    /* ==============================================================
+       4. SEKSI MONITOR STATUS MESIN & ALASAN OFF (BERSIH & PROPOSIONAL)
+       ============================================================== */
+    .dashboard-section-card {
+      background: var(--c-card);
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .section-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--c-border);
+      padding-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .section-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-accent-bar {
+      width: 3.5px;
+      height: 16px;
+      background: var(--c-red);
+      border-radius: 2px;
+    }
+
+    .section-h2 {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--c-navy);
+      letter-spacing: -0.01em;
+    }
+
+    .machine-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Switcher Tampilan Grid / List */
+    .view-mode-toggle {
+      display: inline-flex;
+      background: #F1F5F9;
+      border: 1px solid var(--c-border);
+      border-radius: 6px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .btn-view-toggle {
+      height: 26px;
+      padding: 0 10px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--c-text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.12s ease;
+      font-family: inherit;
+    }
+
+    .btn-view-toggle:hover {
+      color: var(--c-navy);
+    }
+
+    .btn-view-toggle.active {
+      background: #FFFFFF;
+      color: var(--c-navy);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-view-toggle svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+    }
+
+    .machine-status-summary-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* List Table Mesin */
+    .machine-list-table-wrapper {
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      overflow-x: auto;
+      background: #FFFFFF;
+    }
+
+    .machine-list-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 11.5px;
+    }
+
+    .machine-list-table th {
+      background: #F8FAFC;
+      color: #475569;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--c-border);
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .machine-list-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #F1F5F9;
+      color: var(--c-text-main);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .machine-list-table tbody tr {
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+
+    .machine-list-table tbody tr:hover td {
+      background: #F8FAFC;
+    }
+
+    .machine-list-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .btn-machine-detail-action {
+      height: 24px;
+      padding: 0 9px;
+      background: #FFFFFF;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 4px;
+      color: var(--c-navy);
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.12s ease;
+    }
+
+    .btn-machine-detail-action:hover {
+      background: var(--c-navy);
+      color: #FFFFFF;
+      border-color: var(--c-navy);
+    }
+
+    .status-summary-pill {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .pill-running-active {
+      background: var(--c-green-light);
+      color: var(--c-green-dark);
+      border: 1px solid var(--c-green-border);
+    }
+
+    .pill-off-active {
+      background: var(--c-red-light);
+      color: var(--c-red);
+      border: 1px solid var(--c-red-border);
+    }
+
+    /* Grid Mesin Produksi */
+    .machine-grid-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .line-group-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--c-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .machine-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    /* Kartu Status Mesin Satuan (Compact Flat) */
+    .machine-tile-card {
+      border: 1px solid var(--c-border);
+      border-radius: 7px;
+      padding: 8px 10px;
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: border-color 0.12s ease;
+      position: relative;
+    }
+
+    .machine-tile-card:hover {
+      border-color: #94A3B8;
+    }
+
+    /* Status Running vs OFF */
+    .machine-tile-card.is-running {
+      border-top: 3px solid var(--c-green);
+    }
+
+    .machine-tile-card.is-off {
+      border-top: 3px solid var(--c-red);
+      background: #FFFBFB;
+    }
+
+    .machine-tile-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .machine-code-text {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--c-navy);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .machine-badge-indicator {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .badge-running {
+      background: var(--c-green-light);
+      color: var(--c-green-dark);
+      border: 1px solid var(--c-green-border);
+    }
+
+    .badge-off {
+      background: var(--c-red-light);
+      color: var(--c-red);
+      border: 1px solid var(--c-red-border);
+    }
+
+    .machine-tile-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 10.5px;
+    }
+
+    .meta-line-item {
+      display: flex;
+      justify-content: space-between;
+      color: var(--c-text-muted);
+    }
+
+    .meta-line-item strong {
+      color: var(--c-navy);
+      font-weight: 600;
+    }
+
+    /* Banner Alasan OFF Khusus Mesin Berhenti */
+    .off-reason-banner {
+      background: #FEF2F2;
+      border: 1px dashed #F87171;
+      border-radius: 5px;
+      padding: 4px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #991B1B;
+      line-height: 1.3;
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .off-reason-banner svg {
+      width: 12px;
+      height: 12px;
+      stroke: var(--c-red);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ==============================================================
+       5. SEKSI BUFFER STOK & UMUR WIP EXTRUDER–CUTTING (LEGA & RAPI)
+       ============================================================== */
+    .wip-dual-grid {
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 18px;
+    }
+
+    /* Sub-Panel Box WIP & Pareto */
+    .wip-flow-calc-box {
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .sub-box-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--c-navy);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .flow-step-equation {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      align-items: stretch;
+      position: relative;
+    }
+
+    .equation-item {
+      background: #F8FAFC;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .equation-item-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--c-text-muted);
+    }
+
+    .equation-item-val {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--c-navy);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Kotak Hasil Saldo Buffer Siap Potong */
+    .equation-result-box {
+      background: #0F172A;
+      color: #FFFFFF;
+      border: 1px solid #1E293B;
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .result-left-lbl {
+      font-size: 12px;
+      font-weight: 700;
+      color: #F1F5F9;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .result-big-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: #38BDF8;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: -0.01em;
+    }
+
+    .calc-meta-footer {
+      font-size: 11.5px;
+      color: var(--c-text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 8px;
+      border-top: 1px solid #F1F5F9;
+    }
+
+    /* Kolom Kanan: Umur Stok WIP (Diagram Lingkaran Donut & Legend Compact) */
+    .wip-donut-layout {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 2px 0;
+    }
+
+    .wip-donut-chart-container {
+      width: 112px;
+      height: 112px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .wip-donut-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
+    .wip-donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .donut-legend-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .donut-legend-bullet {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .donut-legend-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .donut-legend-label {
+      font-size: 11px;
+      color: var(--c-text-muted);
+      font-weight: 600;
+    }
+
+    .donut-legend-qty {
+      font-size: 11.5px;
+      font-weight: 800;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .donut-pct-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: #475569;
+      background: #F1F5F9;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .wip-oldest-alert {
+      background: #FEF3C7;
+      border: 1px solid #FCD34D;
+      border-left: 4px solid #D97706;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 11px;
+      color: #92400E;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    /* ==============================================================
+       6. SEKSI PENGENDALIAN PARETO BS & ANALISIS CACAT (LEGA & RAPI)
+       ============================================================== */
+    .pareto-dual-grid {
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap: 18px;
+    }
+
+    .pareto-bars-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .pareto-bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 6.5px 12px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 7px;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .pareto-bar-row:hover {
+      background: #FFFFFF;
+      border-color: #CBD5E1;
+    }
+
+    .pareto-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+    }
+
+    .pareto-cause-name {
+      font-weight: 700;
+      color: var(--c-navy);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .pareto-badge-num {
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 9px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .pareto-pct-weight {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--c-text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .pareto-pct-pill {
+      background: #FEE2E2;
+      color: #B91C1C;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1.5px 7px;
+      border-radius: 4px;
+    }
+
+    .pareto-track {
+      width: 100%;
+      height: 5.5px;
+      background: #E2E8F0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .pareto-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #D62828 0%, #EA580C 100%);
+      border-radius: 999px;
+    }
+
+    /* Tabel Mesin Penyumbang BS & Backlog (Clean, Rapi, Sela Lega) */
+    .compact-styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 11.5px;
+    }
+
+    .compact-styled-table th {
+      background: #F8FAFC;
+      color: #475569;
+      font-weight: 700;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--c-border);
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .compact-styled-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid #F1F5F9;
+      color: var(--c-text-main);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .compact-styled-table tr:hover td {
+      background: #F8FAFC;
+    }
+
+    .compact-styled-table th:last-child,
+    .compact-styled-table td:last-child {
+      text-align: center;
+    }
+
+    /* ==============================================================
+       7. SEKSI SISA ORDER & PRIORITAS PENYELESAIAN (CLEAN & RAPI)
+       ============================================================== */
+    .backlog-table-wrapper {
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      overflow-x: auto;
+      background: #FFFFFF;
+    }
+
+    /* Status Prioritas Seragam & Bold Solid Color (Warna Lebih Bold & Tegas) */
+    .priority-pill {
+      font-size: 10px;
+      font-weight: 800;
+      width: 130px;
+      height: 27px;
+      line-height: 27px;
+      border-radius: 5px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      color: #FFFFFF;
+      border: none;
+    }
+
+    /* Warna Hijau Bold/Pekat */
+    .priority-normal {
+      background-color: #15803D;
+      color: #FFFFFF;
+      box-shadow: 0 1px 2px rgba(21, 128, 61, 0.2);
+    }
+
+    /* Warna Amber Bold/Pekat */
+    .priority-attention {
+      background-color: #B45309;
+      color: #FFFFFF;
+      box-shadow: 0 1px 2px rgba(180, 83, 9, 0.2);
+    }
+
+    /* Warna Merah Bold/Pekat */
+    .priority-urgent {
+      background-color: #B91C1C;
+      color: #FFFFFF;
+      box-shadow: 0 1px 2px rgba(185, 28, 28, 0.2);
+    }
+
+    /* ==============================================================
+       8. FOOTER HALAMAN & SOW NOTICE (COMPACT)
+       ============================================================== */
+    .dashboard-footer {
+      border-top: 1px solid var(--c-border);
+      padding: 12px 18px;
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--c-text-muted);
+      margin-top: 8px;
+    }
+
+    .footer-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .footer-access-role {
+      font-weight: 600;
+      color: var(--c-navy);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer-sow-callout {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-left: 3px solid #0284C7;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: #334155;
+      line-height: 1.45;
+    }
+
+    /* ==============================================================
+       MODAL DETAIL MESIN POPUP (INTERAKTIF)
+       ============================================================== */
+    .modal-telemetry-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-telemetry-box {
+      background: #FFFFFF;
+      border-radius: 14px;
+      border: 1px solid #E2E8F0;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalScaleUp 0.18s ease-out;
+    }
+
+    @keyframes modalScaleUp {
+      from {
+        transform: scale(0.96);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .telemetry-modal-header {
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .telemetry-modal-title {
+      font-size: 15px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-close-telemetry {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+    }
+
+    .btn-close-telemetry:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #FFFFFF;
+    }
+
+    .telemetry-modal-body {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 12.5px;
+    }
+
+    .telemetry-data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .telemetry-actions-bar {
+      padding: 12px 20px 16px;
+      border-top: 1px solid #E2E8F0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      background: #FFFFFF;
+    }
+
+    /* Toast Notification Floating */
+    .toast-popup-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      z-index: 2000;
+      animation: toastSlideUp 0.2s ease-out;
+    }
+
+    @keyframes toastSlideUp {
+      from {
+        transform: translateY(10px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Button Edit Target Manual Shift (SOW V3 Scope S04) */
+    .btn-edit-target {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2.5px 7px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .btn-edit-target:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.38);
+    }
+
+    /* Manual Machine Toggle Switch */
+    .btn-mach-toggle {
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 2px 7px 2px 5px;
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      font-family: inherit;
+      line-height: 1;
+    }
+
+    .btn-mach-toggle.toggle-on {
+      background: #ECFDF5;
+      color: #047857;
+      border-color: #A7F3D0;
+    }
+
+    .btn-mach-toggle.toggle-on:hover {
+      background: #D1FAE5;
+      border-color: #6EE7B7;
+    }
+
+    .btn-mach-toggle.toggle-off {
+      background: #FEF2F2;
+      color: #B91C1C;
+      border-color: #FECACA;
+    }
+
+    .btn-mach-toggle.toggle-off:hover {
+      background: #FEE2E2;
+      border-color: #FCA5A5;
+    }
+
+    .mach-toggle-knob {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background 0.15s ease;
+    }
+
+    .toggle-on .mach-toggle-knob {
+      background: #10B981;
+      box-shadow: 0 0 4px rgba(16, 185, 129, 0.6);
+    }
+
+    .toggle-off .mach-toggle-knob {
+      background: #EF4444;
+      box-shadow: 0 0 4px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Preset Buttons di Modal Target */
+    .btn-key-preset {
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.12s ease;
+    }
+
+    .btn-key-preset:hover {
+      background: #E2E8F0;
+      color: #0F172A;
+      border-color: #94A3B8;
+    }
+
+    /* ==============================================================
+       RESPONSIVE DESIGN (DESKTOP & TABLET ADAPTATION)
+       ============================================================== */
+    @media (max-width: 1024px) {
+      .machine-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .wip-dual-grid,
+      .pareto-dual-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .kpi-scorecard-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .app-sidebar {
+        width: 72px;
+      }
+
+      body.sidebar-collapsed .app-sidebar {
+        margin-left: -72px;
+      }
+
+      .brand-mfg-title,
+      .brand-sub-label,
+      .menu-link-btn span,
+      .sidebar-section-title,
+      .user-info-text {
+        display: none;
+      }
+
+      .menu-link-btn {
+        justify-content: center;
+        padding: 0;
+      }
+
+      .sidebar-user-footer {
+        justify-content: center;
+      }
+
+      .flow-step-equation {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    if (localStorage.getItem('dxl_sidebar_collapsed') === '1') {
+      document.body.classList.add('sidebar-collapsed');
+    }
+  </script>
+
+  <!-- ==============================================================
+       1. SIDEBAR NAVIGASI KIRI (260px - ROLE OPERASIONAL LANTAI)
+       ============================================================== */ -->
+  <aside class="app-sidebar">
+
+    <!-- Header Sidebar -->
+    <div class="sidebar-brand-header">
+      <a href="../bagian-1/index.html" style="text-decoration: none; display: flex; align-items: center; gap: 10px;" title="Kembali ke Portal Utama">
+        <div class="brand-top-row">
+          <img src="images/logo.png" alt="DXL ERP Logo" class="brand-logo-img"
+            onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';">
+          <div id="logoFallback" class="brand-text-fallback" style="display: none;">
+            <span>DXL</span>
+            <span class="brand-badge">ERP</span>
+          </div>
+        </div>
+      </a>
+      <div class="brand-system-labels">
+        <span class="brand-mfg-title">OPERATIONAL MONITORING</span>
+      </div>
+    </div>
+
+    <!-- Menu Navigasi Khusus Pemantauan Operasional -->
+    <nav class="sidebar-menu-scroll">
+      <span class="sidebar-section-title">Lantai Produksi</span>
+
+      <!-- 1. Ringkasan Operasional (Aktif) -->
+      <a href="#sec-overview" class="menu-link-btn active" id="navLinkOverview">
+        <svg viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+        </svg>
+        <span>Ringkasan Operasional</span>
+      </a>
+
+      <!-- 2. Status Mesin & Line -->
+      <a href="#sec-mesin" class="menu-link-btn" id="navLinkMesin">
+        <svg viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="7" width="20" height="14" rx="2" />
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+        </svg>
+        <span>Status Mesin &amp; Line</span>
+      </a>
+
+      <!-- 3. Buffer Aliran WIP -->
+      <a href="#sec-wip" class="menu-link-btn" id="navLinkWip">
+        <svg viewBox="0 0 24 24" fill="none">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+        <span>Buffer Aliran WIP</span>
+      </a>
+
+      <!-- 4. Pengendalian Scrap / BS -->
+      <a href="#sec-scrap" class="menu-link-btn" id="navLinkScrap">
+        <svg viewBox="0 0 24 24" fill="none">
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        </svg>
+        <span>Pengendalian Scrap / BS</span>
+      </a>
+
+      <!-- 5. Daftar Antrean MO (SPK) -->
+      <a href="#sec-antrean" class="menu-link-btn" id="navLinkAntrean">
+        <svg viewBox="0 0 24 24" fill="none">
+          <line x1="8" y1="6" x2="21" y2="6" />
+          <line x1="8" y1="12" x2="21" y2="12" />
+          <line x1="8" y1="18" x2="21" y2="18" />
+          <line x1="3" y1="6" x2="3.01" y2="6" />
+          <line x1="3" y1="12" x2="3.01" y2="12" />
+          <line x1="3" y1="18" x2="3.01" y2="18" />
+        </svg>
+        <span>Daftar Antrean MO (SPK)</span>
+      </a>
+    </nav>
+
+    <!-- Footer Sidebar: User Profile Card -->
+    <div class="sidebar-user-footer">
+      <div class="user-avatar-badge">U</div>
+      <div class="user-info-text">
+        <span class="user-full-name">User</span>
+        <span class="user-role-title">Supervisor Produksi (Lantai 1)</span>
+        <span class="user-live-status">
+          <span class="pulsing-dot"></span>
+          <span>Online &bull; Shift 1</span>
+        </span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ==============================================================
+       2. MAIN CONTENT AREA
+       ============================================================== */ -->
+  <main class="app-main">
+
+    <!-- Top Bar & Kontrol Filter Terpadu -->
+    <header class="top-header-panel">
+
+      <!-- Baris 1: Breadcrumb & TV Mode -->
+      <div class="topbar-row-breadcrumb">
+        <div class="topbar-left-wrap">
+          <button type="button" class="btn-sidebar-toggle" id="btnToggleSidebar" onclick="toggleSidebar()"
+            title="Sembunyikan / Tampilkan Sidebar" aria-label="Toggle Sidebar">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+              <path d="M9 3v18" />
+              <path d="m14 9-3 3 3 3" />
+            </svg>
+          </button>
+          <div class="breadcrumb-wrap">
+            <span class="breadcrumb-parent">Production Control</span>
+            <span class="breadcrumb-sep">&rsaquo;</span>
+            <span class="breadcrumb-current">Operational Floor Monitor</span>
+          </div>
+        </div>
+
+        <div class="topbar-right-quick">
+          <div class="live-clock-pill">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <span id="liveClockText">31 Okt 2026, 10:45:00 WIB</span>
+          </div>
+          <button type="button" class="btn-tv-mode" onclick="toggleFullscreen()"
+            title="Tampilan Penuh Layar TV Monitor">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+            </svg>
+            <span>Monitor TV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Baris 2: Filter Bar Fleksibel -->
+      <div class="topbar-row-filters">
+        <div class="filters-left-group">
+          <!-- Date Range Picker (Start Date s/d End Date) -->
+          <div class="date-range-group">
+            <input type="date" class="input-date-custom" id="filterStartDate" value="2026-10-25"
+              onchange="triggerFilterChange()" title="Tanggal Mulai">
+            <span style="color: var(--c-text-muted); font-size: 12px; font-weight: 600;">s/d</span>
+            <input type="date" class="input-date-custom" id="filterEndDate" value="2026-10-31"
+              onchange="triggerFilterChange()" title="Tanggal Selesai">
+          </div>
+
+          <!-- Tombol Pintas Preset Cepat -->
+          <div class="date-presets-wrap">
+            <button type="button" class="btn-date-preset" onclick="setDatePreset('today', this)">Hari Ini</button>
+            <button type="button" class="btn-date-preset active" onclick="setDatePreset('7days', this)">7 Hari Terakhir</button>
+            <button type="button" class="btn-date-preset" onclick="setDatePreset('mtd', this)">Bulan Berjalan (MTD)</button>
+          </div>
+
+          <!-- Segmented Shift Filter -->
+          <div class="shift-segmented-wrap">
+            <button type="button" class="btn-shift-segment" onclick="setShiftFilter('all', this)">Semua Shift</button>
+            <button type="button" class="btn-shift-segment active" onclick="setShiftFilter('1', this)">Shift 1</button>
+            <button type="button" class="btn-shift-segment" onclick="setShiftFilter('2', this)">Shift 2</button>
+            <button type="button" class="btn-shift-segment" onclick="setShiftFilter('3', this)">Shift 3</button>
+          </div>
+
+          <!-- Dropdown Divisi / Line -->
+          <select class="select-division-filter" id="filterDivisionSelect" onchange="triggerFilterChange()">
+            <option value="all" selected>Semua Divisi</option>
+            <option value="extruder">Lini Extruder (SFG)</option>
+            <option value="cutting">Lini Cutting (FG)</option>
+          </select>
+        </div>
+
+        <div class="filters-right-group">
+          <!-- Tombol Navigasi Cepat ke Dashboard Manajemen -->
+          <a href="dashboard-manajemen.html" class="btn-switch-dashboard" title="Beralih ke Tampilan Eksekutif">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+            <span>Beralih ke Dashboard Manajemen</span>
+          </a>
+
+          <div class="sync-status-indicator">
+            <span class="pulsing-dot"></span>
+            <span id="syncTextLabel">Live Sync per 15 Menit</span>
+          </div>
+          <button type="button" class="btn-refresh-interactive" id="btnRefresh" onclick="refreshDashboardData()">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M23 4v6h-6" />
+              <path d="M1 20v-6h6" />
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+            </svg>
+            <span>Refresh Data</span>
+          </button>
+        </div>
+      </div>
+
+    </header>
+
+    <!-- Body Konten Dashboard -->
+    <div class="dashboard-content-body" id="sec-overview">
+
+      <!-- ==============================================================
+           3. SCORECARD KPI UTAMA (CLEAN, MODERN & MINIMALIS)
+           ============================================================== -->
+      <section class="kpi-scorecard-grid">
+
+        <!-- KPI 1: Target Shift / Rencana (Dark Navy Theme Sesuai Acuan) -->
+        <div class="kpi-modern-card card-theme-dark">
+          <div class="kpi-card-top">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="kpi-card-label">TARGET SHIFT</span>
+              <button type="button" class="btn-edit-target" onclick="openTargetModal()"
+                title="Input Target Manual (SOW V3 Scope S04)">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M12 20h9" />
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                </svg>
+                <span>Edit Target</span>
+              </button>
+            </div>
+            <div class="kpi-card-icon-box icon-box-target" title="Target Rencana Operasional">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-card-val-row">
+            <span class="val-number" id="kpiOpTarget">15.600</span>
+            <span class="val-uom">Kg</span>
+          </div>
+          <div class="kpi-card-bottom">
+            <span class="dot-bullet"></span>
+            <span id="kpiOpShiftSub">Shift 1 &bull; Rencana 8 Jam</span>
+          </div>
+        </div>
+
+        <!-- KPI 2: Hasil Aktual Bagus (Indikator 1 - Rincian WIP & Direct FG) -->
+        <div class="kpi-modern-card">
+          <div class="kpi-card-top">
+            <span class="kpi-card-label">HASIL AKTUAL BAGUS</span>
+            <div class="kpi-card-icon-box icon-box-good" title="Barang Bagus Lolos QC (Good Output)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 7v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7" />
+                <path d="M21 7H3l2-4h14l2 4z" />
+                <path d="m9 14 2 2 4-4" />
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-card-val-row">
+            <span class="val-number" id="kpiGoodOutputTotal">11.890</span>
+            <span class="val-uom">Kg</span>
+          </div>
+          <div class="kpi-card-bottom">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            <span id="kpiGoodSubText">Ext: 8.450 Kg (WIP: 7.100 | Direct FG: 1.350) &bull; Cut: 5.830 Kg</span>
+          </div>
+        </div>
+
+        <!-- KPI 3: Barang Rusak (BS) / Reject Scrap (Indikator 3 - Rincian Rasio per Lini) -->
+        <div class="kpi-modern-card">
+          <div class="kpi-card-top">
+            <span class="kpi-card-label">BARANG RUSAK (BS)</span>
+            <div class="kpi-card-icon-box icon-box-scrap" title="Barang Rusak / Defect Afval (Broken Goods)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 7v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7" />
+                <path d="M21 7H3l2-4h14l2 4z" />
+                <path d="M12 7v3l-2 2 4 3-2 3v4" />
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-card-val-row">
+            <span class="val-number" id="kpiScrapTotal">312,5</span>
+            <span class="val-uom">Kg</span>
+          </div>
+          <div class="kpi-card-bottom" style="flex-direction: column; align-items: flex-start; gap: 3px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <span>Toleransi Afval &lt; 2.5% (<strong style="color: #16A34A;" id="kpiScrapRatioSub">2.14%
+                  Aman</strong>)</span>
+            </div>
+            <div style="font-size: 11px; color: var(--c-text-muted); padding-left: 20px;">
+              BS Extruder: 2.1% (145 Kg) &bull; BS Cutting: 1.8% (95 Kg)
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI 4: Pencapaian Target Output (Indikator 2 - Rincian Sub-Label per Lini) -->
+        <div class="kpi-modern-card">
+          <div class="kpi-card-top">
+            <span class="kpi-card-label">PENCAPAIAN TARGET</span>
+            <div class="kpi-card-icon-box icon-box-perf" title="Rasio Pencapaian">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-card-val-row">
+            <span class="val-number" id="kpiAchievementPct">84.0</span>
+            <span class="val-uom">%</span>
+          </div>
+          <div class="kpi-card-bottom" style="flex-direction: column; align-items: flex-start; gap: 3px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="23 4 23 10 17 10" />
+                <polyline points="1 20 1 14 7 14" />
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+              </svg>
+              <span>Rasio Output vs Target Rencana</span>
+            </div>
+            <div style="font-size: 11px; color: var(--c-text-muted); padding-left: 20px;" id="kpiAchieveSub">
+              Extruder: 88.5% | Cutting: 79.2%
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==============================================================
+           4. SEKSI MONITOR STATUS MESIN & ALASAN OFF (INDIKATOR 5 & 6)
+           ============================================================== -->
+      <section class="dashboard-section-card" id="sec-mesin">
+
+        <div class="section-header-row">
+          <div class="section-title-wrap">
+            <div class="section-accent-bar"></div>
+            <h2 class="section-h2">Status Utilitas &amp; Kesiapan Mesin (Real-Time)</h2>
+          </div>
+
+          <div class="machine-header-actions">
+            <!-- Pilihan Tampilan: Grid Card vs List Table -->
+            <div class="view-mode-toggle" role="group" aria-label="Pilihan Tampilan Mesin">
+              <button type="button" class="btn-view-toggle active" id="btnViewGrid" onclick="setMachineViewMode('grid')"
+                title="Tampilan Kartu Grid">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                </svg>
+                <span>Grid</span>
+              </button>
+              <button type="button" class="btn-view-toggle" id="btnViewList" onclick="setMachineViewMode('list')"
+                title="Tampilan Daftar List">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <line x1="8" y1="6" x2="21" y2="6" />
+                  <line x1="8" y1="12" x2="21" y2="12" />
+                  <line x1="8" y1="18" x2="21" y2="18" />
+                  <line x1="3" y1="6" x2="3.01" y2="6" />
+                  <line x1="3" y1="12" x2="3.01" y2="12" />
+                  <line x1="3" y1="18" x2="3.01" y2="18" />
+                </svg>
+                <span>List</span>
+              </button>
+            </div>
+
+            <div class="machine-status-summary-pills">
+              <span class="status-summary-pill pill-running-active">
+                <span class="pulsing-dot"></span>
+                <span>14 Mesin RUNNING</span>
+              </span>
+              <span class="status-summary-pill pill-off-active">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>3 Mesin OFF</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAMPILAN 1: GRID MODE (DEFAULT) -->
+        <div id="machineViewGrid" class="machine-grid-layout">
+
+          <!-- Lini Extruder -->
+          <div id="groupExtruderLine">
+            <div class="line-group-title">
+              <span>Lini Extruder (SFG Roll)</span>
+            </div>
+
+            <div class="machine-cards-grid" style="margin-top: 8px;">
+
+              <!-- EXT-01: Running -->
+              <div class="machine-tile-card is-running" id="machCard-EXT-01"
+                onclick="openMachineModal('EXT-01', 'Running', 'Sugeng Purnomo', 'MO/2026/10/0012', 'Roll Film PE Bening 40x60', '95 Kg/Jam', '185°C', 'Normal Operasional')">
+                <div class="machine-tile-top">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="machine-code-text">EXT-01</span>
+                    <span class="machine-badge-indicator badge-running" id="badge-EXT-01">Running</span>
+                  </div>
+                  <button type="button" class="btn-mach-toggle toggle-on" id="toggle-EXT-01"
+                    onclick="event.stopPropagation(); triggerMachineToggle('EXT-01', 'Running')"
+                    title="Ubah Status Mesin Manual">
+                    <span class="mach-toggle-knob"></span>
+                    <span class="mach-toggle-label">ON</span>
+                  </button>
+                </div>
+                <div class="machine-tile-meta">
+                  <div class="meta-line-item"><span>SPK Aktif:</span><strong>MO-0012</strong></div>
+                  <div class="meta-line-item"><span>Operator:</span><strong>Sugeng P.</strong></div>
+                  <div class="meta-line-item"><span>Output Rate:</span><strong style="color: var(--c-green-dark);">95
+                      Kg/Jam</strong></div>
+                </div>
+              </div>
+
+              <!-- EXT-02: OFF Setting Dies -->
+              <div class="machine-tile-card is-off" id="machCard-EXT-02"
+                onclick="openMachineModal('EXT-02', 'OFF', 'Joko Santoso', 'MO/2026/10/0013', 'Ganti Ukuran Dies ke 50x70', '0 Kg/Jam', '110°C (Cooldown)', 'OFF: Setting / Ganti Ukuran Dies')">
+                <div class="machine-tile-top">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="machine-code-text">EXT-02</span>
+                    <span class="machine-badge-indicator badge-off" id="badge-EXT-02">OFF</span>
+                  </div>
+                  <button type="button" class="btn-mach-toggle toggle-off" id="toggle-EXT-02"
+                    onclick="event.stopPropagation(); triggerMachineToggle('EXT-02', 'OFF')"
+                    title="Ubah Status Mesin Manual">
+                    <span class="mach-toggle-knob"></span>
+                    <span class="mach-toggle-label">OFF</span>
+                  </button>
+                </div>
+                <div class="off-reason-banner">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>OFF: Setting / Ganti Ukuran Dies</span>
+                </div>
+                <div class="machine-tile-meta">
+                  <div class="meta-line-item"><span>Durasi Henti:</span><strong style="color: var(--c-red);">42
+                      Menit</strong></div>
+                  <div class="meta-line-item"><span>Teknisi:</span><strong>Joko S.</strong></div>
+                </div>
+              </div>
+
+              <!-- EXT-03: Running -->
+              <div class="machine-tile-card is-running" id="machCard-EXT-03"
+                onclick="openMachineModal('EXT-03', 'Running', 'Agus Wahyudi', 'MO/2026/10/0015', 'Film HD Hitam 80x100', '110 Kg/Jam', '192°C', 'Normal Operasional')">
+                <div class="machine-tile-top">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="machine-code-text">EXT-03</span>
+                    <span class="machine-badge-indicator badge-running" id="badge-EXT-03">Running</span>
+                  </div>
+                  <button type="button" class="btn-mach-toggle toggle-on" id="toggle-EXT-03"
+                    onclick="event.stopPropagation(); triggerMachineToggle('EXT-03', 'Running')"
+                    title="Ubah Status Mesin Manual">
+                    <span class="mach-toggle-knob"></span>
+                    <span class="mach-toggle-label">ON</span>
+                  </button>
+                </div>
+                <div class="machine-tile-meta">
+                  <div class="meta-line-item"><span>SPK Aktif:</span><strong>MO-0015</strong></div>
+                  <div class="meta-line-item"><span>Operator:</span><strong>Agus W.</strong></div>
+                  <div class="meta-line-item"><span>Output Rate:</span><strong style="color: var(--c-green-dark);">110
+                      Kg/Jam</strong></div>
+                </div>
+              </div>
+
+              <!-- EXT-04: OFF Breakdown Pemanas Barrel -->
+              <div class="machine-tile-card is-off" id="machCard-EXT-04"
+                onclick="openMachineModal('EXT-04', 'OFF', 'Maintenance Dept', 'MO/2026/10/0017', 'Perbaikan Heater Band Zone 2', '0 Kg/Jam', '45°C (Mati)', 'OFF: Kerusakan Pemanas Barrel (Breakdown)')">
+                <div class="machine-tile-top">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="machine-code-text">EXT-04</span>
+                    <span class="machine-badge-indicator badge-off" id="badge-EXT-04">OFF</span>
+                  </div>
+                  <button type="button" class="btn-mach-toggle toggle-off" id="toggle-EXT-04"
+                    onclick="event.stopPropagation(); triggerMachineToggle('EXT-04', 'OFF')"
+                    title="Ubah Status Mesin Manual">
+                    <span class="mach-toggle-knob"></span>
+                    <span class="mach-toggle-label">OFF</span>
+                  </button>
+                </div>
+                <div class="off-reason-banner">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>OFF: Kerusakan Pemanas Barrel (Breakdown)</span>
+                </div>
+                <div class="machine-tile-meta">
+                  <div class="meta-line-item"><span>Durasi Henti:</span><strong style="color: var(--c-red);">1 Jam 15
+                      Mnt</strong></div>
+                  <div class="meta-line-item"><span>Teknisi:</span><strong>Tim Maintenance</strong></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Lini Cutting -->
+          <div id="groupCuttingLine" style="margin-top: 6px;">
+            <div class="line-group-title">
+              <span>Lini Cutting &amp; Sealing (FG Bag)</span>
+            </div>
+
+            <div class="machine-cards-grid" style="margin-top: 8px;">
+
+              <!-- CUT-01: Running -->
+              <div class="machine-tile-card is-running" id="machCard-CUT-01"
+                onclick="openMachineModal('CUT-01', 'Running', 'Rian Hidayat', 'MO/2026/10/0014', 'Kantong PE 40x60 Potong Seal', '85 Kg/Jam', '165°C', 'Normal Operasional')">
+                <div class="machine-tile-top">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="machine-code-text">CUT-01</span>
+                    <span class="machine-badge-indicator badge-running" id="badge-CUT-01">Running</span>
+                  </div>
+                  <button type="button" class="btn-mach-toggle toggle-on" id="toggle-CUT-01"
+                    onclick="event.stopPropagation(); triggerMachineToggle('CUT-01', 'Running')"
+                    title="Ubah Status Mesin Manual">
+                    <span class="mach-toggle-knob"></span>
+                    <span class="mach-toggle-label">ON</span>
+                  </button>
+                </div>
+                <div class="machine-tile-meta">
+                  <div class="meta-line-item"><span>SPK Aktif:</span><strong>MO-0014</strong></div>
+                  <div class="meta-line-item"><span>Operator:</span><strong>Rian H.</strong></div>
+                  <div class="meta-line-item"><span>Output Rate:</span><strong style="color: var(--c-green-dark);">85
+                      Kg/Jam</strong></div>
+                </div>
+              </div>
+
+              <!-- CUT-02: Running -->
+              <div class="machine-tile-card is-running" id="machCard-CUT-02"
+                onclick="openMachineModal('CUT-02', 'Running', 'Danang Kusuma', 'MO/2026/10/0016', 'Plastik Klip Stand Up 12x20', '92 Kg/Jam', '170°C', 'Normal Operasional')">
+                <div class="machine-tile-top">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="machine-code-text">CUT-02</span>
+                    <span class="machine-badge-indicator badge-running" id="badge-CUT-02">Running</span>
+                  </div>
+                  <button type="button" class="btn-mach-toggle toggle-on" id="toggle-CUT-02"
+                    onclick="event.stopPropagation(); triggerMachineToggle('CUT-02', 'Running')"
+                    title="Ubah Status Mesin Manual">
+                    <span class="mach-toggle-knob"></span>
+                    <span class="mach-toggle-label">ON</span>
+                  </button>
+                </div>
+                <div class="machine-tile-meta">
+                  <div class="meta-line-item"><span>SPK Aktif:</span><strong>MO-0016</strong></div>
+                  <div class="meta-line-item"><span>Operator:</span><strong>Danang K.</strong></div>
+                  <div class="meta-line-item"><span>Output Rate:</span><strong style="color: var(--c-green-dark);">92
+                      Kg/Jam</strong></div>
+                </div>
+              </div>
+
+              <!-- CUT-03: OFF Menunggu WIP -->
+              <div class="machine-tile-card is-off" id="machCard-CUT-03"
+                onclick="openMachineModal('CUT-03', 'OFF', 'Standby Operator', 'MO/2026/10/0019', 'Menunggu Roll SFG dari EXT-01', '0 Kg/Jam', 'Standby', 'OFF: Menunggu Buffer WIP Roll dari Extruder')">
+                <div class="machine-tile-top">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="machine-code-text">CUT-03</span>
+                    <span class="machine-badge-indicator badge-off" id="badge-CUT-03">OFF</span>
+                  </div>
+                  <button type="button" class="btn-mach-toggle toggle-off" id="toggle-CUT-03"
+                    onclick="event.stopPropagation(); triggerMachineToggle('CUT-03', 'OFF')"
+                    title="Ubah Status Mesin Manual">
+                    <span class="mach-toggle-knob"></span>
+                    <span class="mach-toggle-label">OFF</span>
+                  </button>
+                </div>
+                <div class="off-reason-banner">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>OFF: Menunggu Buffer WIP Roll</span>
+                </div>
+                <div class="machine-tile-meta">
+                  <div class="meta-line-item"><span>Durasi Henti:</span><strong style="color: var(--c-amber);">25
+                      Menit</strong></div>
+                  <div class="meta-line-item"><span>Status:</span><strong>Siap Jalan</strong></div>
+                </div>
+              </div>
+
+              <!-- CUT-04: Running -->
+              <div class="machine-tile-card is-running" id="machCard-CUT-04"
+                onclick="openMachineModal('CUT-04', 'Running', 'Dedi Prasetyo', 'MO/2026/10/0018', 'Kantong Sampah HD 80x100', '78 Kg/Jam', '168°C', 'Normal Operasional')">
+                <div class="machine-tile-top">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="machine-code-text">CUT-04</span>
+                    <span class="machine-badge-indicator badge-running" id="badge-CUT-04">Running</span>
+                  </div>
+                  <button type="button" class="btn-mach-toggle toggle-on" id="toggle-CUT-04"
+                    onclick="event.stopPropagation(); triggerMachineToggle('CUT-04', 'Running')"
+                    title="Ubah Status Mesin Manual">
+                    <span class="mach-toggle-knob"></span>
+                    <span class="mach-toggle-label">ON</span>
+                  </button>
+                </div>
+                <div class="machine-tile-meta">
+                  <div class="meta-line-item"><span>SPK Aktif:</span><strong>MO-0018</strong></div>
+                  <div class="meta-line-item"><span>Operator:</span><strong>Dedi P.</strong></div>
+                  <div class="meta-line-item"><span>Output Rate:</span><strong style="color: var(--c-green-dark);">78
+                      Kg/Jam</strong></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAMPILAN 2: LIST MODE (OPSI DAFTAR LIST SESUAI ARAHAN USER) -->
+        <div id="machineViewList" class="machine-list-table-wrapper" style="display: none;">
+          <table class="machine-list-table">
+            <thead>
+              <tr>
+                <th>Mesin &amp; Lini</th>
+                <th>Status</th>
+                <th>SPK / MO Berjalan</th>
+                <th>Operator / PIC</th>
+                <th>Output Speed</th>
+                <th>Suhu / Sensor</th>
+                <th>Alasan OFF / Kondisi</th>
+                <th style="text-align: center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- EXT-01 -->
+              <tr data-division="extruder"
+                onclick="openMachineModal('EXT-01', 'Running', 'Sugeng Purnomo', 'MO/2026/10/0012', 'Roll Film PE Bening 40x60', '95 Kg/Jam', '185°C', 'Normal Operasional')">
+                <td>
+                  <strong style="color: var(--c-navy);">EXT-01</strong>
+                  <span style="font-size: 10px; color: var(--c-text-muted); margin-left: 4px;">(Lini Extruder)</span>
+                </td>
+                <td><span class="machine-badge-indicator badge-running">Running</span></td>
+                <td><strong>MO/2026/10/0012</strong> <span style="color: var(--c-text-muted); font-size: 10.5px;">&bull;
+                    Roll PE Bening 40x60</span></td>
+                <td>Sugeng Purnomo</td>
+                <td><strong style="color: var(--c-green-dark);">95 Kg/Jam</strong></td>
+                <td>185°C</td>
+                <td><span style="color: var(--c-green-dark); font-weight: 600;">Normal Operasional</span></td>
+                <td style="text-align: center;">
+                  <button type="button" class="btn-machine-detail-action"
+                    onclick="event.stopPropagation(); openMachineModal('EXT-01', 'Running', 'Sugeng Purnomo', 'MO/2026/10/0012', 'Roll Film PE Bening 40x60', '95 Kg/Jam', '185°C', 'Normal Operasional')">Detail</button>
+                </td>
+              </tr>
+              <!-- EXT-02 -->
+              <tr data-division="extruder"
+                onclick="openMachineModal('EXT-02', 'OFF', 'Joko Santoso', 'MO/2026/10/0013', 'Ganti Ukuran Dies ke 50x70', '0 Kg/Jam', '110°C (Cooldown)', 'OFF: Setting / Ganti Ukuran Dies')">
+                <td>
+                  <strong style="color: var(--c-navy);">EXT-02</strong>
+                  <span style="font-size: 10px; color: var(--c-text-muted); margin-left: 4px;">(Lini Extruder)</span>
+                </td>
+                <td><span class="machine-badge-indicator badge-off">OFF</span></td>
+                <td><strong>MO/2026/10/0013</strong> <span style="color: var(--c-text-muted); font-size: 10.5px;">&bull;
+                    Ganti Dies 50x70</span></td>
+                <td>Joko Santoso (Teknisi)</td>
+                <td><span style="color: var(--c-red); font-weight: 700;">0 Kg/Jam</span></td>
+                <td>110°C (Cooldown)</td>
+                <td>
+                  <span class="off-reason-badge"
+                    style="background: #FEE2E2; color: #991B1B; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 10.5px;">OFF:
+                    Setting / Ganti Ukuran Dies (42 Mnt)</span>
+                </td>
+                <td style="text-align: center;">
+                  <button type="button" class="btn-machine-detail-action"
+                    onclick="event.stopPropagation(); openMachineModal('EXT-02', 'OFF', 'Joko Santoso', 'MO/2026/10/0013', 'Ganti Ukuran Dies ke 50x70', '0 Kg/Jam', '110°C (Cooldown)', 'OFF: Setting / Ganti Ukuran Dies')">Detail</button>
+                </td>
+              </tr>
+              <!-- EXT-03 -->
+              <tr data-division="extruder"
+                onclick="openMachineModal('EXT-03', 'Running', 'Agus Wahyudi', 'MO/2026/10/0015', 'Film HD Hitam 80x100', '110 Kg/Jam', '192°C', 'Normal Operasional')">
+                <td>
+                  <strong style="color: var(--c-navy);">EXT-03</strong>
+                  <span style="font-size: 10px; color: var(--c-text-muted); margin-left: 4px;">(Lini Extruder)</span>
+                </td>
+                <td><span class="machine-badge-indicator badge-running">Running</span></td>
+                <td><strong>MO/2026/10/0015</strong> <span style="color: var(--c-text-muted); font-size: 10.5px;">&bull;
+                    HD Hitam 80x100</span></td>
+                <td>Agus Wahyudi</td>
+                <td><strong style="color: var(--c-green-dark);">110 Kg/Jam</strong></td>
+                <td>192°C</td>
+                <td><span style="color: var(--c-green-dark); font-weight: 600;">Normal Operasional</span></td>
+                <td style="text-align: center;">
+                  <button type="button" class="btn-machine-detail-action"
+                    onclick="event.stopPropagation(); openMachineModal('EXT-03', 'Running', 'Agus Wahyudi', 'MO/2026/10/0015', 'Film HD Hitam 80x100', '110 Kg/Jam', '192°C', 'Normal Operasional')">Detail</button>
+                </td>
+              </tr>
+              <!-- EXT-04 -->
+              <tr data-division="extruder"
+                onclick="openMachineModal('EXT-04', 'OFF', 'Maintenance Dept', 'MO/2026/10/0017', 'Perbaikan Heater Band Zone 2', '0 Kg/Jam', '45°C (Mati)', 'OFF: Kerusakan Pemanas Barrel (Breakdown)')">
+                <td>
+                  <strong style="color: var(--c-navy);">EXT-04</strong>
+                  <span style="font-size: 10px; color: var(--c-text-muted); margin-left: 4px;">(Lini Extruder)</span>
+                </td>
+                <td><span class="machine-badge-indicator badge-off">OFF</span></td>
+                <td><strong>MO/2026/10/0017</strong> <span style="color: var(--c-text-muted); font-size: 10.5px;">&bull;
+                    Perbaikan Heater Zone 2</span></td>
+                <td>Maintenance Dept</td>
+                <td><span style="color: var(--c-red); font-weight: 700;">0 Kg/Jam</span></td>
+                <td>45°C (Mati)</td>
+                <td>
+                  <span class="off-reason-badge"
+                    style="background: #FEE2E2; color: #991B1B; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 10.5px;">OFF:
+                    Breakdown Pemanas Barrel (1 Jam 15 Mnt)</span>
+                </td>
+                <td style="text-align: center;">
+                  <button type="button" class="btn-machine-detail-action"
+                    onclick="event.stopPropagation(); openMachineModal('EXT-04', 'OFF', 'Maintenance Dept', 'MO/2026/10/0017', 'Perbaikan Heater Band Zone 2', '0 Kg/Jam', '45°C (Mati)', 'OFF: Kerusakan Pemanas Barrel (Breakdown)')">Detail</button>
+                </td>
+              </tr>
+              <!-- CUT-01 -->
+              <tr data-division="cutting"
+                onclick="openMachineModal('CUT-01', 'Running', 'Rian Hidayat', 'MO/2026/10/0014', 'Kantong PE 40x60 Potong Seal', '85 Kg/Jam', '165°C', 'Normal Operasional')">
+                <td>
+                  <strong style="color: var(--c-navy);">CUT-01</strong>
+                  <span style="font-size: 10px; color: var(--c-text-muted); margin-left: 4px;">(Lini Cutting)</span>
+                </td>
+                <td><span class="machine-badge-indicator badge-running">Running</span></td>
+                <td><strong>MO/2026/10/0014</strong> <span style="color: var(--c-text-muted); font-size: 10.5px;">&bull;
+                    Kantong PE 40x60</span></td>
+                <td>Rian Hidayat</td>
+                <td><strong style="color: var(--c-green-dark);">85 Kg/Jam</strong></td>
+                <td>165°C</td>
+                <td><span style="color: var(--c-green-dark); font-weight: 600;">Normal Operasional</span></td>
+                <td style="text-align: center;">
+                  <button type="button" class="btn-machine-detail-action"
+                    onclick="event.stopPropagation(); openMachineModal('CUT-01', 'Running', 'Rian Hidayat', 'MO/2026/10/0014', 'Kantong PE 40x60 Potong Seal', '85 Kg/Jam', '165°C', 'Normal Operasional')">Detail</button>
+                </td>
+              </tr>
+              <!-- CUT-02 -->
+              <tr data-division="cutting"
+                onclick="openMachineModal('CUT-02', 'Running', 'Danang Kusuma', 'MO/2026/10/0016', 'Plastik Klip Stand Up 12x20', '92 Kg/Jam', '170°C', 'Normal Operasional')">
+                <td>
+                  <strong style="color: var(--c-navy);">CUT-02</strong>
+                  <span style="font-size: 10px; color: var(--c-text-muted); margin-left: 4px;">(Lini Cutting)</span>
+                </td>
+                <td><span class="machine-badge-indicator badge-running">Running</span></td>
+                <td><strong>MO/2026/10/0016</strong> <span style="color: var(--c-text-muted); font-size: 10.5px;">&bull;
+                    Klip Stand Up 12x20</span></td>
+                <td>Danang Kusuma</td>
+                <td><strong style="color: var(--c-green-dark);">92 Kg/Jam</strong></td>
+                <td>170°C</td>
+                <td><span style="color: var(--c-green-dark); font-weight: 600;">Normal Operasional</span></td>
+                <td style="text-align: center;">
+                  <button type="button" class="btn-machine-detail-action"
+                    onclick="event.stopPropagation(); openMachineModal('CUT-02', 'Running', 'Danang Kusuma', 'MO/2026/10/0016', 'Plastik Klip Stand Up 12x20', '92 Kg/Jam', '170°C', 'Normal Operasional')">Detail</button>
+                </td>
+              </tr>
+              <!-- CUT-03 -->
+              <tr data-division="cutting"
+                onclick="openMachineModal('CUT-03', 'OFF', 'Standby Operator', 'MO/2026/10/0019', 'Menunggu Roll SFG dari EXT-01', '0 Kg/Jam', 'Standby', 'OFF: Menunggu Buffer WIP Roll dari Extruder')">
+                <td>
+                  <strong style="color: var(--c-navy);">CUT-03</strong>
+                  <span style="font-size: 10px; color: var(--c-text-muted); margin-left: 4px;">(Lini Cutting)</span>
+                </td>
+                <td><span class="machine-badge-indicator badge-off">OFF</span></td>
+                <td><strong>MO/2026/10/0019</strong> <span style="color: var(--c-text-muted); font-size: 10.5px;">&bull;
+                    Menunggu Roll SFG EXT-01</span></td>
+                <td>Standby Operator</td>
+                <td><span style="color: #B45309; font-weight: 700;">0 Kg/Jam</span></td>
+                <td>Standby</td>
+                <td>
+                  <span class="off-reason-badge"
+                    style="background: #FEF3C7; color: #92400E; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 10.5px;">OFF:
+                    Menunggu Buffer WIP Roll (25 Mnt)</span>
+                </td>
+                <td style="text-align: center;">
+                  <button type="button" class="btn-machine-detail-action"
+                    onclick="event.stopPropagation(); openMachineModal('CUT-03', 'OFF', 'Standby Operator', 'MO/2026/10/0019', 'Menunggu Roll SFG dari EXT-01', '0 Kg/Jam', 'Standby', 'OFF: Menunggu Buffer WIP Roll dari Extruder')">Detail</button>
+                </td>
+              </tr>
+              <!-- CUT-04 -->
+              <tr data-division="cutting"
+                onclick="openMachineModal('CUT-04', 'Running', 'Dedi Prasetyo', 'MO/2026/10/0018', 'Kantong Sampah HD 80x100', '78 Kg/Jam', '168°C', 'Normal Operasional')">
+                <td>
+                  <strong style="color: var(--c-navy);">CUT-04</strong>
+                  <span style="font-size: 10px; color: var(--c-text-muted); margin-left: 4px;">(Lini Cutting)</span>
+                </td>
+                <td><span class="machine-badge-indicator badge-running">Running</span></td>
+                <td><strong>MO/2026/10/0018</strong> <span style="color: var(--c-text-muted); font-size: 10.5px;">&bull;
+                    Sampah HD 80x100</span></td>
+                <td>Dedi Prasetyo</td>
+                <td><strong style="color: var(--c-green-dark);">78 Kg/Jam</strong></td>
+                <td>168°C</td>
+                <td><span style="color: var(--c-green-dark); font-weight: 600;">Normal Operasional</span></td>
+                <td style="text-align: center;">
+                  <button type="button" class="btn-machine-detail-action"
+                    onclick="event.stopPropagation(); openMachineModal('CUT-04', 'Running', 'Dedi Prasetyo', 'MO/2026/10/0018', 'Kantong Sampah HD 80x100', '78 Kg/Jam', '168°C', 'Normal Operasional')">Detail</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- ==============================================================
+           5. SEKSI BUFFER STOK & UMUR WIP EXTRUDER–CUTTING (INDIKATOR 7 & 9)
+           ============================================================== -->
+      <section class="dashboard-section-card" id="sec-wip">
+
+        <div class="section-header-row">
+          <div class="section-title-wrap">
+            <div class="section-accent-bar"></div>
+            <h2 class="section-h2">Buffer Aliran Stok &amp; Umur WIP (Extruder &rarr; Cutting)</h2>
+          </div>
+          <span class="kpi-status-tag tag-neutral">Lantai Produksi 1 &bull; Transit Area</span>
+        </div>
+
+        <div class="wip-dual-grid">
+
+          <!-- Kolom Kiri: Saldo Stok WIP (Indikator 7) -->
+          <div class="wip-flow-calc-box">
+            <div class="sub-box-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="2" y="7" width="20" height="14" rx="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              </svg>
+              <span>Visualisasi Aliran Buffer WIP Roll Film:</span>
+            </div>
+
+            <!-- Rumus Aliran Stok -->
+            <div class="flow-step-equation">
+              <div class="equation-item" style="border-left: 3px solid #64748B;">
+                <span class="equation-item-title">1. Saldo Awal</span>
+                <span class="equation-item-val">3.400 Kg</span>
+              </div>
+              <div class="equation-item" style="border-left: 3px solid #16A34A;">
+                <span class="equation-item-title">2. Masuk Extruder (+)</span>
+                <span class="equation-item-val" style="color: #15803D;">+7.100 Kg</span>
+              </div>
+              <div class="equation-item" style="border-left: 3px solid #DC2626;">
+                <span class="equation-item-title">3. Diambil Cutting (-)</span>
+                <span class="equation-item-val" style="color: #B91C1C;">-5.830 Kg</span>
+              </div>
+              <div class="equation-item" style="border-left: 3px solid #0284C7;">
+                <span class="equation-item-title">4. Penyesuaian</span>
+                <span class="equation-item-val" style="color: #0369A1;">0.00 Kg</span>
+              </div>
+            </div>
+
+            <!-- Hasil Buffer Siap Potong -->
+            <div class="equation-result-box">
+              <div class="result-left-lbl">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span>Saldo Buffer WIP Siap Potong Saat Ini:</span>
+              </div>
+              <span class="result-big-val">4.670 Kg</span>
+            </div>
+
+            <div class="calc-meta-footer">
+              <span>Level Buffer: <strong style="color: #15803D;">Kondisi Aman</strong> (Ideal: 3.000 s/d 5.500
+                Kg)</span>
+              <span>Cukupan Produksi: <strong>&plusmn; 18.5 Jam Operasional</strong></span>
+            </div>
+          </div>
+
+          <!-- Kolom Kanan: Umur Stok WIP (Diagram Lingkaran Donut & Legend Compact) -->
+          <div class="wip-flow-calc-box">
+            <div class="sub-box-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <span>Pengelompokan Umur Stok (Aging):</span>
+            </div>
+
+            <div class="wip-donut-layout">
+              <!-- SVG Donut Chart -->
+              <div class="wip-donut-chart-container">
+                <svg viewBox="0 0 100 100" class="wip-donut-svg">
+                  <!-- Base Track -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#F1F5F9" stroke-width="13" />
+
+                  <!-- Slice 1: <= 1 Hari (68.5%) - Circumference for r=38 is 2 * pi * 38 = 238.76 -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#15803D" stroke-width="13"
+                    stroke-dasharray="163.55 238.76" stroke-dashoffset="0" transform="rotate(-90 50 50)" />
+
+                  <!-- Slice 2: 1-3 Hari (24.6%) = 58.74 -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#0284C7" stroke-width="13"
+                    stroke-dasharray="58.74 238.76" stroke-dashoffset="-163.55" transform="rotate(-90 50 50)" />
+
+                  <!-- Slice 3: > 3 Hari (6.9%) = 16.47 -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#B91C1C" stroke-width="13"
+                    stroke-dasharray="16.47 238.76" stroke-dashoffset="-222.29" transform="rotate(-90 50 50)" />
+
+                  <!-- Center Text -->
+                  <text x="50" y="47" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="11"
+                    font-weight="800" fill="#0F172A">4.670</text>
+                  <text x="50" y="58" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="6.8"
+                    font-weight="700" fill="#64748B" letter-spacing="0.04em">KG WIP</text>
+                </svg>
+              </div>
+
+              <!-- Compact Legend -->
+              <div class="wip-donut-legend">
+                <div class="donut-legend-row">
+                  <div class="donut-legend-bullet" style="background: #15803D;"></div>
+                  <div class="donut-legend-info">
+                    <span class="donut-legend-label">&le; 1 Hari (Fresh Buffer)</span>
+                    <strong class="donut-legend-qty" style="color: #15803D;">3.200 Kg <span
+                        class="donut-pct-tag">68.5%</span></strong>
+                  </div>
+                </div>
+
+                <div class="donut-legend-row">
+                  <div class="donut-legend-bullet" style="background: #0284C7;"></div>
+                  <div class="donut-legend-info">
+                    <span class="donut-legend-label">1–3 Hari (Normal)</span>
+                    <strong class="donut-legend-qty" style="color: #0284C7;">1.150 Kg <span
+                        class="donut-pct-tag">24.6%</span></strong>
+                  </div>
+                </div>
+
+                <div class="donut-legend-row">
+                  <div class="donut-legend-bullet" style="background: #B91C1C;"></div>
+                  <div class="donut-legend-info">
+                    <span class="donut-legend-label">&gt; 3 Hari (Perlu Prioritas)</span>
+                    <strong class="donut-legend-qty" style="color: #B91C1C;">320 Kg <span
+                        class="donut-pct-tag">6.9%</span></strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="wip-oldest-alert">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span><strong>Lot Roll Tertua:</strong> Batch EXT-01/1024 (Umur 3.5 Hari) &bull; Terjadwal potong
+                prioritas di CUT-01 shift ini.</span>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ==============================================================
+           6. SEKSI PENGENDALIAN PARETO BS & ANALISIS CACAT (INDIKATOR 4)
+           ============================================================== -->
+      <section class="dashboard-section-card" id="sec-scrap">
+
+        <div class="section-header-row">
+          <div class="section-title-wrap">
+            <div class="section-accent-bar"></div>
+            <h2 class="section-h2">Analisis Scrap &amp; Diagram Pareto Kerusakan</h2>
+          </div>
+          <span class="kpi-status-tag tag-neutral">Total Scrap Terdata: 312.5 Kg</span>
+        </div>
+
+        <div class="pareto-dual-grid">
+
+          <!-- Kolom Kiri: Diagram Batang Pareto Top 5 Penyebab BS -->
+          <div class="wip-flow-calc-box">
+            <div class="sub-box-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+              <span>Top 5 Penyebab Kerusakan / BS Terbanyak:</span>
+            </div>
+
+            <div class="pareto-bars-list">
+
+              <!-- 1. Suhu Extruder Tidak Stabil -->
+              <div class="pareto-bar-row">
+                <div class="pareto-row-header">
+                  <span class="pareto-cause-name"><span class="pareto-badge-num">1</span> Suhu Extruder Tidak
+                    Stabil</span>
+                  <span class="pareto-pct-weight"><span class="pareto-pct-pill">38.2%</span> 119.4 Kg</span>
+                </div>
+                <div class="pareto-track">
+                  <div class="pareto-fill" style="width: 38.2%;"></div>
+                </div>
+              </div>
+
+              <!-- 2. Biji Plastik Gosong / Bintik Gel -->
+              <div class="pareto-bar-row">
+                <div class="pareto-row-header">
+                  <span class="pareto-cause-name"><span class="pareto-badge-num">2</span> Biji Plastik Gosong / Bintik
+                    Gel</span>
+                  <span class="pareto-pct-weight"><span class="pareto-pct-pill">24.5%</span> 76.6 Kg</span>
+                </div>
+                <div class="pareto-track">
+                  <div class="pareto-fill" style="width: 24.5%;"></div>
+                </div>
+              </div>
+
+              <!-- 3. Las Sealing Bocor / Terbakar -->
+              <div class="pareto-bar-row">
+                <div class="pareto-row-header">
+                  <span class="pareto-cause-name"><span class="pareto-badge-num">3</span> Las Sealing Bocor /
+                    Terbakar</span>
+                  <span class="pareto-pct-weight"><span class="pareto-pct-pill">18.1%</span> 56.6 Kg</span>
+                </div>
+                <div class="pareto-track">
+                  <div class="pareto-fill" style="width: 18.1%;"></div>
+                </div>
+              </div>
+
+              <!-- 4. Ketebalan Plastik Tidak Rata -->
+              <div class="pareto-bar-row">
+                <div class="pareto-row-header">
+                  <span class="pareto-cause-name"><span class="pareto-badge-num">4</span> Ketebalan Plastik Tidak
+                    Rata</span>
+                  <span class="pareto-pct-weight"><span class="pareto-pct-pill">11.8%</span> 36.9 Kg</span>
+                </div>
+                <div class="pareto-track">
+                  <div class="pareto-fill" style="width: 11.8%;"></div>
+                </div>
+              </div>
+
+              <!-- 5. Potongan Cutting Miring -->
+              <div class="pareto-bar-row">
+                <div class="pareto-row-header">
+                  <span class="pareto-cause-name"><span class="pareto-badge-num">5</span> Potongan Cutting Miring</span>
+                  <span class="pareto-pct-weight"><span class="pareto-pct-pill">7.4%</span> 23.0 Kg</span>
+                </div>
+                <div class="pareto-track">
+                  <div class="pareto-fill" style="width: 7.4%;"></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Kolom Kanan: Mesin Penyumbang BS Terbesar -->
+          <div class="wip-flow-calc-box">
+            <div class="sub-box-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="2" y="7" width="20" height="14" rx="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              </svg>
+              <span>Mesin Kontributor BS Terbanyak &amp; Rekomendasi:</span>
+            </div>
+
+            <table class="compact-styled-table">
+              <thead>
+                <tr>
+                  <th>No. Mesin</th>
+                  <th>BS (Kg)</th>
+                  <th>Cacat Dominan</th>
+                  <th>Rekomendasi Tindakan</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong style="color: var(--c-navy);">EXT-02</strong></td>
+                  <td><strong style="color: #B91C1C;">110.0 Kg</strong> (35.2%)</td>
+                  <td>Setting Dies Awal</td>
+                  <td>Kalibrasi lip die gap &amp; cek sensor suhu zona 3</td>
+                </tr>
+                <tr>
+                  <td><strong style="color: var(--c-navy);">CUT-01</strong></td>
+                  <td><strong style="color: #B91C1C;">75.0 Kg</strong> (24.0%)</td>
+                  <td>Seal Bocor / Rapuh</td>
+                  <td>Ganti teflon strip pemanas &amp; asah pisau potong</td>
+                </tr>
+                <tr>
+                  <td><strong style="color: var(--c-navy);">EXT-04</strong></td>
+                  <td><strong>48.5 Kg</strong> (15.5%)</td>
+                  <td>Gel Bintik Gosong</td>
+                  <td>Pembersihan filter breaker plate / screen mesh</td>
+                </tr>
+                <tr>
+                  <td><strong style="color: var(--c-navy);">CUT-04</strong></td>
+                  <td><strong>38.0 Kg</strong> (12.2%)</td>
+                  <td>Potongan Miring</td>
+                  <td>Penyesuaian tension roller feed guide</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ==============================================================
+           7. SEKSI SISA ORDER & PRIORITAS PENYELESAIAN (INDIKATOR 8 & 10)
+           ============================================================== -->
+      <section class="dashboard-section-card" id="sec-antrean">
+
+        <div class="section-header-row">
+          <div class="section-title-wrap">
+            <div class="section-accent-bar"></div>
+            <h2 class="section-h2">Backlog Sisa Order MP Aktif &amp; Estimasi Penyelesaian</h2>
+          </div>
+          <span class="kpi-status-tag tag-neutral">5 Kelompok Ukuran Berjalan</span>
+        </div>
+
+        <div class="backlog-table-wrapper">
+          <table class="compact-styled-table">
+            <thead>
+              <tr>
+                <th>Kelompok Ukuran Produk</th>
+                <th>Target MP Aktif</th>
+                <th>Hasil Jadi (Kg)</th>
+                <th>Sisa Order (Kg)</th>
+                <th>Kapasitas / Hari</th>
+                <th>Estimasi Selesai</th>
+                <th>Status Prioritas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="badge-size-group">Roll Sedang (40-60 cm)</span>
+                  <div><strong>Roll Film PE Bening 40x60</strong></div>
+                </td>
+                <td>5.000 Kg</td>
+                <td>3.800 Kg</td>
+                <td><strong style="color: var(--c-navy);">1.200 Kg</strong></td>
+                <td>1.500 Kg/Hari</td>
+                <td>0.8 Hari</td>
+                <td><span class="priority-pill priority-normal">NORMAL</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="badge-size-group">Heavy Duty / Roll Lebar (&gt;80 cm)</span>
+                  <div><strong>Kantong Sampah HD Hitam 80x100</strong></div>
+                </td>
+                <td>8.000 Kg</td>
+                <td>4.200 Kg</td>
+                <td><strong style="color: var(--c-amber);">3.800 Kg</strong></td>
+                <td>1.800 Kg/Hari</td>
+                <td>2.1 Hari</td>
+                <td><span class="priority-pill priority-attention">PERLU ATENSI</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="badge-size-group">Kantong Retail / Klip Kecil</span>
+                  <div><strong>Plastik Klip Stand Up 12x20</strong></div>
+                </td>
+                <td>3.000 Kg</td>
+                <td>950 Kg</td>
+                <td><strong style="color: var(--c-red);">2.050 Kg</strong></td>
+                <td>600 Kg/Hari</td>
+                <td>3.4 Hari</td>
+                <td><span class="priority-pill priority-urgent">PRIORITAS TINGGI</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="badge-size-group">Pertanian / Roll Lebar (120 cm)</span>
+                  <div><strong>Mulsa Hitam Perak 120x0.03</strong></div>
+                </td>
+                <td>4.500 Kg</td>
+                <td>3.600 Kg</td>
+                <td><strong style="color: var(--c-navy);">900 Kg</strong></td>
+                <td>1.200 Kg/Hari</td>
+                <td>0.75 Hari</td>
+                <td><span class="priority-pill priority-normal">NORMAL</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="badge-size-group">Kantong Standar Retail</span>
+                  <div><strong>Kantong Kresek HD Putih 24x40</strong></div>
+                </td>
+                <td>6.000 Kg</td>
+                <td>2.100 Kg</td>
+                <td><strong style="color: var(--c-amber);">3.900 Kg</strong></td>
+                <td>1.400 Kg/Hari</td>
+                <td>2.8 Hari</td>
+                <td><span class="priority-pill priority-attention">PERLU ATENSI</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- ==============================================================
+         8. FOOTER HALAMAN
+         ============================================================== -->
+    <footer class="dashboard-footer">
+      <div class="footer-top-row">
+        <div class="footer-access-role">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          <span>Production Floor Monitor &bull; SOW Fase 1 V3 (Scope S04 - PT Dolpin Putra Sejati)</span>
+        </div>
+        <div>
+          <span>PT Dolpin Putra Sejati &bull; DXL ERP Production Control System</span>
+        </div>
+      </div>
+
+      <div class="footer-sow-callout">
+        <strong>Keterangan Integritas Data SOW Fase 1:</strong> Perhitungan BS tidak memblokir persediaan bahan baku
+        minus. Stok aktual hanya mencatat perpindahan SFG Extruder dan FG Cutting secara fisik di lantai pabrik.
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ==============================================================
+       MODAL DETAIL MESIN INTERAKTIF POPUP
+       ============================================================== -->
+  <div class="modal-telemetry-backdrop" id="machineModalBackdrop">
+    <div class="modal-telemetry-box">
+      <div class="telemetry-modal-header">
+        <div class="telemetry-modal-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.3">
+            <rect x="2" y="7" width="20" height="14" rx="2" />
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+          </svg>
+          <span id="mModalTitle">Detail Mesin: EXT-01</span>
+        </div>
+        <button type="button" class="btn-close-telemetry" onclick="closeMachineModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="telemetry-modal-body">
+        <div class="telemetry-data-grid">
+          <div><span>Status Mesin:</span><br><strong id="mModalStatus"
+              style="color: var(--c-green-dark);">Running</strong></div>
+          <div><span>Output Rate:</span><br><strong id="mModalRate">95 Kg/Jam</strong></div>
+          <div><span>Operator Penanggung Jawab:</span><br><strong id="mModalOperator">Sugeng P.</strong></div>
+          <div><span>Suhu Rata-rata Barrel:</span><br><strong id="mModalTemp">185°C</strong></div>
+        </div>
+
+        <div>
+          <span
+            style="font-size: 11px; font-weight: 700; color: var(--c-text-muted); text-transform: uppercase;">Perintah
+            Kerja (SPK) Berjalan:</span>
+          <div style="font-size: 13px; font-weight: 700; color: var(--c-navy); margin-top: 2px;" id="mModalMo">
+            MO/2026/10/0012 &bull; Roll PE Bening 40x60</div>
+        </div>
+
+        <div>
+          <span
+            style="font-size: 11px; font-weight: 700; color: var(--c-text-muted); text-transform: uppercase;">Catatan
+            Telemetri / Alasan Henti:</span>
+          <div
+            style="font-size: 12px; color: #334155; background: #F1F5F9; padding: 8px 12px; border-radius: 6px; margin-top: 3px;"
+            id="mModalNotes">
+            Mesin beroperasi dalam kondisi optimal. Parameter suhu extruder stabil.
+          </div>
+        </div>
+      </div>
+
+      <div class="telemetry-actions-bar">
+        <button type="button" class="btn-tv-mode" onclick="closeMachineModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       MODAL 1: WARNING PERINGATAN MEMATIKAN MESIN (OFF) - SOW V3 Hal. 6
+       ============================================================== -->
+  <div class="modal-telemetry-backdrop" id="modalMachineOffWarning">
+    <div class="modal-telemetry-box" style="max-width: 480px;">
+      <div class="telemetry-modal-header" style="background: #991B1B;">
+        <div class="telemetry-modal-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCA5A5" stroke-width="2.3">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          <span id="warnOffTitle">Konfirmasi Perubahan Status Mesin EXT-01</span>
+        </div>
+        <button type="button" class="btn-close-telemetry" onclick="closeMachineWarningModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="telemetry-modal-body">
+        <div
+          style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2"
+            style="flex-shrink: 0; margin-top: 1px;">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <div style="font-size: 12px; color: #991B1B; line-height: 1.45;">
+            <strong>Peringatan:</strong> Anda akan mengubah status mesin menjadi <strong>NONAKTIF (OFF)</strong>.
+            Pastikan kondisi fisik mesin di lantai pabrik telah diverifikasi.
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label style="font-size: 11.5px; font-weight: 700; color: var(--c-navy);">
+            Alasan Mesin Dihentikan / OFF <span style="color: var(--c-red);">*</span>:
+          </label>
+          <select id="selectWarnOffReason"
+            style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #CBD5E1; font-family: inherit; font-size: 12.5px; background: #FFFFFF; font-weight: 600;">
+            <option value="" disabled selected>-- Pilih Alasan Wajib --</option>
+            <option value="Breakdown / Kerusakan Mesin">Breakdown / Kerusakan Mesin</option>
+            <option value="Setting / Ganti Ukuran Dies">Setting / Ganti Ukuran Dies</option>
+            <option value="Menunggu Antrean Buffer WIP Roll (Khusus Cutting)">Menunggu Antrean Buffer WIP Roll (Khusus
+              Cutting)</option>
+            <option value="Tidak Ada Planning dari PPIC">Tidak Ada Planning dari PPIC</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div style="display: flex; flex-direction: column; gap: 5px;">
+            <label style="font-size: 11.5px; font-weight: 700; color: var(--c-navy);">Nama Teknisi / SPV
+              (Opsional):</label>
+            <input type="text" id="inputWarnOffPic" placeholder="Contoh: Bpk. Joko Santoso"
+              style="padding: 7px 10px; border-radius: 6px; border: 1px solid #CBD5E1; font-family: inherit; font-size: 12px;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 5px;">
+            <label style="font-size: 11.5px; font-weight: 700; color: var(--c-navy);">Estimasi Durasi Henti:</label>
+            <input type="text" id="inputWarnOffEst" placeholder="Contoh: 30 Menit"
+              style="padding: 7px 10px; border-radius: 6px; border: 1px solid #CBD5E1; font-family: inherit; font-size: 12px;">
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label style="font-size: 11.5px; font-weight: 700; color: var(--c-navy);">Catatan Singkat / Detail
+            Tindakan:</label>
+          <textarea id="inputWarnOffNotes" rows="2" placeholder="Catatan tambahan mengenai kondisi fisik mesin..."
+            style="padding: 8px 10px; border-radius: 6px; border: 1px solid #CBD5E1; font-family: inherit; font-size: 12px; resize: vertical;"></textarea>
+        </div>
+      </div>
+
+      <div class="telemetry-actions-bar">
+        <button type="button" class="btn-tv-mode" onclick="closeMachineWarningModal()"
+          style="background: #F1F5F9; color: #475569;">Batalkan</button>
+        <button type="button" class="btn-tv-mode" onclick="executeMachineOff()"
+          style="background: #DC2626; color: #FFFFFF;">Ya, Konfirmasi Matikan Mesin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       MODAL 2: KONFIRMASI MENYALAKAN MESIN (ON)
+       ============================================================== -->
+  <div class="modal-telemetry-backdrop" id="modalMachineOnConfirm">
+    <div class="modal-telemetry-box" style="max-width: 440px;">
+      <div class="telemetry-modal-header" style="background: #047857;">
+        <div class="telemetry-modal-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6EE7B7" stroke-width="2.3">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 14 14" />
+          </svg>
+          <span id="turnOnTitle">Aktivasi Mesin: EXT-02</span>
+        </div>
+        <button type="button" class="btn-close-telemetry" onclick="closeMachineTurnOnModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="telemetry-modal-body">
+        <div
+          style="background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 8px; padding: 14px; display: flex; gap: 12px; align-items: center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+          <div style="font-size: 13px; color: #065F46; line-height: 1.45;">
+            Nyalakan kembali mesin <strong id="turnOnMachineCode">EXT-02</strong> ke status <strong>RUNNING</strong>?
+          </div>
+        </div>
+        <p style="font-size: 11.5px; color: var(--c-text-muted); margin: 0;">
+          Status utilitas akan tercatat aktif dan penghitungan output timbangan akan terhubung ke kartu mesin ini.
+        </p>
+      </div>
+
+      <div class="telemetry-actions-bar">
+        <button type="button" class="btn-tv-mode" onclick="closeMachineTurnOnModal()"
+          style="background: #F1F5F9; color: #475569;">Batalkan</button>
+        <button type="button" class="btn-tv-mode" onclick="executeMachineOn()"
+          style="background: #059669; color: #FFFFFF;">Ya, Nyalakan Mesin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       MODAL 3: INPUT TARGET MANUAL SHIFT (SOW V3 Scope S04)
+       ============================================================== -->
+  <div class="modal-telemetry-backdrop" id="targetManualModalBackdrop">
+    <div class="modal-telemetry-box" style="max-width: 460px;">
+      <div class="telemetry-modal-header" style="background: #0F172A;">
+        <div class="telemetry-modal-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.3">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
+          <span>Input Target Manual Shift (SOW V3)</span>
+        </div>
+        <button type="button" class="btn-close-telemetry" onclick="closeTargetModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="telemetry-modal-body">
+        <p style="font-size: 11.5px; color: var(--c-text-muted); margin: 0;">
+          Sesuai klausul SOW V3, target shift diinput secara manual oleh Supervisor/Kepala Pabrik sebagai dasar evaluasi
+          capaian operasional.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label style="font-size: 11.5px; font-weight: 700; color: var(--c-navy);">Pilihan Shift Operasional:</label>
+          <select id="inputTargetShiftSelect"
+            style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #CBD5E1; font-family: inherit; font-size: 12.5px; background: #FFFFFF; font-weight: 600;"
+            onchange="onTargetShiftSelected(this.value)">
+            <option value="1" selected>Shift 1 (Pagi &bull; 07:00 - 15:00 WIB)</option>
+            <option value="2">Shift 2 (Siang &bull; 15:00 - 23:00 WIB)</option>
+            <option value="3">Shift 3 (Malam &bull; 23:00 - 07:00 WIB)</option>
+            <option value="all">Semua Shift (Akumulasi 24 Jam)</option>
+          </select>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label style="font-size: 11.5px; font-weight: 700; color: var(--c-navy);">Target Output Rencana (Kg) <span
+              style="color: var(--c-red);">*</span>:</label>
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="number" id="inputTargetWeightVal" value="15600" step="100" min="0"
+              style="width: 100%; padding: 10px 42px 10px 12px; border-radius: 6px; border: 1.5px solid #0284C7; font-family: inherit; font-size: 16px; font-weight: 800; color: var(--c-navy);">
+            <span
+              style="position: absolute; right: 12px; font-size: 13px; font-weight: 700; color: var(--c-text-muted);">Kg</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <span style="font-size: 10.5px; color: var(--c-text-muted); align-self: center;">Preset:</span>
+          <button type="button" class="btn-key-preset" onclick="setTargetPreset(14000)">14.000 Kg</button>
+          <button type="button" class="btn-key-preset" onclick="setTargetPreset(15000)">15.000 Kg</button>
+          <button type="button" class="btn-key-preset" onclick="setTargetPreset(15600)">15.600 Kg</button>
+          <button type="button" class="btn-key-preset" onclick="setTargetPreset(16000)">16.000 Kg</button>
+        </div>
+      </div>
+
+      <div class="telemetry-actions-bar">
+        <button type="button" class="btn-tv-mode" onclick="closeTargetModal()"
+          style="background: #F1F5F9; color: #475569;">Batalkan</button>
+        <button type="button" class="btn-tv-mode" onclick="saveTargetManual()"
+          style="background: #0284C7; color: #FFFFFF;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block; vertical-align:middle; margin-right:3px;"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Simpan Target</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifikasi Floating -->
+  <div class="toast-popup-box" id="toastBox">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+    <span id="toastMessage">Data berhasil disinkronkan</span>
+  </div>
+
+  <!-- ==============================================================
+       JAVASCRIPT INTERAKTIF LOGIC
+       ============================================================== -->
+  <script>
+    // 0. Toggle Sidebar & Persistence
+    function toggleSidebar() {
+      document.body.classList.toggle('sidebar-collapsed');
+      const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+      try {
+        localStorage.setItem('dxl_sidebar_collapsed', isCollapsed ? '1' : '0');
+      } catch (e) { }
+    }
+
+    // 1. Live Clock Timer
+    function updateClock() {
+      const now = new Date();
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} WIB`;
+      document.getElementById('liveClockText').textContent = `${dateStr}, ${timeStr}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 2. Segmented Shift Filter & Target State (SOW V3 Scope S04)
+    let targetPerShift = {
+      '1': 15600,
+      '2': 15000,
+      '3': 14000,
+      'all': 44600
+    };
+
+    function setShiftFilter(shiftCode, btnElement) {
+      document.querySelectorAll('.btn-shift-segment').forEach(b => b.classList.remove('active'));
+      btnElement.classList.add('active');
+
+      const kpiTarget = document.getElementById('kpiOpTarget');
+      const kpiShiftSub = document.getElementById('kpiOpShiftSub');
+      const kpiTotal = document.getElementById('kpiGoodOutputTotal');
+      const kpiAchieve = document.getElementById('kpiAchievementPct');
+      const kpiAchieveSub = document.getElementById('kpiAchieveSub');
+      const kpiScrap = document.getElementById('kpiScrapTotal');
+      const kpiScrapRatio = document.getElementById('kpiScrapRatioSub');
+      const kpiGoodSub = document.getElementById('kpiGoodSubText');
+
+      const currentTarget = targetPerShift[shiftCode] || 15600;
+      if (kpiTarget) kpiTarget.textContent = currentTarget.toLocaleString('id-ID');
+
+      if (shiftCode === '1') {
+        if (kpiShiftSub) kpiShiftSub.textContent = 'Shift 1 \u2022 Rencana 8 Jam';
+        if (kpiTotal) kpiTotal.textContent = '11.890';
+        if (kpiGoodSub) kpiGoodSub.innerHTML = 'Ext: 8.450 Kg (WIP: 7.100 | Direct FG: 1.350) &bull; Cut: 5.830 Kg';
+        if (kpiAchieve) kpiAchieve.textContent = '84.0';
+        if (kpiAchieveSub) kpiAchieveSub.textContent = 'Extruder: 88.5% | Cutting: 79.2%';
+        if (kpiScrap) kpiScrap.textContent = '312,5';
+        if (kpiScrapRatio) kpiScrapRatio.textContent = '2.14% Aman';
+        showToast('Memfilter data ke: Shift 1 (Pagi)');
+      } else if (shiftCode === '2') {
+        if (kpiShiftSub) kpiShiftSub.textContent = 'Shift 2 \u2022 Rencana 8 Jam';
+        if (kpiTotal) kpiTotal.textContent = '13.150';
+        if (kpiGoodSub) kpiGoodSub.innerHTML = 'Ext: 7.650 Kg (WIP: 6.400 | Direct FG: 1.250) &bull; Cut: 5.500 Kg';
+        if (kpiAchieve) kpiAchieve.textContent = '87.7';
+        if (kpiAchieveSub) kpiAchieveSub.textContent = 'Extruder: 89.2% | Cutting: 86.1%';
+        if (kpiScrap) kpiScrap.textContent = '285,0';
+        if (kpiScrapRatio) kpiScrapRatio.textContent = '2.16% Aman';
+        showToast('Memfilter data ke: Shift 2 (Siang)');
+      } else if (shiftCode === '3') {
+        if (kpiShiftSub) kpiShiftSub.textContent = 'Shift 3 \u2022 Rencana 8 Jam';
+        if (kpiTotal) kpiTotal.textContent = '11.890';
+        if (kpiGoodSub) kpiGoodSub.innerHTML = 'Ext: 6.900 Kg (WIP: 5.800 | Direct FG: 1.100) &bull; Cut: 4.990 Kg';
+        if (kpiAchieve) kpiAchieve.textContent = '84.9';
+        if (kpiAchieveSub) kpiAchieveSub.textContent = 'Extruder: 86.0% | Cutting: 83.5%';
+        if (kpiScrap) kpiScrap.textContent = '240,0';
+        if (kpiScrapRatio) kpiScrapRatio.textContent = '2.01% Aman';
+        showToast('Memfilter data ke: Shift 3 (Malam)');
+      } else {
+        if (kpiShiftSub) kpiShiftSub.textContent = 'Semua Shift \u2022 Akumulasi 24 Jam';
+        if (kpiTotal) kpiTotal.textContent = '39.320';
+        if (kpiGoodSub) kpiGoodSub.innerHTML = 'Ext: 23.000 Kg (WIP: 19.300 | Direct FG: 3.700) &bull; Cut: 16.320 Kg';
+        if (kpiAchieve) kpiAchieve.textContent = '88.2';
+        if (kpiAchieveSub) kpiAchieveSub.textContent = 'Extruder: 88.5% | Cutting: 87.8%';
+        if (kpiScrap) kpiScrap.textContent = '837,5';
+        if (kpiScrapRatio) kpiScrapRatio.textContent = '2.13% Aman';
+        showToast('Menampilkan akumulasi: Semua Shift');
+      }
+    }
+
+    // Preset Rentang Tanggal Cepat
+    function setDatePreset(presetKey, btn) {
+      const today = new Date(2026, 9, 31); // Tanggal acuan simulasi: 31 Okt 2026
+      const pad = (n) => String(n).padStart(2, '0');
+      const formatDate = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+      
+      const startEl = document.getElementById('filterStartDate');
+      const endEl = document.getElementById('filterEndDate');
+      if (!startEl || !endEl) return;
+
+      const endDateStr = formatDate(today);
+      endEl.value = endDateStr;
+
+      if (presetKey === 'today') {
+        startEl.value = endDateStr;
+      } else if (presetKey === '7days') {
+        const d7 = new Date(today);
+        d7.setDate(today.getDate() - 6);
+        startEl.value = formatDate(d7);
+      } else if (presetKey === 'mtd') {
+        const dMtd = new Date(today.getFullYear(), today.getMonth(), 1);
+        startEl.value = formatDate(dMtd);
+      }
+
+      if (btn) {
+        document.querySelectorAll('.btn-date-preset').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+
+      triggerFilterChange();
+    }
+
+    // 3. Filter Rentang Tanggal & Dropdown Divisi
+    function triggerFilterChange() {
+      const startVal = document.getElementById('filterStartDate') ? document.getElementById('filterStartDate').value : '';
+      const endVal = document.getElementById('filterEndDate') ? document.getElementById('filterEndDate').value : '';
+      const division = document.getElementById('filterDivisionSelect') ? document.getElementById('filterDivisionSelect').value : 'all';
+      const groupExt = document.getElementById('groupExtruderLine');
+      const groupCut = document.getElementById('groupCuttingLine');
+      const listRows = document.querySelectorAll('#machineViewList tbody tr');
+
+      if (division === 'extruder') {
+        if (groupExt) groupExt.style.display = 'block';
+        if (groupCut) groupCut.style.display = 'none';
+        listRows.forEach(r => {
+          r.style.display = (r.getAttribute('data-division') === 'extruder') ? '' : 'none';
+        });
+        showToast(`Filter: Extruder (${startVal} s/d ${endVal})`);
+      } else if (division === 'cutting') {
+        if (groupExt) groupExt.style.display = 'none';
+        if (groupCut) groupCut.style.display = 'block';
+        listRows.forEach(r => {
+          r.style.display = (r.getAttribute('data-division') === 'cutting') ? '' : 'none';
+        });
+        showToast(`Filter: Cutting (${startVal} s/d ${endVal})`);
+      } else {
+        if (groupExt) groupExt.style.display = 'block';
+        if (groupCut) groupCut.style.display = 'block';
+        listRows.forEach(r => {
+          r.style.display = '';
+        });
+        showToast(`Menampilkan data: ${startVal} s/d ${endVal}`);
+      }
+    }
+
+    // Switcher Mode Tampilan Mesin (Grid Card vs List Table)
+    function setMachineViewMode(mode) {
+      const gridView = document.getElementById('machineViewGrid');
+      const listView = document.getElementById('machineViewList');
+      const btnGrid = document.getElementById('btnViewGrid');
+      const btnList = document.getElementById('btnViewList');
+
+      if (mode === 'list') {
+        if (gridView) gridView.style.display = 'none';
+        if (listView) listView.style.display = 'block';
+        if (btnGrid) btnGrid.classList.remove('active');
+        if (btnList) btnList.classList.add('active');
+        showToast('Tampilan Mesin: Mode List Table');
+      } else {
+        if (gridView) gridView.style.display = 'block';
+        if (listView) listView.style.display = 'none';
+        if (btnGrid) btnGrid.classList.add('active');
+        if (btnList) btnList.classList.remove('active');
+        showToast('Tampilan Mesin: Mode Grid Card');
+      }
+    }
+
+    // 4. Refresh Button Data Simulator
+    function refreshDashboardData() {
+      const btn = document.getElementById('btnRefresh');
+      btn.classList.add('is-spinning');
+
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+      setTimeout(() => {
+        btn.classList.remove('is-spinning');
+        document.getElementById('syncTextLabel').textContent = `Sinkron: ${timeStr} WIB`;
+        showToast(`✓ Data lantai produksi berhasil disinkronkan (${timeStr})`);
+      }, 500);
+    }
+
+    // 5. Modal Detail Mesin
+    function openMachineModal(code, status, operator, mo, product, rate, temp, notes) {
+      document.getElementById('mModalTitle').textContent = `Detail Mesin: ${code}`;
+      const statusEl = document.getElementById('mModalStatus');
+      statusEl.textContent = status;
+      statusEl.style.color = (status === 'Running') ? 'var(--c-green-dark)' : 'var(--c-red)';
+
+      document.getElementById('mModalOperator').textContent = operator;
+      document.getElementById('mModalMo').textContent = `${mo} • ${product}`;
+      document.getElementById('mModalRate').textContent = rate;
+      document.getElementById('mModalTemp').textContent = temp;
+      document.getElementById('mModalNotes').textContent = notes;
+
+      document.getElementById('machineModalBackdrop').style.display = 'flex';
+    }
+
+    function closeMachineModal() {
+      document.getElementById('machineModalBackdrop').style.display = 'none';
+    }
+
+    // 5.1 Modal Input Target Manual (SOW V3 Scope S04)
+    function openTargetModal() {
+      const currentActiveShiftBtn = document.querySelector('.btn-shift-segment.active');
+      let shiftCode = '1';
+      if (currentActiveShiftBtn) {
+        const text = currentActiveShiftBtn.textContent;
+        if (text.includes('1')) shiftCode = '1';
+        else if (text.includes('2')) shiftCode = '2';
+        else if (text.includes('3')) shiftCode = '3';
+        else shiftCode = 'all';
+      }
+      document.getElementById('inputTargetShiftSelect').value = shiftCode;
+      document.getElementById('inputTargetWeightVal').value = targetPerShift[shiftCode] || 15600;
+      document.getElementById('targetManualModalBackdrop').style.display = 'flex';
+    }
+
+    function closeTargetModal() {
+      document.getElementById('targetManualModalBackdrop').style.display = 'none';
+    }
+
+    function onTargetShiftSelected(shiftVal) {
+      document.getElementById('inputTargetWeightVal').value = targetPerShift[shiftVal] || 15000;
+    }
+
+    function setTargetPreset(val) {
+      document.getElementById('inputTargetWeightVal').value = val;
+    }
+
+    function saveTargetManual() {
+      const shiftVal = document.getElementById('inputTargetShiftSelect').value;
+      const weight = parseFloat(document.getElementById('inputTargetWeightVal').value);
+      if (isNaN(weight) || weight <= 0) {
+        alert('Perhatian: Masukkan angka target output yang valid.');
+        return;
+      }
+
+      targetPerShift[shiftVal] = weight;
+
+      // Update tampilan kartu KPI 1
+      const weightStr = weight.toLocaleString('id-ID');
+      const kpiTarget = document.getElementById('kpiOpTarget');
+      if (kpiTarget) kpiTarget.textContent = weightStr;
+
+      // Recalculate rasio pencapaian target (Indikator 2)
+      const currentOutputStr = document.getElementById('kpiGoodOutputTotal').textContent.replace(/\./g, '').replace(',', '.');
+      const curOutput = parseFloat(currentOutputStr) || 11890;
+      const newPct = ((curOutput / weight) * 100).toFixed(1);
+      const kpiAchieve = document.getElementById('kpiAchievementPct');
+      if (kpiAchieve) kpiAchieve.textContent = newPct;
+
+      closeTargetModal();
+      showToast(`✓ Target Shift ${shiftVal.toUpperCase()} berhasil disimpan: ${weightStr} Kg`);
+    }
+
+    // 5.2 Manual Machine Toggle Switch & Warning Modal (SOW V3 Hal. 6)
+    let pendingMachineCode = '';
+
+    function triggerMachineToggle(code, currentStatus) {
+      pendingMachineCode = code;
+      if (currentStatus === 'Running') {
+        // Tampilkan Modal Peringatan (Warning Modal)
+        document.getElementById('warnOffTitle').textContent = `Konfirmasi Perubahan Status Mesin ${code}`;
+        document.getElementById('selectWarnOffReason').value = '';
+        document.getElementById('inputWarnOffPic').value = '';
+        document.getElementById('inputWarnOffEst').value = '';
+        document.getElementById('inputWarnOffNotes').value = '';
+        document.getElementById('modalMachineOffWarning').style.display = 'flex';
+      } else {
+        // Tampilkan Modal Konfirmasi Cepat Nyalakan Mesin
+        document.getElementById('turnOnTitle').textContent = `Aktivasi Mesin: ${code}`;
+        document.getElementById('turnOnMachineCode').textContent = code;
+        document.getElementById('modalMachineOnConfirm').style.display = 'flex';
+      }
+    }
+
+    function closeMachineWarningModal() {
+      document.getElementById('modalMachineOffWarning').style.display = 'none';
+    }
+
+    function closeMachineTurnOnModal() {
+      document.getElementById('modalMachineOnConfirm').style.display = 'none';
+    }
+
+    function executeMachineOff() {
+      const reasonSelect = document.getElementById('selectWarnOffReason');
+      if (!reasonSelect.value) {
+        alert('Perhatian: Mohon pilih alasan mesin dihentikan terlebih dahulu.');
+        reasonSelect.focus();
+        return;
+      }
+      const reason = reasonSelect.value;
+
+      // Update Toggle Button & Badge
+      const toggleBtn = document.getElementById(`toggle-${pendingMachineCode}`);
+      const badgeEl = document.getElementById(`badge-${pendingMachineCode}`);
+
+      if (toggleBtn) {
+        toggleBtn.className = 'btn-mach-toggle toggle-off';
+        toggleBtn.innerHTML = '<span class="mach-toggle-knob"></span><span class="mach-toggle-label">OFF</span>';
+        toggleBtn.onclick = (e) => { e.stopPropagation(); triggerMachineToggle(pendingMachineCode, 'OFF'); };
+      }
+      if (badgeEl) {
+        badgeEl.className = 'machine-badge-indicator badge-off';
+        badgeEl.textContent = 'OFF';
+      }
+
+      // Update Border Kartu & Banner Alasan
+      const tile = toggleBtn ? toggleBtn.closest('.machine-tile-card') : null;
+      if (tile) {
+        tile.classList.remove('is-running');
+        tile.classList.add('is-off');
+        let banner = tile.querySelector('.off-reason-banner');
+        if (!banner) {
+          banner = document.createElement('div');
+          banner.className = 'off-reason-banner';
+          tile.insertBefore(banner, tile.querySelector('.machine-tile-meta'));
+        }
+        banner.innerHTML = `<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>OFF: ${reason}</span>`;
+      }
+
+      closeMachineWarningModal();
+      updateMachineSummaryCounters();
+      showToast(`Mesin ${pendingMachineCode} dialihkan ke status NONAKTIF (OFF)`);
+    }
+
+    function executeMachineOn() {
+      const toggleBtn = document.getElementById(`toggle-${pendingMachineCode}`);
+      const badgeEl = document.getElementById(`badge-${pendingMachineCode}`);
+
+      if (toggleBtn) {
+        toggleBtn.className = 'btn-mach-toggle toggle-on';
+        toggleBtn.innerHTML = '<span class="mach-toggle-knob"></span><span class="mach-toggle-label">ON</span>';
+        toggleBtn.onclick = (e) => { e.stopPropagation(); triggerMachineToggle(pendingMachineCode, 'Running'); };
+      }
+      if (badgeEl) {
+        badgeEl.className = 'machine-badge-indicator badge-running';
+        badgeEl.textContent = 'Running';
+      }
+
+      const tile = toggleBtn ? toggleBtn.closest('.machine-tile-card') : null;
+      if (tile) {
+        tile.classList.remove('is-off');
+        tile.classList.add('is-running');
+        const banner = tile.querySelector('.off-reason-banner');
+        if (banner) banner.remove();
+      }
+
+      closeMachineTurnOnModal();
+      updateMachineSummaryCounters();
+      showToast(`✓ Mesin ${pendingMachineCode} berhasil diaktifkan ke status RUNNING`);
+    }
+
+    function updateMachineSummaryCounters() {
+      const totalRunning = document.querySelectorAll('.machine-cards-grid .machine-tile-card.is-running').length;
+      const totalOff = document.querySelectorAll('.machine-cards-grid .machine-tile-card.is-off').length;
+      const pillRunning = document.querySelector('.pill-running-active span:last-child');
+      const pillOff = document.querySelector('.pill-off-active span:last-child');
+      if (pillRunning) pillRunning.textContent = `${totalRunning} Mesin RUNNING`;
+      if (pillOff) pillOff.textContent = `${totalOff} Mesin OFF`;
+    }
+
+    // Tutup modal jika klik backdrop
+    document.querySelectorAll('.modal-telemetry-backdrop').forEach(backdrop => {
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+          backdrop.style.display = 'none';
+        }
+      });
+    });
+
+    // 6. Fullscreen Mode
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          showToast('Fullscreen tidak didukung browser ini');
+        });
+        showToast('Beralih ke mode Fullscreen Monitor TV');
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // 7. Toast Helper
+    function showToast(msg) {
+      const toast = document.getElementById('toastBox');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.style.display = 'flex';
+
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    // Active Sidebar Nav Scroll Highlighting
+    const navLinks = document.querySelectorAll('.sidebar-menu-scroll a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function () {
+        navLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+
+</html>

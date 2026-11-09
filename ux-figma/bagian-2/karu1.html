@@ -1,0 +1,2779 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Antrean Perintah Kerja (MO) - Karu | PT Dolpin Putra Sejati</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    /* ==============================================================
+       DXL ERP - Portal Kepala Regu (Karu) Lantai Produksi
+       Standar: Ergonomi Layar Sentuh Tablet (Ramah Usia ~50 Tahun)
+       Tipografi: 100% Font Plus Jakarta Sans (Tegas, Modern, Jelas Terbaca)
+       Desain Bersih, Tanpa AI Slop, Kontras Tinggi & Huruf Besar
+       ============================================================== */
+
+    :root {
+      --bg-app: #F3F4F6;              /* Latar bersih industrial */
+      --c-navy: #111827;              /* Navy gelap primer */
+      --c-navy-light: #1F2937;
+      --c-red: #D62828;               /* Merah DXL primer */
+      --c-red-hover: #B91C1C;
+      --c-red-light: #FEF2F2;
+      --c-green: #10B981;             /* Hijau validasi/sukses */
+      --c-green-dark: #047857;
+      --c-green-light: #ECFDF5;
+      --c-amber: #D97706;             /* Oranye/kuning status jalan */
+      --c-amber-light: #FFFBEB;
+      --c-blue: #2563EB;
+      --c-blue-light: #EFF6FF;
+
+      --c-card: #FFFFFF;
+      --c-border: #E5E7EB;
+      --c-border-strong: #D1D5DB;
+      --c-text-main: #111827;
+      --c-text-muted: #4B5563;
+      --c-text-subtle: #6B7280;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body, button, input, select, textarea {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-app);
+      color: var(--c-text-main);
+      font-size: 13.5px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Scrollbar Halus & Bersih */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(107, 114, 128, 0.25);
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-button {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+    ::-webkit-scrollbar-corner {
+      background: transparent !important;
+    }
+
+    /* ==============================================================
+       1. HEADER NAVIGASI UTAMA (TINGGI PROPORSIONAL: 64px)
+       ============================================================== */
+    .top-header {
+      background-color: var(--c-navy);
+      color: #FFFFFF;
+      min-height: 64px;
+      padding: 11px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      gap: 16px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-logo-img {
+      height: 34px;
+      max-width: 145px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+    .brand-fallback {
+      font-size: 17px;
+      font-weight: 800;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .brand-badge {
+      background: var(--c-red);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .header-titles {
+      display: flex;
+      flex-direction: column;
+    }
+    .header-title-main {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+    }
+    .header-title-sub {
+      font-size: 11.5px;
+      color: #9CA3AF;
+    }
+
+    /* Info Shift (Samping Profil - Polos Putih) */
+    .header-shift-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #111827;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      letter-spacing: -0.01em;
+    }
+    .header-shift-badge svg {
+      width: 14px;
+      height: 14px;
+      stroke: #111827;
+      stroke-width: 2.2;
+    }
+
+    /* Profil & Tombol Mode Desktop */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .karu-profile-pill {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 4px 12px 4px 5px;
+      border-radius: 999px;
+    }
+    .karu-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--c-red);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .karu-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+    .karu-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+    .karu-role {
+      font-size: 11px;
+      color: #FECACA;
+    }
+
+    .btn-exit-portal {
+      min-height: 38px;
+      padding: 0 14px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: var(--radius-sm);
+      color: #FFFFFF;
+      font-size: 12.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-exit-portal:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+    .btn-exit-portal:active {
+      transform: scale(0.97);
+    }
+    .btn-exit-portal svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    /* ==============================================================
+       2. STRUKTUR KONTEN UTAMA (PADDING LEGA & NYAMAN)
+       ============================================================== */
+    .app-container {
+      max-width: 1360px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px 22px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    /* ==============================================================
+       3. RINGKASAN PRODUKSI SHIFT (TOP KPI CARDS - PADDING LEBIH LEGA)
+       ============================================================== */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .kpi-card {
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 9px;
+      padding: 12px 16px;
+      min-height: 98px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .kpi-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .kpi-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #6B7280;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .kpi-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0F172A;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      line-height: 1.1;
+      font-feature-settings: "tnum" 1;
+      margin: 2px 0 1px;
+    }
+
+    .kpi-unit {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #6B7280;
+      letter-spacing: 0;
+    }
+
+    .kpi-footer-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #6B7280;
+      margin-top: 2px;
+    }
+    .kpi-footer-row svg {
+      stroke: #6B7280;
+      flex-shrink: 0;
+    }
+
+    .kpi-icon-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      background: #0F172A;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+      box-shadow: none !important;
+    }
+    .kpi-icon-box svg {
+      width: 18px;
+      height: 18px;
+      stroke: #FFFFFF !important;
+      stroke-width: 2.2;
+      display: block;
+    }
+
+    /* Varian Solid Flat Tanpa Shadow dengan Ikon Putih Bersih Sesuai Dashboard Manajemen */
+    /* 1. Target Shift: Semi-transparan putih di kartu gelap */
+    .kpi-card-dark .kpi-icon-box,
+    .kpi-icon-box.icon-box-target {
+      background: rgba(255, 255, 255, 0.14) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      color: #FFFFFF !important;
+      box-shadow: none !important;
+    }
+    .kpi-card-dark .kpi-icon-box svg,
+    .kpi-icon-box.icon-box-target svg {
+      stroke: #FFFFFF !important;
+      color: #FFFFFF !important;
+    }
+
+    /* 2. Hasil Aktual Bagus: Background Solid Hijau Emerald (#16A34A) & Ikon Putih */
+    .kpi-icon-box.icon-box-good {
+      background: #16A34A !important;
+      border: none !important;
+      color: #FFFFFF !important;
+      box-shadow: none !important;
+    }
+    .kpi-icon-box.icon-box-good svg {
+      stroke: #FFFFFF !important;
+      color: #FFFFFF !important;
+    }
+
+    /* 3. Barang Rusak (BS): Background Solid Merah (#DC2626) & Ikon Putih */
+    .kpi-icon-box.icon-box-scrap {
+      background: #DC2626 !important;
+      border: none !important;
+      color: #FFFFFF !important;
+      box-shadow: none !important;
+    }
+    .kpi-icon-box.icon-box-scrap svg {
+      stroke: #FFFFFF !important;
+      color: #FFFFFF !important;
+    }
+
+    /* 4. Pencapaian Target: Background Solid Biru (#2563EB) & Ikon Putih */
+    .kpi-icon-box.icon-box-perf {
+      background: #2563EB !important;
+      border: none !important;
+      color: #FFFFFF !important;
+      box-shadow: none !important;
+    }
+    .kpi-icon-box.icon-box-perf svg {
+      stroke: #FFFFFF !important;
+      color: #FFFFFF !important;
+    }
+
+    /* CARD 1: HERO DARK THEME (TARGET SHIFT - MONOKROM HITAM & PUTIH) */
+    .kpi-card-dark {
+      background: #0F172A;
+      border: 1px solid #1E293B;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      color: #FFFFFF;
+    }
+    .kpi-card-dark .kpi-label {
+      color: #94A3B8;
+      letter-spacing: 0.04em;
+    }
+    .kpi-card-dark .kpi-value {
+      color: #FFFFFF !important;
+    }
+    .kpi-card-dark .kpi-unit {
+      color: #94A3B8 !important;
+    }
+    .kpi-card-dark .kpi-icon-box {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFFFFF;
+    }
+    .kpi-dark-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #D1D5DB;
+      font-size: 10.5px;
+      font-weight: 500;
+    }
+    .kpi-pulse-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+    }
+    .kpi-bg-graphic {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 48px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.85;
+    }
+
+    /* ==============================================================
+       4. BILAH FILTER & KONTROL (CLEAN FIGMA DESIGN)
+       ============================================================== */
+    .control-panel {
+      position: sticky;
+      top: 74px; /* Jarak padding tipis 10px di bawah navbar agar melayang rapi & tidak dempet */
+      z-index: 50;
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
+      transition: box-shadow 0.2s ease;
+    }
+    /* Mask latar belakang agar kartu yang di-scroll tertutup mulus di celah 10px */
+    .control-panel::before {
+      content: "";
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      right: 0;
+      height: 10px;
+      background-color: var(--bg-app);
+      pointer-events: none;
+    }
+
+    .control-panel-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .panel-row-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .control-panel-divider {
+      height: 1px;
+      background: #F1F5F9;
+      margin: 10px 0;
+      width: 100%;
+    }
+
+    .panel-row-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+    }
+
+    /* Work Center Dropdown Button Card (Matching Figma) */
+    .workcenter-dropdown-wrap {
+      position: relative;
+      display: inline-block;
+      flex: 0 0 auto;
+      z-index: 40;
+    }
+
+    .btn-wc-card {
+      min-height: 44px;
+      padding: 4px 14px 4px 5px;
+      background: #FFFFFF;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.15s ease;
+      font-family: inherit;
+      user-select: none;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    }
+
+    .btn-wc-card:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.06);
+    }
+
+    .btn-wc-card:focus-visible,
+    .btn-wc-card.open {
+      border-color: #0284C7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      outline: none;
+    }
+
+    .wc-card-icon-box {
+      width: 34px;
+      height: 34px;
+      background: #0F172A;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #FFFFFF;
+    }
+
+    .wc-card-icon-box svg {
+      width: 16px;
+      height: 16px;
+      stroke: #FFFFFF;
+    }
+
+    .wc-card-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1.25;
+      text-align: left;
+    }
+
+    .wc-card-sub {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #94A3B8;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .wc-card-main {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0F172A;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .wc-clean-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .wc-clean-dot.dot-running {
+      background: #10B981;
+      box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+    }
+    .wc-clean-dot.dot-off {
+      background: #94A3B8;
+    }
+
+    .wc-card-chevron {
+      width: 13px;
+      height: 13px;
+      color: #0F172A;
+      stroke-width: 2.5;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-wc-card.open .wc-card-chevron {
+      transform: rotate(180deg);
+      color: #0284C7;
+    }
+
+    /* Popover Menu */
+    .wc-clean-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      width: 240px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--c-border-strong);
+      border-radius: 10px;
+      box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.12), 0 3px 8px rgba(15, 23, 42, 0.05);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 100;
+      animation: wcCleanFadeIn 0.15s ease-out forwards;
+    }
+
+    .wc-clean-menu.show {
+      display: flex;
+    }
+
+    @keyframes wcCleanFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .wc-clean-list {
+      max-height: 290px;
+      overflow-y: auto;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.25) transparent;
+    }
+
+    .wc-clean-list::-webkit-scrollbar {
+      width: 4px;
+    }
+    .wc-clean-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .wc-clean-list::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 999px;
+    }
+    .wc-clean-list::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.5);
+    }
+
+    .wc-clean-header {
+      font-size: 10px;
+      font-weight: 800;
+      color: #94A3B8;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 7px 10px 3px;
+    }
+
+    .wc-clean-divider {
+      height: 1px;
+      background: #E2E8F0;
+      margin: 3px 6px;
+    }
+
+    .wc-clean-item {
+      width: 100%;
+      min-height: 33px;
+      padding: 0 10px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 12px;
+      color: var(--c-navy);
+      text-align: left;
+      transition: background 0.12s;
+    }
+
+    .wc-clean-item:hover {
+      background: #F1F5F9;
+    }
+
+    .wc-clean-item.active {
+      background: #F0F9FF;
+      color: #0284C7;
+      font-weight: 700;
+    }
+
+    .wc-clean-item .wc-item-code {
+      font-weight: 700;
+    }
+
+    .wc-clean-item .wc-item-type {
+      margin-left: auto;
+      font-size: 11px;
+      color: #94A3B8;
+      font-weight: 500;
+    }
+
+    .wc-clean-item.active .wc-item-type {
+      color: #0284C7;
+      font-weight: 600;
+    }
+
+    /* Shift Aktif (Login) Card (Matching Figma) */
+    .session-shift-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #F1F5F9;
+      border: 1px solid #E2E8F0;
+      padding: 4px 14px 4px 7px;
+      border-radius: 10px;
+      min-height: 44px;
+      user-select: none;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    .shift-card-icon-box {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+    }
+
+    .shift-card-icon-box svg {
+      width: 13.5px;
+      height: 13.5px;
+      stroke: #64748B;
+    }
+
+    .shift-card-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1.25;
+      text-align: left;
+    }
+
+    .shift-card-sub {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #94A3B8;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .shift-card-main {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #0F172A;
+    }
+
+    /* Status Filter Capsule (Matching Figma) */
+    .status-capsule-wrap {
+      background: #F1F5F9;
+      border-radius: 10px;
+      padding: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .status-btn {
+      min-height: 34px;
+      padding: 0 12px;
+      border: none;
+      background: transparent;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748B;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .status-btn:hover {
+      background: rgba(255, 255, 255, 0.65);
+      color: #0F172A;
+    }
+
+    .status-btn.active {
+      background: #0F172A;
+      color: #FFFFFF;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
+    }
+
+    .status-counter {
+      background: #FFFFFF;
+      color: #64748B;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 1.5px 7px;
+      border-radius: 999px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+      line-height: 1.25;
+    }
+
+    .status-btn.active .status-counter {
+      background: rgba(255, 255, 255, 0.22);
+      color: #FFFFFF;
+      box-shadow: none;
+    }
+
+    /* Search Bar & View Toggle (Matching Figma) */
+    .filter-right-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .search-wrap {
+      position: relative;
+      width: 220px;
+    }
+
+    .search-icon-svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      stroke: #94A3B8;
+      stroke-width: 2.2;
+      pointer-events: none;
+    }
+
+    .search-input-field {
+      width: 100%;
+      height: 36px;
+      padding: 0 28px 0 32px;
+      background: #FFFFFF;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-family: inherit;
+      color: #0F172A;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .search-input-field::placeholder {
+      color: #94A3B8;
+    }
+
+    .search-input-field:focus {
+      outline: none;
+      border-color: #0284C7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    .btn-clear-search {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border: none;
+      background: #E2E8F0;
+      color: #475569;
+      border-radius: 50%;
+      font-size: 11px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .view-mode-group {
+      background: #F1F5F9;
+      border-radius: 8px;
+      padding: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+      border: none;
+    }
+
+    .btn-view-toggle {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: #64748B;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s;
+    }
+
+    .btn-view-toggle svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    .btn-view-toggle:hover {
+      color: #0F172A;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-view-toggle.active {
+      background: #0F172A;
+      color: #FFFFFF;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
+    }
+
+    /* ==============================================================
+       5. KARTU ANTREAN PERINTAH KERJA (FIXED & UNIFORM LAYOUT ACROSS ALL CARDS)
+       ============================================================== */
+    .mo-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 16px;
+    }
+
+    .mo-card-item {
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      position: relative;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      height: 100%;
+    }
+    .mo-card-item:hover {
+      border-color: #D1D5DB;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    }
+
+    /* 1. Header Kartu: Fixed 3-Baris Rapi & Konsisten di Setiap Kartu */
+    .card-head-compact {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+    .card-head-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+    .card-mo-code {
+      font-size: 15px;
+      font-weight: 750;
+      color: #0F172A;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+    .card-head-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+    }
+    .card-mp-badge {
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.01em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.15);
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .card-mp-badge svg {
+      color: #94A3B8;
+      flex-shrink: 0;
+    }
+    .card-prio-badge {
+      background: #FEF3C7;
+      border: 1px solid #FDE68A;
+      color: #B45309;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 6.5px;
+      border-radius: 4px;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .card-prio-badge.prio-high {
+      background: #FEE2E2;
+      border-color: #FECACA;
+      color: #DC2626;
+    }
+    .card-meta-tags {
+      font-size: 11.5px;
+      color: #64748B;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+    .card-meta-tags strong {
+      color: #1E293B;
+      font-weight: 700;
+    }
+    .meta-bullet {
+      color: #CBD5E1;
+    }
+
+    /* Badge Status Bersih */
+    .status-badge-clean {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3.5px 9px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+    .badge-in-progress {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+    .badge-in-progress .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #D97706;
+    }
+    .badge-is-ready {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+    .badge-is-ready .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #059669;
+    }
+    .badge-is-done {
+      background: #DBEAFE;
+      color: #1E40AF;
+    }
+    .badge-is-done .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2563EB;
+    }
+
+    /* 2. Informasi Produk (Fixed Height agar seragam di setiap kartu) */
+    .card-product-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: #F8FAFC;
+      border: 1px solid #F1F5F9;
+      border-radius: 10px;
+      padding: 12px 14px;
+      min-height: 116px;
+      justify-content: space-between;
+    }
+    .product-category-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .product-stage-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .product-uom-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      background: #E2E8F0;
+      padding: 1.5px 7px;
+      border-radius: 4px;
+    }
+    .card-product-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0F172A;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 19px;
+    }
+    .card-product-specs {
+      font-size: 11.5px;
+      color: #64748B;
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 33px;
+    }
+
+    /* 3. Progress Timbangan */
+    .card-metrics-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 62px;
+      justify-content: space-between;
+    }
+    .metrics-header-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    .metrics-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .metrics-pct {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .metrics-values-row {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+    }
+    .val-act-big {
+      font-size: 19px;
+      font-weight: 800;
+      color: #0F172A;
+      letter-spacing: -0.02em;
+      font-feature-settings: "tnum" 1;
+    }
+    .val-tgt-sub {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748B;
+    }
+    .progress-bar-track {
+      width: 100%;
+      height: 7px;
+      background: #E2E8F0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1E293B 0%, #D62828 100%);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    /* 4. Tombol Aksi */
+    .btn-card-action {
+      min-height: 46px;
+      background-color: var(--c-red);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(214, 40, 40, 0.25);
+      transition: background-color 0.15s ease, transform 0.1s ease;
+      width: 100%;
+      margin-top: auto;
+    }
+    .btn-card-action:hover {
+      background-color: var(--c-red-hover);
+    }
+    .btn-card-action:active {
+      transform: scale(0.98);
+    }
+    .btn-card-action svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    /* ==============================================================
+       6. TAMPILAN TABEL LIST (ENHANCED LEGIBILITY & LINKED MP BADGE)
+       ============================================================== */
+    .table-view-container {
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      max-height: 565px; /* Pas 10 baris pertama dengan padding nyaman, sisanya di-scroll */
+      overflow-y: auto;
+      overflow-x: auto;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      display: none;
+      width: 100%;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.22) transparent;
+    }
+
+    /* Scrollbar Transparan, Ramping & Mengambang (Floating Pill) */
+    .table-view-container::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    .table-view-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .table-view-container::-webkit-scrollbar-thumb {
+      background-color: rgba(148, 163, 184, 0.22);
+      border-radius: 999px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      transition: background-color 0.15s ease;
+    }
+    .table-view-container::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(100, 116, 139, 0.45);
+    }
+    .table-view-container::-webkit-scrollbar-button {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+    .table-view-container::-webkit-scrollbar-corner {
+      background: transparent !important;
+    }
+
+    .mo-data-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 12px;
+      text-align: left;
+      table-layout: auto;
+    }
+
+    .mo-data-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #FFFFFF; /* Warna putih bersih sesuai acuan gambar */
+      color: #64748B; /* Warna teks abu-abu kebiruan slate yang lembut & bersih */
+      padding: 9px 10px;
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      border-bottom: 1.5px solid #F1F5F9;
+      box-shadow: inset 0 -1.5px 0 #F1F5F9;
+    }
+    .mo-data-table thead tr th:first-child {
+      border-top-left-radius: 11px;
+    }
+    .mo-data-table thead tr th:last-child {
+      border-top-right-radius: 11px;
+      padding-right: 18px;
+    }
+
+    .mo-data-table tbody tr {
+      transition: background 0.12s ease;
+      cursor: pointer;
+    }
+
+    .mo-data-table tbody tr:hover {
+      background: #F8FAFC;
+    }
+
+    .mo-data-table td {
+      padding: 12px 10px; /* Padding baris lebih lega dan nyaman */
+      vertical-align: middle;
+      color: var(--c-text-main);
+      font-size: 12px;
+      border-bottom: 1px solid #F1F5F9;
+    }
+    .mo-data-table tbody tr td:last-child {
+      padding-right: 18px; /* Tombol Input memiliki jarak lapang dari bar scroll */
+    }
+
+    /* Column Typography (Ukuran font sedikit lebih besar & jelas) */
+    .tbl-mo-code {
+      font-weight: 750;
+      color: #0F172A; /* Warna hitam pekat elegan (bukan biru) */
+      font-size: 12.5px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+    .tbl-mp-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #0F172A; /* Kontras tinggi identik dengan header & tombol Semua */
+      color: #FFFFFF;
+      border-radius: 4px;
+      padding: 2px 6.5px;
+      font-size: 10.5px;
+      font-weight: 700;
+      margin-top: 3px;
+      line-height: 1.2;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.15);
+    }
+    .tbl-mp-badge svg {
+      color: #94A3B8;
+      flex-shrink: 0;
+    }
+    .tbl-wc-name {
+      font-weight: 750;
+      color: #0F172A;
+      font-size: 12.5px;
+    }
+    .tbl-proc-name {
+      color: #475569;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .tbl-prod-title {
+      font-weight: 700;
+      color: #0F172A;
+      font-size: 12.5px;
+      max-width: 290px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      line-height: 1.25;
+    }
+    .tbl-prod-spec {
+      font-size: 11px;
+      color: #64748B;
+      max-width: 290px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    .tbl-val-target {
+      text-align: left;
+      font-weight: 600;
+      color: #475569;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .tbl-val-actual {
+      text-align: left;
+      font-weight: 750;
+      color: #0F172A;
+      font-size: 12.5px;
+      white-space: nowrap;
+    }
+
+    /* Progress Column */
+    .tbl-progress-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 3.5px;
+      width: 62px;
+    }
+    .tbl-progress-val {
+      font-size: 11.5px;
+      font-weight: 750;
+      color: #0F172A;
+      line-height: 1.1;
+    }
+    .tbl-progress-bar {
+      width: 100%;
+      height: 5.5px;
+      background: #E2E8F0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .tbl-progress-fill {
+      height: 100%;
+      background: #0F172A;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    /* Status Pills */
+    .tbl-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5.5px;
+      padding: 3.5px 9px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .tbl-status-dot {
+      width: 6.5px;
+      height: 6.5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .tbl-status-prod {
+      background: #FEF3C7;
+      color: #B45309;
+    }
+    .tbl-status-prod .tbl-status-dot {
+      background: #F59E0B;
+    }
+    .tbl-status-draft {
+      background: #DCFCE7;
+      color: #15803D;
+    }
+    .tbl-status-draft .tbl-status-dot {
+      background: #22C55E;
+    }
+    .tbl-status-done {
+      background: #F1F5F9;
+      color: #475569;
+    }
+    .tbl-status-done .tbl-status-dot {
+      background: #94A3B8;
+    }
+
+    /* Prioritas Pills */
+    .tbl-prio-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3.5px 8px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .tbl-prio-high {
+      background: #FEE2E2;
+      color: #DC2626;
+    }
+    .tbl-prio-normal {
+      background: #FFEDD5;
+      color: #C2410C;
+    }
+
+    /* Aksi Button (Compact Red Pill - Tanpa Ikon) */
+    .btn-table-input {
+      min-height: 28px;
+      padding: 4px 14px;
+      background: #DC2626;
+      color: #FFFFFF;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background-color 0.15s ease, transform 0.1s ease;
+      white-space: nowrap;
+      box-shadow: 0 1px 2px rgba(220, 38, 38, 0.25);
+    }
+    .btn-table-input:hover {
+      background: #B91C1C;
+    }
+    .btn-table-input:active {
+      transform: scale(0.97);
+    }
+
+    /* Pesan Antrean Kosong */
+    .empty-queue-alert {
+      background: #FFFFFF;
+      border: 2px dashed var(--c-border-strong);
+      border-radius: var(--radius-md);
+      padding: 40px 20px;
+      text-align: center;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      color: var(--c-text-muted);
+    }
+    .empty-queue-alert svg {
+      width: 40px;
+      height: 40px;
+      stroke: var(--c-text-subtle);
+    }
+    .empty-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--c-navy);
+    }
+
+    /* Modal Konfirmasi Exit ke Desktop */
+    .exit-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .exit-modal-box {
+      background: #FFFFFF;
+      border-radius: var(--radius-md);
+      max-width: 420px;
+      width: 100%;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .modal-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+    .modal-btn-stay {
+      flex: 1;
+      min-height: 46px;
+      background: #F3F4F6;
+      border: 1px solid var(--c-border-strong);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--c-navy);
+      cursor: pointer;
+    }
+    .modal-btn-leave {
+      flex: 1;
+      min-height: 46px;
+      background: var(--c-navy);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ==============================================================
+       7. RESPONSIF TABLET & MOBILE
+       ============================================================== */
+    @media (max-width: 1024px) {
+      .app-container {
+        padding: 14px 18px 24px;
+        gap: 14px;
+      }
+      .kpi-row {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      .mo-cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .top-header {
+        padding: 8px 16px;
+      }
+      .header-shift-badge {
+        display: none;
+      }
+      /* TABLET 768px / 767px: Pertahankan 2 Baris Bersih Horisontal (TIDAK Menumpuk!) */
+      .control-panel {
+        padding: 10px 14px;
+        gap: 0;
+      }
+      .control-panel-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        width: 100%;
+      }
+      .panel-row-top {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .workcenter-dropdown-wrap {
+        flex: 0 0 auto;
+        width: auto;
+      }
+      .btn-wc-card {
+        width: auto;
+      }
+      .session-shift-card {
+        flex: 0 0 auto;
+        width: auto;
+        margin-left: auto;
+      }
+      .control-panel-divider {
+        margin: 8px 0;
+      }
+      .panel-row-bottom {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .status-capsule-wrap {
+        flex-shrink: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .status-capsule-wrap::-webkit-scrollbar {
+        display: none;
+      }
+      .filter-right-group {
+        flex: 1 1 auto;
+        max-width: 320px;
+        justify-content: flex-end;
+        min-width: 160px;
+        margin-left: auto;
+      }
+      .search-wrap {
+        flex: 1 1 auto;
+        width: auto;
+        min-width: 120px;
+      }
+      .view-mode-group {
+        flex-shrink: 0;
+      }
+      .mo-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top-header {
+        padding: 8px 12px;
+        min-height: 56px;
+      }
+      .header-titles {
+        display: none;
+      }
+      .header-divider {
+        display: none;
+      }
+      .karu-info {
+        display: none;
+      }
+      .karu-profile-pill {
+        padding: 2px;
+        background: transparent;
+        border: none;
+      }
+      .app-container {
+        padding: 10px 12px 20px;
+        gap: 12px;
+      }
+            .control-panel {
+        top: 64px; /* Menyesuaikan header mobile 56px + padding tipis 8px */
+        padding: 10px 12px;
+        gap: 0;
+      }
+      .control-panel::before {
+        height: 8px;
+      }
+      .control-panel-row {
+        gap: 8px;
+      }
+      .panel-row-top {
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: space-between;
+      }
+      .workcenter-dropdown-wrap {
+        flex: 1 1 auto;
+      }
+      .btn-wc-card {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .session-shift-card {
+        flex: 1 1 auto;
+        width: 100%;
+        margin-left: 0;
+      }
+      .panel-row-bottom {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .status-capsule-wrap {
+        width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .status-capsule-wrap::-webkit-scrollbar {
+        display: none;
+      }
+      .filter-right-group {
+        width: 100%;
+        max-width: 100%;
+        justify-content: space-between;
+      }
+      .search-wrap {
+        flex: 1;
+        min-width: 120px;
+      }
+      .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      .kpi-card {
+        padding: 12px 14px;
+        min-height: 88px;
+      }
+      .kpi-value {
+        font-size: 19px;
+      }
+      .mo-card-item {
+        padding: 14px 16px;
+      }
+      .card-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+      .btn-action-primary,
+      .btn-card-action {
+        min-height: 48px;
+        font-size: 13.5px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .kpi-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==============================================================
+       1. HEADER NAVIGASI KARU LANTAI PRODUKSI
+       ============================================================== -->
+  <header class="top-header">
+    <div class="brand-group">
+      <!-- Logo DXL ERP / PT Dolpin Putra Sejati -->
+      <a href="../bagian-1/index.html" title="DXL ERP - Portal Utama" style="display: flex; align-items: center; text-decoration: none;">
+        <img src="images/logo.png" alt="DXL ERP Logo" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('brandFallbackText').style.display='flex';">
+        <div id="brandFallbackText" class="brand-fallback" style="display: none;">
+          <span>DXL</span>
+          <span class="brand-badge">PRODUKSI</span>
+        </div>
+      </a>
+
+      <div class="header-divider"></div>
+
+      <div class="header-titles">
+        <span class="header-title-main">Portal Karu &bull; Antrean Perintah Kerja (MO)</span>
+        <span class="header-title-sub">Lantai Pabrik PT Dolpin Putra Sejati</span>
+      </div>
+    </div>
+
+    <!-- Profil Karu & Keterangan Shift -->
+    <div class="header-right">
+      <!-- Info Shift Berjalan (Polos Warna Putih) -->
+      <div class="header-shift-badge">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="txtHeaderShift">Shift 1 (Pagi) &bull; 07:00 - 15:00 WIB</span>
+      </div>
+
+      <div class="karu-profile-pill">
+        <div class="karu-avatar">SP</div>
+        <div class="karu-info">
+          <span class="karu-name">Supardi</span>
+          <span class="karu-role">KARU Regu A &bull; Online</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==============================================================
+       2. KONTEN UTAMA APLIKASI
+       ============================================================== -->
+  <main class="app-container">
+
+    <!-- 3. RINGKASAN PRODUKSI SHIFT (TOP KPI CARDS - ELEVATED MONOCHROME) -->
+    <section class="kpi-row">
+      
+      <!-- Target Shift (Card Paling Kiri - Dark Hero Card dengan Grafik Watermark Hitam & Putih) -->
+      <div class="kpi-card kpi-card-target kpi-card-dark">
+        <div class="kpi-card-inner">
+          <div class="kpi-header-row">
+            <span class="kpi-label">Target Shift</span>
+            <div class="kpi-icon-box icon-box-target" title="Target Rencana Operasional">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+          </div>
+          <div class="kpi-value" id="dispKpiTarget">2.950 <span class="kpi-unit">Kg</span></div>
+          <div class="kpi-footer-row">
+            <span class="kpi-dark-badge">
+              <span class="kpi-pulse-dot"></span>
+              <span id="txtKpiShiftSub">Shift 1 &bull; Rencana 8 Jam</span>
+            </span>
+          </div>
+        </div>
+        <!-- SVG Graphic Background (Monochrome Watermark Trend Line & Area) -->
+        <svg class="kpi-bg-graphic" viewBox="0 0 200 64" preserveAspectRatio="none" fill="none">
+          <defs>
+            <linearGradient id="monoGraphArea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.14"/>
+              <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.0"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="22" x2="200" y2="22" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="3 3" opacity="0.08"/>
+          <line x1="0" y1="44" x2="200" y2="44" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="3 3" opacity="0.05"/>
+          <path d="M0,52 Q35,42 65,44 T130,22 T170,14 L200,8 L200,64 L0,64 Z" fill="url(#monoGraphArea)"/>
+          <path d="M0,52 Q35,42 65,44 T130,22 T170,14 L200,8" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+          <circle cx="200" cy="8" r="3.5" fill="#FFFFFF" opacity="0.6"/>
+        </svg>
+      </div>
+
+      <!-- Hasil Aktual Bagus -->
+      <div class="kpi-card">
+        <div class="kpi-card-inner">
+          <div class="kpi-header-row">
+            <span class="kpi-label">Hasil Aktual Bagus</span>
+            <div class="kpi-icon-box icon-box-good" title="Hasil Aktual Bagus Lolos QC">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+                <path d="M9 12l2 2 4-4"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-value" id="dispKpiActual">1.170 <span class="kpi-unit">Kg</span></div>
+          <div class="kpi-footer-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Timbangan Terverifikasi</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barang Rusak (BS) -->
+      <div class="kpi-card">
+        <div class="kpi-card-inner">
+          <div class="kpi-header-row">
+            <span class="kpi-label">Barang Rusak (BS)</span>
+            <div class="kpi-icon-box icon-box-scrap" title="Barang Rusak / Defect Afval (BS)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+                <path d="M12 3l1.5 5.5-3 3 3 3-1.5 6.5"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-value" id="dispKpiReject">24,5 <span class="kpi-unit">Kg</span></div>
+          <div class="kpi-footer-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Toleransi Afval &lt; 2.5%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pencapaian Target -->
+      <div class="kpi-card">
+        <div class="kpi-card-inner">
+          <div class="kpi-header-row">
+            <span class="kpi-label">Pencapaian Target</span>
+            <div class="kpi-icon-box icon-box-perf" title="Rasio Pencapaian Target">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-value" id="dispKpiEff">58,4 <span class="kpi-unit">%</span></div>
+          <div class="kpi-footer-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>Rasio Output vs Target</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 4. BILAH FILTER & KONTROL (FIGMA ACCURATE) -->
+    <section class="control-panel">
+      
+      <!-- BARIS 1: Filter Work Center (Sisi Kiri) & Sesi Shift Aktif Terkunci (Sisi Kanan) -->
+      <div class="control-panel-row panel-row-top">
+
+        <!-- Work Center Selector (Clean Minimalist Dropdown) -->
+        <div class="workcenter-dropdown-wrap" id="workCenterDropdownWrap">
+          <button type="button" class="btn-wc-card" id="wcDropdownTrigger" onclick="toggleWorkCenterDropdown(event)" aria-expanded="false" title="Pilih Work Center penugasan">
+            <div class="wc-card-icon-box">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+            </div>
+            <div class="wc-card-text">
+              <span class="wc-card-sub">WORK CENTER</span>
+              <div class="wc-card-main">
+                <span class="wc-clean-dot dot-running" id="wcTriggerDot" style="display: none;"></span>
+                <span id="wcTriggerLabel">Semua (17)</span>
+              </div>
+            </div>
+            <svg class="wc-card-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          <div class="wc-clean-menu" id="wcDropdownMenu" onclick="event.stopPropagation()">
+            <div class="wc-clean-list">
+              <!-- Semua Work Center -->
+              <button type="button" class="wc-clean-item active" data-wc="ALL" onclick="selectWorkCenter('ALL', 'Semua (17)', null)">
+                <span class="wc-item-code">Semua Work Center</span>
+                <span class="wc-item-type">17 Unit</span>
+              </button>
+
+              <div class="wc-clean-divider"></div>
+              <div class="wc-clean-header">Extruder Line A</div>
+
+              <button type="button" class="wc-clean-item" data-wc="A01EXT" onclick="selectWorkCenter('A01EXT', 'A01EXT', 'dot-running')">
+                <span class="wc-clean-dot dot-running"></span>
+                <span class="wc-item-code">A01EXT</span>
+                <span class="wc-item-type">Extruder</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A02EXT" onclick="selectWorkCenter('A02EXT', 'A02EXT', 'dot-running')">
+                <span class="wc-clean-dot dot-running"></span>
+                <span class="wc-item-code">A02EXT</span>
+                <span class="wc-item-type">Extruder</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A03EXT" onclick="selectWorkCenter('A03EXT', 'A03EXT', 'dot-running')">
+                <span class="wc-clean-dot dot-running"></span>
+                <span class="wc-item-code">A03EXT</span>
+                <span class="wc-item-type">Extruder</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A04EXT" onclick="selectWorkCenter('A04EXT', 'A04EXT', 'dot-off')">
+                <span class="wc-clean-dot dot-off"></span>
+                <span class="wc-item-code">A04EXT</span>
+                <span class="wc-item-type">Extruder</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A05EXT" onclick="selectWorkCenter('A05EXT', 'A05EXT', 'dot-running')">
+                <span class="wc-clean-dot dot-running"></span>
+                <span class="wc-item-code">A05EXT</span>
+                <span class="wc-item-type">Extruder</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A06EXT" onclick="selectWorkCenter('A06EXT', 'A06EXT', 'dot-running')">
+                <span class="wc-clean-dot dot-running"></span>
+                <span class="wc-item-code">A06EXT</span>
+                <span class="wc-item-type">Extruder</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A07EXT" onclick="selectWorkCenter('A07EXT', 'A07EXT', 'dot-off')">
+                <span class="wc-clean-dot dot-off"></span>
+                <span class="wc-item-code">A07EXT</span>
+                <span class="wc-item-type">Extruder</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A08EXT" onclick="selectWorkCenter('A08EXT', 'A08EXT', 'dot-running')">
+                <span class="wc-clean-dot dot-running"></span>
+                <span class="wc-item-code">A08EXT</span>
+                <span class="wc-item-type">Extruder</span>
+              </button>
+
+              <div class="wc-clean-divider"></div>
+              <div class="wc-clean-header">Cutting Line A & B</div>
+
+              <button type="button" class="wc-clean-item" data-wc="A01CUT" onclick="selectWorkCenter('A01CUT', 'A01CUT', 'dot-running')">
+                <span class="wc-clean-dot dot-running"></span>
+                <span class="wc-item-code">A01CUT</span>
+                <span class="wc-item-type">Cutting</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A02CUT" onclick="selectWorkCenter('A02CUT', 'A02CUT', 'dot-off')">
+                <span class="wc-clean-dot dot-off"></span>
+                <span class="wc-item-code">A02CUT</span>
+                <span class="wc-item-type">Cutting</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A03CUT" onclick="selectWorkCenter('A03CUT', 'A03CUT', 'dot-running')">
+                <span class="wc-clean-dot dot-running"></span>
+                <span class="wc-item-code">A03CUT</span>
+                <span class="wc-item-type">Cutting</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A04CUT" onclick="selectWorkCenter('A04CUT', 'A04CUT', 'dot-running')">
+                <span class="wc-clean-dot dot-running"></span>
+                <span class="wc-item-code">A04CUT</span>
+                <span class="wc-item-type">Cutting</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A05CUT" onclick="selectWorkCenter('A05CUT', 'A05CUT', 'dot-off')">
+                <span class="wc-clean-dot dot-off"></span>
+                <span class="wc-item-code">A05CUT</span>
+                <span class="wc-item-type">Cutting</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A06CUT" onclick="selectWorkCenter('A06CUT', 'A06CUT', 'dot-running')">
+                <span class="wc-clean-dot dot-running"></span>
+                <span class="wc-item-code">A06CUT</span>
+                <span class="wc-item-type">Cutting</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="A07CUT" onclick="selectWorkCenter('A07CUT', 'A07CUT', 'dot-off')">
+                <span class="wc-clean-dot dot-off"></span>
+                <span class="wc-item-code">A07CUT</span>
+                <span class="wc-item-type">Cutting</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="B01CUT" onclick="selectWorkCenter('B01CUT', 'B01CUT', 'dot-running')">
+                <span class="wc-clean-dot dot-running"></span>
+                <span class="wc-item-code">B01CUT</span>
+                <span class="wc-item-type">Cutting</span>
+              </button>
+              <button type="button" class="wc-clean-item" data-wc="B02CUT" onclick="selectWorkCenter('B02CUT', 'B02CUT', 'dot-off')">
+                <span class="wc-clean-dot dot-off"></span>
+                <span class="wc-item-code">B02CUT</span>
+                <span class="wc-item-type">Cutting</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sesi Shift Otomatis Terkunci (Sisi Kanan) -->
+        <div class="session-shift-card" title="Shift otomatis aktif sesuai jadwal penugasan login Karu">
+          <div class="shift-card-icon-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2.2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <div class="shift-card-text">
+            <span class="shift-card-sub">SHIFT AKTIF (LOGIN)</span>
+            <span class="shift-card-main">Shift 1 (07:00 - 15:00 WIB)</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Garis Pemisah Halus Antar Baris -->
+      <div class="control-panel-divider"></div>
+
+      <!-- BARIS 2: Filter Status (Sisi Kiri) & Pencarian / Pilihan Tampilan (Sisi Kanan) -->
+      <div class="control-panel-row panel-row-bottom">
+
+        <!-- Filter Cepat Status Antrean Capsule (Sisi Kiri) -->
+        <div class="status-capsule-wrap">
+          <button type="button" class="status-btn active" data-st="ALL" onclick="selectStatus('ALL', this)">
+            <span>Semua</span>
+            <span class="status-counter" id="cntStatusAll">12</span>
+          </button>
+          <button type="button" class="status-btn" data-st="ready" onclick="selectStatus('ready', this)">
+            <span>Draft</span>
+            <span class="status-counter" id="cntStatusReady">5</span>
+          </button>
+          <button type="button" class="status-btn" data-st="progress" onclick="selectStatus('progress', this)">
+            <span>On production</span>
+            <span class="status-counter" id="cntStatusProg">7</span>
+          </button>
+          <button type="button" class="status-btn" data-st="done" onclick="selectStatus('done', this)">
+            <span>Done</span>
+            <span class="status-counter" id="cntStatusDone">0</span>
+          </button>
+        </div>
+
+        <!-- Pencarian & Pilihan Tampilan (Sisi Kanan) -->
+        <div class="filter-right-group">
+          <!-- Pencarian MO / Produk -->
+          <div class="search-wrap">
+            <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input-field" id="inputSearch" placeholder="Cari No. MO / Produk..." oninput="handleSearchInput(this.value)">
+            <button type="button" class="btn-clear-search" id="btnClearSearch" onclick="clearSearchInput()">&times;</button>
+          </div>
+
+          <!-- Pilihan Tampilan (Grid / Tabel) -->
+          <div class="view-mode-group">
+            <button type="button" class="btn-view-toggle active" id="btnModeGrid" onclick="toggleViewMode('grid')" title="Tampilan Kartu Besar">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            </button>
+            <button type="button" class="btn-view-toggle" id="btnModeTable" onclick="toggleViewMode('table')" title="Tampilan Tabel">
+              <svg viewBox="0 0 24 24" fill="none"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 5. TAMPILAN KARTU ANTREAN MO (GRID VIEW UTAMA) -->
+    <div class="mo-cards-grid" id="containerMoCards">
+      <!-- Di-render dinamis oleh JavaScript -->
+    </div>
+
+    <!-- 6. TAMPILAN TABEL ANTREAN (LIST VIEW ALTERNATIF) -->
+    <div class="table-view-container" id="containerMoTable">
+      <table class="mo-data-table">
+        <thead>
+          <tr>
+            <th style="width: 14%;">NO. MO / MP</th>
+            <th style="width: 9%;">WORK CENTER</th>
+            <th style="width: 8%;">PROSES</th>
+            <th style="width: 25%;">ITEM PRODUK</th>
+            <th style="width: 8%; text-align: left;">TARGET</th>
+            <th style="width: 8%; text-align: left;">AKTUAL</th>
+            <th style="width: 7%;">PROGRESS</th>
+            <th style="width: 10%;">STATUS</th>
+            <th style="width: 6%;">PRIORITAS</th>
+            <th style="width: 85px; min-width: 85px; text-align: center;">AKSI</th>
+          </tr>
+        </thead>
+        <tbody id="tableBodyMo">
+          <!-- Di-render dinamis oleh JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Kondisi Jika Tidak Ada Antrean Ditemukan -->
+    <div class="empty-queue-alert" id="boxEmptyQueue">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <div class="empty-title">Tidak Ada Antrean MO Ditemukan</div>
+      <p style="font-size: 14px;">Silakan pilih shift lain, sesuaikan filter work center, atau hapus kata kunci pencarian.</p>
+    </div>
+
+  </main>
+
+  <!-- Modal Konfirmasi Keluar ke Mode Kantor -->
+  <div class="exit-modal-backdrop" id="dialogExit" onclick="onBackdropClick(event)">
+    <div class="exit-modal-box">
+      <div style="width: 48px; height: 48px; border-radius: 50%; background: #FEE2E2; color: var(--c-red); display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </div>
+      <div>
+        <h3 style="font-size: 18px; font-weight: 800; color: var(--c-navy); margin-bottom: 6px;">Beralih ke Portal Kantor?</h3>
+        <p style="font-size: 14px; color: var(--c-text-muted); line-height: 1.45;">Layar ini akan berpindah ke antarmuka standar ERP kantor (Manufacturing Orders PPIC).</p>
+      </div>
+      <div class="modal-btn-group">
+        <button type="button" class="modal-btn-stay" onclick="closeExitDialog()">Tetap di Sini</button>
+        <a href="../bagian-1/manufacturing.html" class="modal-btn-leave">Ya, Buka Kantor</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       7. LOGIKA JAVASCRIPT DINAMIS & INTERAKTIF
+       ============================================================== -->
+  <script>
+    // Data Antrean MO Pabrik PT Dolpin Putra Sejati (Khusus Regu Karu - 17 Work Center Terdaftar)
+    const moList = [
+      {
+        id: 1,
+        code: 'WH/MO/2026/0012',
+        mp: 'MP-2610-0988',
+        priority: 'FIFO #1',
+        priorityClass: 'prio-high',
+        name: 'Roll Film PE Bening - Ukuran 40x60',
+        stage: 'SFG',
+        process: 'Extruder',
+        machine: 'A01EXT',
+        shift: 1,
+        target: 1500.00,
+        actual: 1170.00,
+        uom: 'Kg',
+        status: 'progress', // 'progress' | 'ready' | 'done'
+        spec: 'Bahan Baku: PE Virgin Murni &bull; Tebal: 0.04 mm &bull; Rencana Induk MP-0988 (Tahap 1 Roll)'
+      },
+      {
+        id: 2,
+        code: 'WH/MO/2026/0013',
+        mp: 'MP-2610-0988', // SAMA DENGAN MO-0012 (Contoh Visual 1 MP -> Multi MO)
+        priority: 'FIFO #2',
+        priorityClass: 'prio-high',
+        name: 'Kantong Plastik PE Bening 40x60 (Potong)',
+        stage: 'FG',
+        process: 'Cutting',
+        machine: 'A01CUT',
+        shift: 1,
+        target: 1000.00,
+        actual: 650.00,
+        uom: 'Kg',
+        status: 'progress',
+        spec: 'Tipe: Bottom Sealing &bull; Bahan SFG Roll dari MO-0012 &bull; Rencana Induk MP-0988 (Tahap 2 Cutting)'
+      },
+      {
+        id: 3,
+        code: 'WH/MO/2026/0014',
+        mp: 'MP-2610-0990',
+        priority: 'FIFO #3',
+        priorityClass: 'prio-normal',
+        name: 'PP Bening Roll 20x40 Kaca Super',
+        stage: 'SFG',
+        process: 'Extruder',
+        machine: 'A02EXT',
+        shift: 1,
+        target: 800.00,
+        actual: 0.00,
+        uom: 'Kg',
+        status: 'ready',
+        spec: 'Bahan: Polypropylene (PP) Murni &bull; Lebar: 20 cm &bull; Rencana Induk MP-0990 (Tahap 1 Roll)'
+      },
+      {
+        id: 4,
+        code: 'WH/MO/2026/0015',
+        mp: 'MP-2610-0990', // SAMA DENGAN MO-0014 (Contoh Visual 1 MP -> Multi MO)
+        priority: 'FIFO #4',
+        priorityClass: 'prio-normal',
+        name: 'Plastik Klip Stand Up PP 20x40 (Finishing)',
+        stage: 'FG',
+        process: 'Cutting',
+        machine: 'A02CUT',
+        shift: 1,
+        target: 450.00,
+        actual: 0.00,
+        uom: 'Kg',
+        status: 'ready',
+        spec: 'Tipe: Double Zipper Klip Putih &bull; Bahan SFG dari MO-0014 &bull; Rencana Induk MP-0990 (Tahap 2)'
+      },
+      {
+        id: 5,
+        code: 'WH/MO/2026/0016',
+        mp: 'MP-2610-0992',
+        priority: 'FIFO #5',
+        priorityClass: 'prio-normal',
+        name: 'Plastik Cor PE Lebar 2M Rol Besar',
+        stage: 'SFG',
+        process: 'Extruder',
+        machine: 'A01EXT',
+        shift: 1,
+        target: 2000.00,
+        actual: 400.00,
+        uom: 'Kg',
+        status: 'progress',
+        spec: 'Tebal: 0.10 mm &bull; Campuran Daur Ulang Pilihan &bull; Gulungan Jumbo'
+      },
+      {
+        id: 6,
+        code: 'WH/MO/2026/0017',
+        mp: 'MP-2610-0993',
+        priority: 'FIFO #6',
+        priorityClass: 'prio-normal',
+        name: 'Kantong Kresek Putih Susu 24x40',
+        stage: 'FG',
+        process: 'Cutting',
+        machine: 'A01CUT',
+        shift: 1,
+        target: 1500.00,
+        actual: 0.00,
+        uom: 'Kg',
+        status: 'ready',
+        spec: 'Handle: Plong &bull; Warna: Putih Susu Pekat &bull; Pack isi 100 lembar'
+      },
+      {
+        id: 7,
+        code: 'WH/MO/2026/0018',
+        mp: 'MP-2610-0994',
+        priority: 'FIFO #7',
+        priorityClass: 'prio-normal',
+        name: 'Roll Film LDPE Shrink Bening 45cm',
+        stage: 'SFG',
+        process: 'Extruder',
+        machine: 'A02EXT',
+        shift: 1,
+        target: 1800.00,
+        actual: 250.00,
+        uom: 'Kg',
+        status: 'progress',
+        spec: 'Bahan: LDPE Shrinkable &bull; Tingkat Susut Tinggi &bull; Bening Kristal'
+      },
+      {
+        id: 8,
+        code: 'WH/MO/2026/0019',
+        mp: 'MP-2610-0995',
+        priority: 'FIFO #8',
+        priorityClass: 'prio-normal',
+        name: 'Roll HD Natural Tipis 30x50',
+        stage: 'SFG',
+        process: 'Extruder',
+        machine: 'A03EXT',
+        shift: 1,
+        target: 1200.00,
+        actual: 890.00,
+        uom: 'Kg',
+        status: 'progress',
+        spec: 'Bahan Baku: HDPE Virgin &bull; Tebal: 0.025 mm &bull; Emboss Garis Halus'
+      },
+      {
+        id: 9,
+        code: 'WH/MO/2026/0020',
+        mp: 'MP-2610-0996',
+        priority: 'FIFO #9',
+        priorityClass: 'prio-normal',
+        name: 'PP Bening Kaca Murni 25x35',
+        stage: 'SFG',
+        process: 'Extruder',
+        machine: 'A05EXT',
+        shift: 1,
+        target: 950.00,
+        actual: 0.00,
+        uom: 'Kg',
+        status: 'ready',
+        spec: 'Bahan: Polypropylene Murni &bull; Standar Higienis Makanan FDA'
+      },
+      {
+        id: 10,
+        code: 'WH/MO/2026/0021',
+        mp: 'MP-2610-0997',
+        priority: 'FIFO #10',
+        priorityClass: 'prio-normal',
+        name: 'Kantong Kresek Hitam Doff 35x55',
+        stage: 'FG',
+        process: 'Cutting',
+        machine: 'A03CUT',
+        shift: 1,
+        target: 1400.00,
+        actual: 620.00,
+        uom: 'Kg',
+        status: 'progress',
+        spec: 'Tipe: Handle Plong &bull; Bahan Daur Ulang Pilihan &bull; Wangi Vanilla'
+      },
+      {
+        id: 11,
+        code: 'WH/MO/2026/0022',
+        mp: 'MP-2610-0998',
+        priority: 'FIFO #11',
+        priorityClass: 'prio-normal',
+        name: 'Klip Zipper Transparan 16x25',
+        stage: 'FG',
+        process: 'Cutting',
+        machine: 'A04CUT',
+        shift: 1,
+        target: 700.00,
+        actual: 0.00,
+        uom: 'Kg',
+        status: 'ready',
+        spec: 'Double Red Line Klip &bull; Tebal: 0.05 mm &bull; Seal Samping Kuat'
+      },
+      {
+        id: 12,
+        code: 'WH/MO/2026/0023',
+        mp: 'MP-2610-0999',
+        priority: 'FIFO #12',
+        priorityClass: 'prio-normal',
+        name: 'Plastik Gelembung Air Bubble 125cm Rol',
+        stage: 'SFG',
+        process: 'Cutting',
+        machine: 'B01CUT',
+        shift: 1,
+        target: 1600.00,
+        actual: 980.00,
+        uom: 'Kg',
+        status: 'progress',
+        spec: 'Diameter Bubble: 10 mm &bull; 2 Layer Laminated &bull; Gulungan 50M'
+      }
+    ];
+
+    // Status Filter Global (Shift otomatis terkunci pada sesi Karu: Shift 1)
+    const activeShift = 1;
+    let activeMachine = 'ALL';
+    let activeStatus = 'ALL';
+    let searchKeyword = '';
+    let currentView = 'grid'; // 'grid' atau 'table'
+
+    // Filter Aksi: Pilihan Dropdown Work Center (Sederhana & Rapi)
+    let isWcDropdownOpen = false;
+
+    function toggleWorkCenterDropdown(event) {
+      if (event) event.stopPropagation();
+      isWcDropdownOpen = !isWcDropdownOpen;
+      const trigger = document.getElementById('wcDropdownTrigger');
+      const menu = document.getElementById('wcDropdownMenu');
+      if (!trigger || !menu) return;
+
+      if (isWcDropdownOpen) {
+        trigger.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+        menu.classList.add('show');
+      } else {
+        closeWorkCenterDropdown();
+      }
+    }
+
+    function closeWorkCenterDropdown() {
+      isWcDropdownOpen = false;
+      const trigger = document.getElementById('wcDropdownTrigger');
+      const menu = document.getElementById('wcDropdownMenu');
+      if (trigger) {
+        trigger.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+      if (menu) menu.classList.remove('show');
+    }
+
+    function selectWorkCenter(wcCode, wcLabel, statusDotClass) {
+      activeMachine = wcCode;
+      
+      document.querySelectorAll('.wc-clean-item').forEach(item => {
+        if (item.getAttribute('data-wc') === wcCode) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      const labelEl = document.getElementById('wcTriggerLabel');
+      const dotEl = document.getElementById('wcTriggerDot');
+      
+      if (wcCode === 'ALL') {
+        labelEl.textContent = 'Semua (17)';
+        if (dotEl) dotEl.style.display = 'none';
+      } else {
+        labelEl.textContent = wcCode;
+        if (dotEl) {
+          dotEl.className = 'wc-clean-dot ' + (statusDotClass || 'dot-running');
+          dotEl.style.display = 'inline-block';
+        }
+      }
+
+      closeWorkCenterDropdown();
+      renderFilteredMO();
+    }
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      const wrap = document.getElementById('workCenterDropdownWrap');
+      if (wrap && !wrap.contains(e.target)) {
+        closeWorkCenterDropdown();
+      }
+    });
+
+    // Close on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeWorkCenterDropdown();
+    });
+
+    // Backward compatibility alias
+    function selectMachine(machineCode) {
+      activeMachine = machineCode;
+      renderFilteredMO();
+    }
+
+    function selectStatus(statusVal, btn) {
+      activeStatus = statusVal;
+      document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderFilteredMO();
+    }
+
+    function handleSearchInput(val) {
+      searchKeyword = val.trim().toLowerCase();
+      document.getElementById('btnClearSearch').style.display = searchKeyword.length > 0 ? 'inline-flex' : 'none';
+      renderFilteredMO();
+    }
+
+    function clearSearchInput() {
+      const input = document.getElementById('inputSearch');
+      input.value = '';
+      searchKeyword = '';
+      document.getElementById('btnClearSearch').style.display = 'none';
+      renderFilteredMO();
+      input.focus();
+    }
+
+    function toggleViewMode(mode) {
+      currentView = mode;
+      const btnG = document.getElementById('btnModeGrid');
+      const btnT = document.getElementById('btnModeTable');
+      const gridEl = document.getElementById('containerMoCards');
+      const tableEl = document.getElementById('containerMoTable');
+
+      if (mode === 'grid') {
+        btnG.classList.add('active');
+        btnT.classList.remove('active');
+        gridEl.style.display = 'grid';
+        tableEl.style.display = 'none';
+      } else {
+        btnG.classList.remove('active');
+        btnT.classList.add('active');
+        gridEl.style.display = 'none';
+        tableEl.style.display = 'block';
+      }
+    }
+
+    // Fungsi Render Utama
+    function renderFilteredMO() {
+      // 1. Filter Data
+      const filtered = moList.filter(item => {
+        const matchShift = (item.shift === activeShift);
+        const matchMachine = (activeMachine === 'ALL' || item.machine === activeMachine);
+        const matchStatus = (activeStatus === 'ALL' || item.status === activeStatus);
+        const matchSearch = !searchKeyword || (
+          item.code.toLowerCase().includes(searchKeyword) ||
+          item.mp.toLowerCase().includes(searchKeyword) ||
+          item.name.toLowerCase().includes(searchKeyword) ||
+          item.machine.toLowerCase().includes(searchKeyword)
+        );
+        return matchShift && matchMachine && matchStatus && matchSearch;
+      });
+
+      // 2. Update Counter Filter Status
+      const pool = moList.filter(item => (item.shift === activeShift) && (activeMachine === 'ALL' || item.machine === activeMachine));
+      document.getElementById('cntStatusAll').textContent = pool.length;
+      document.getElementById('cntStatusProg').textContent = pool.filter(x => x.status === 'progress').length;
+      document.getElementById('cntStatusReady').textContent = pool.filter(x => x.status === 'ready').length;
+      document.getElementById('cntStatusDone').textContent = pool.filter(x => x.status === 'done').length;
+
+      // 3. Update KPI Ringkasan Shift
+      const totalTgt = pool.reduce((acc, c) => acc + c.target, 0);
+      const totalAct = pool.reduce((acc, c) => acc + c.actual, 0);
+      const effPct = totalTgt > 0 ? ((totalAct / totalTgt) * 100).toFixed(1) : '0,0';
+
+      document.getElementById('dispKpiTarget').innerHTML = `${totalTgt.toLocaleString('id-ID')} <span class="kpi-unit">Kg</span>`;
+      document.getElementById('dispKpiActual').innerHTML = `${totalAct.toLocaleString('id-ID')} <span class="kpi-unit">Kg</span>`;
+      document.getElementById('dispKpiEff').innerHTML = `${effPct} <span class="kpi-unit">%</span>`;
+
+      // 4. Render Kontainer Kartu & Tabel
+      const gridEl = document.getElementById('containerMoCards');
+      const tableBodyEl = document.getElementById('tableBodyMo');
+      const emptyAlert = document.getElementById('boxEmptyQueue');
+
+      if (filtered.length === 0) {
+        gridEl.innerHTML = '';
+        tableBodyEl.innerHTML = '';
+        emptyAlert.style.display = 'flex';
+        return;
+      }
+
+      emptyAlert.style.display = 'none';
+
+      // Render Kartu Grid
+      gridEl.innerHTML = filtered.map(item => {
+        const pct = item.target > 0 ? ((item.actual / item.target) * 100).toFixed(1) : '0.0';
+        
+        let cardBorderClass = 'status-progress-card';
+        let statusBadgeHtml = '<span class="status-badge-clean badge-in-progress"><span class="status-dot"></span>On production</span>';
+        let actionBtnText = 'INPUT HASIL TIMBANGAN';
+
+        if (item.status === 'ready') {
+          cardBorderClass = 'status-ready-card';
+          statusBadgeHtml = '<span class="status-badge-clean badge-is-ready"><span class="status-dot"></span>Draft</span>';
+          actionBtnText = 'MULAI TIMBANG PRODUKSI';
+        } else if (item.status === 'done') {
+          cardBorderClass = 'status-done-card';
+          statusBadgeHtml = '<span class="status-badge-clean badge-is-done"><span class="status-dot"></span>Done</span>';
+          actionBtnText = 'LIHAT HASIL PRODUKSI';
+        }
+
+        const stageLabel = (item.stage === 'SFG') ? 'Setengah Jadi (SFG Roll)' : 'Barang Jadi (FG Kantong)';
+        const targetUrl = `karu2.html?mo=${encodeURIComponent(item.code)}&mp=${encodeURIComponent(item.mp)}&prod=${encodeURIComponent(item.name)}&target=${item.target}&step=${encodeURIComponent(item.process)}&machine=${encodeURIComponent(item.machine)}&shift=${item.shift}&uom=${encodeURIComponent(item.uom)}`;
+
+        return `
+          <article class="mo-card-item">
+            
+            <!-- 1. Header: Fixed 3-Baris Rapi & Konsisten di Setiap Kartu -->
+            <div class="card-head-compact">
+              <div class="card-head-top">
+                <span class="card-mo-code">${item.code}</span>
+                ${statusBadgeHtml}
+              </div>
+              <div class="card-head-badges">
+                <span class="card-mp-badge" title="Rencana Induk Produksi: ${item.mp}">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                  </svg>
+                  MP: ${item.mp}
+                </span>
+                <span class="card-prio-badge ${item.priorityClass || ''}">${item.priority}</span>
+              </div>
+              <div class="card-meta-tags">
+                <span>Work Center: <strong>${item.machine}</strong></span>
+                <span class="meta-bullet">&bull;</span>
+                <span>Shift ${item.shift}</span>
+                <span class="meta-bullet">&bull;</span>
+                <span>${item.process}</span>
+              </div>
+            </div>
+
+            <!-- 2. Informasi Produk & Spesifikasi (Konten Lengkap & Bersih) -->
+            <div class="card-product-box">
+              <div class="product-category-row">
+                <span class="product-stage-label">${stageLabel}</span>
+                <span class="product-uom-badge">${item.uom}</span>
+              </div>
+              <div class="card-product-title">${item.name}</div>
+              <div class="card-product-specs">${item.spec}</div>
+            </div>
+
+            <!-- 3. Progress Hasil Timbangan -->
+            <div class="card-metrics-block">
+              <div class="metrics-header-row">
+                <span class="metrics-label">Progress Hasil Timbangan</span>
+                <span class="metrics-pct">${pct}%</span>
+              </div>
+              <div class="metrics-values-row">
+                <span class="val-act-big">${item.actual.toLocaleString('id-ID')}</span>
+                <span class="val-tgt-sub">/ ${item.target.toLocaleString('id-ID')} ${item.uom}</span>
+              </div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill" style="width: ${Math.min(pct, 100)}%;"></div>
+              </div>
+            </div>
+
+            <!-- 4. Tombol Aksi Utama (Tinggi Ergonomis Tablet Min 48px) -->
+            <a href="${targetUrl}" class="btn-card-action" title="Buka formulir input hasil aktual">
+              <span>${actionBtnText}</span>
+              <svg viewBox="0 0 24 24" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+
+          </article>
+        `;
+      }).join('');
+
+      // Render Baris Tabel (Compact & Fit Layar)
+      tableBodyEl.innerHTML = filtered.map(item => {
+        const pct = item.target > 0 ? ((item.actual / item.target) * 100).toFixed(1) : '0.0';
+        const targetUrl = `karu2.html?mo=${encodeURIComponent(item.code)}&mp=${encodeURIComponent(item.mp)}&prod=${encodeURIComponent(item.name)}&target=${item.target}&step=${encodeURIComponent(item.process)}&machine=${encodeURIComponent(item.machine)}&shift=${item.shift}&uom=${encodeURIComponent(item.uom)}`;
+        
+        let statusBadgeHtml = '<span class="tbl-status-pill tbl-status-prod"><span class="tbl-status-dot"></span>On production</span>';
+        if (item.status === 'ready') {
+          statusBadgeHtml = '<span class="tbl-status-pill tbl-status-draft"><span class="tbl-status-dot"></span>Draft</span>';
+        } else if (item.status === 'done') {
+          statusBadgeHtml = '<span class="tbl-status-pill tbl-status-done"><span class="tbl-status-dot"></span>Done</span>';
+        }
+
+        const prioClass = (item.priority === 'FIFO #1') ? 'tbl-prio-high' : 'tbl-prio-normal';
+
+        return `
+          <tr onclick="window.location.href='${targetUrl}'">
+            <td style="white-space: nowrap;">
+              <div class="tbl-mo-code">${item.code}</div>
+              <div class="tbl-mp-badge" title="Rencana Induk Produksi: ${item.mp}">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+                <span>MP: ${item.mp}</span>
+              </div>
+            </td>
+            <td style="white-space: nowrap;">
+              <span class="tbl-wc-name">${item.machine}</span>
+            </td>
+            <td style="white-space: nowrap;">
+              <span class="tbl-proc-name">${item.process}</span>
+            </td>
+            <td>
+              <div class="tbl-prod-title" title="${item.name}">${item.name}</div>
+              <div class="tbl-prod-spec" title="${item.spec}">${item.spec}</div>
+            </td>
+            <td class="tbl-val-target">
+              ${item.target.toLocaleString('id-ID')} ${item.uom}
+            </td>
+            <td class="tbl-val-actual">
+              ${item.actual.toLocaleString('id-ID')} ${item.uom}
+            </td>
+            <td style="white-space: nowrap;">
+              <div class="tbl-progress-stack">
+                <span class="tbl-progress-val">${pct}%</span>
+                <div class="tbl-progress-bar">
+                  <div class="tbl-progress-fill" style="width: ${Math.min(pct, 100)}%;"></div>
+                </div>
+              </div>
+            </td>
+            <td style="white-space: nowrap;">${statusBadgeHtml}</td>
+            <td style="white-space: nowrap;">
+              <span class="tbl-prio-pill ${prioClass}">${item.priority}</span>
+            </td>
+            <td style="text-align: center; width: 85px; min-width: 85px; white-space: nowrap;" onclick="event.stopPropagation()">
+              <a href="${targetUrl}" class="btn-table-input" title="Input hasil timbangan">Input</a>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Modal Exit
+    function openExitDialog() {
+      document.getElementById('dialogExit').style.display = 'flex';
+    }
+    function closeExitDialog() {
+      document.getElementById('dialogExit').style.display = 'none';
+    }
+    function onBackdropClick(e) {
+      if (e.target && e.target.id === 'dialogExit') closeExitDialog();
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeExitDialog();
+    });
+
+    // Inisialisasi awal
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFilteredMO();
+          });
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      renderFilteredMO();
+    }
+  </script>
+</body>
+</html>

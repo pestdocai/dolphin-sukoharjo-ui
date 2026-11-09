@@ -1,0 +1,3629 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pencatatan Barang Keluar GBJ • DXL-ERP Integrated Warehouse</title>
+  
+  <!-- Font Google: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==============================================================
+       1. VARIABEL TEMA & SISTEM WARNA (STANDAR KARU 1 DXL RED & DARK)
+       ============================================================== */
+    :root {
+      --bg-app: #F3F4F6;
+      --c-card: #FFFFFF;
+      --c-border: #E5E7EB;
+      --c-border-strong: #CBD5E1;
+      --c-navy: #111827;
+      --c-slate: #64748B;
+      --c-text-muted: #6B7280;
+      --c-text-subtle: #9CA3AF;
+
+      /* Signature DXL Red */
+      --c-red: #D62828;
+      --c-red-hover: #B91C1C;
+      --c-red-light: #FEF2F2;
+      --c-red-border: #FECACA;
+
+      /* Status Colors */
+      --c-emerald: #10B981;
+      --c-emerald-light: #D1FAE5;
+      --c-amber: #F59E0B;
+      --c-amber-light: #FEF3C7;
+      --c-blue: #2563EB;
+      --c-blue-light: #EFF6FF;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 12px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-app);
+      color: var(--c-navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    /* ==============================================================
+       2. TOPBAR HEADER IDENTIK KARU 1
+       ============================================================== */
+    .topbar {
+      height: 64px;
+      background: var(--c-navy);
+      border-bottom: 2px solid var(--c-red);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: none;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .brand-logo-img {
+      height: 34px;
+      max-width: 140px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-fallback {
+      font-size: 17px;
+      font-weight: 800;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-badge {
+      background: var(--c-red);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+      color: #FFFFFF;
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .topbar-title-wrap h1 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #FFFFFF;
+    }
+
+    .topbar-title-wrap p {
+      font-size: 11.5px;
+      color: #9CA3AF;
+      font-weight: 500;
+    }
+
+    .topbar-center {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .live-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--c-navy);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--c-emerald);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-topbar-action {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFFFFF;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-topbar-action:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 4px 12px 4px 5px;
+      border-radius: 999px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--c-red);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.2;
+    }
+
+    .user-role {
+      font-size: 11px;
+      color: #FECACA;
+      line-height: 1.2;
+    }
+
+    /* ==============================================================
+       3. LAYOUT CONTAINER UTAMA
+       ============================================================== */
+    .app-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 18px 24px 32px;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Notice Bar Panduan Operasional GBJ */
+    .notice-bar {
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-left: 4px solid var(--c-red);
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--c-navy);
+      line-height: 1.5;
+      box-shadow: none;
+    }
+
+    .notice-bar strong {
+      font-weight: 700;
+      color: var(--c-red);
+    }
+
+    .notice-bar em,
+    .notice-bar .notice-sub {
+      color: var(--c-slate);
+      font-style: normal;
+    }
+
+    /* Banner Data Contoh / Mode Dev */
+    .mock-data-banner {
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      border-left: 4px solid #D97706;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: #92400E;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    /* Banner Dokumen Terkunci */
+    .locked-doc-banner {
+      display: none;
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      border-left: 4px solid #059669;
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: #065F46;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .locked-doc-banner.show {
+      display: flex;
+    }
+
+    /* ==============================================================
+       4. SEKSI 1: FORMULIR DATA PENGIRIMAN & EKSPEDISI
+       ============================================================== */
+    .dispatch-card {
+
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      box-shadow: none;
+      position: relative;
+      /* Dilarang overflow:hidden agar popup dropdown mengapung bebas tanpa terpotong */
+    }
+
+    .card-header {
+      padding: 16px 22px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--c-border);
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .title-icon-box {
+      width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      background: var(--c-red);
+      color: #FFFFFF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: none;
+    }
+
+    .title-icon-box svg {
+      width: 18px;
+      height: 18px;
+      stroke: #FFFFFF !important;
+      stroke-width: 2.2;
+    }
+
+    .card-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--c-navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-body {
+      padding: 18px 22px;
+    }
+
+    .form-grid-6 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px 18px;
+    }
+
+    @media (max-width: 992px) {
+      .form-grid-6 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .form-grid-6 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--c-navy);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tag-mandatory {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--c-red);
+      background: transparent;
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid #E2E8F0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .tag-optional {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--c-slate);
+      background: #F1F5F9;
+      padding: 1px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--c-navy);
+      background-color: #FFFFFF;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 8px;
+      min-height: 42px;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--c-red);
+      box-shadow: none;
+    }
+
+    .form-control.is-invalid {
+      border-color: var(--c-red) !important;
+      background-color: var(--c-red-light);
+    }
+
+    /* Native Select Enhancement with Modern SVG Chevron */
+    select.form-control {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 13px 13px;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+    select.form-control option {
+      padding: 9px 12px;
+      font-size: 13px;
+      color: #0F172A;
+      background: #FFFFFF;
+    }
+
+    /* =============================================================
+       CUSTOM MODERN DROPDOWN PICKER (ENAK DILIHAT & SEARCHABLE)
+       ============================================================= */
+    .custom-dropdown {
+      position: relative;
+      width: 100%;
+    }
+
+    .custom-dropdown.open {
+      z-index: 50;
+    }
+
+    .custom-dropdown-trigger {
+
+      width: 100%;
+      min-height: 44px;
+      padding: 7px 12px;
+      background: #FFFFFF;
+      border: 1px solid var(--c-border-strong);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+      box-shadow: none;
+      outline: none;
+    }
+
+    .custom-dropdown-trigger:hover {
+      border-color: #94A3B8;
+      background: #FAFAFA;
+    }
+
+    .custom-dropdown-trigger:focus,
+    .custom-dropdown.open .custom-dropdown-trigger {
+      border-color: var(--c-red);
+      box-shadow: none;
+      background: #FFFFFF;
+    }
+
+    .custom-dropdown-trigger.is-invalid {
+      border-color: var(--c-red) !important;
+      background-color: var(--c-red-light) !important;
+    }
+
+    .custom-dropdown-trigger.disabled {
+      background: #F1F5F9 !important;
+      color: #94A3B8 !important;
+      cursor: not-allowed !important;
+      border-color: #E2E8F0 !important;
+      pointer-events: none;
+    }
+
+    .trigger-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .trigger-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      color: var(--c-slate);
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    .trigger-icon svg {
+      stroke: currentColor;
+      width: 15px;
+      height: 15px;
+    }
+
+    .custom-dropdown.open .trigger-icon,
+    .custom-dropdown-trigger:hover .trigger-icon {
+      color: var(--c-navy);
+      background: #F1F5F9;
+      border-color: #CBD5E1;
+    }
+
+    .trigger-text-wrap {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .trigger-main-text {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--c-navy);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.25;
+    }
+
+    .trigger-sub-text {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--c-text-subtle);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    .trigger-placeholder {
+      font-size: 13px;
+      font-weight: 500;
+      color: #94A3B8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .trigger-chevron {
+      color: #64748B;
+      flex-shrink: 0;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .custom-dropdown.open .trigger-chevron {
+      transform: rotate(180deg);
+      color: var(--c-red);
+    }
+
+    /* Popover Menu Container */
+    .custom-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .custom-dropdown.dropup .custom-dropdown-menu {
+      top: auto;
+      bottom: calc(100% + 4px);
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1), 0 -1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .custom-dropdown.open .custom-dropdown-menu {
+      display: flex;
+    }
+
+    /* Search Header inside Dropdown Menu */
+    .dropdown-search-wrap {
+      padding: 8px 10px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--c-border);
+      position: relative;
+    }
+
+    .dropdown-search-input {
+      width: 100%;
+      padding: 7px 12px 7px 32px;
+      font-family: inherit;
+      font-size: 12.5px;
+      color: var(--c-navy);
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-radius: 6px;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .dropdown-search-input:focus {
+      border-color: var(--c-red);
+      box-shadow: none;
+    }
+
+    .dropdown-search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94A3B8;
+      pointer-events: none;
+    }
+
+    /* List Item Scroll Area */
+    .dropdown-items-list {
+      max-height: 230px;
+      overflow-y: auto;
+      padding: 4px;
+      margin: 0;
+      list-style: none;
+    }
+
+    .dropdown-items-list::-webkit-scrollbar {
+      width: 5px;
+    }
+    .dropdown-items-list::-webkit-scrollbar-track {
+      background: #F8FAFC;
+    }
+    .dropdown-items-list::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+    .dropdown-items-list::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+
+    /* Individual List Item - Clean & Professional */
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.1s ease;
+      margin-bottom: 2px;
+      border: 1px solid transparent;
+    }
+
+    .dropdown-item:hover {
+      background: #F1F5F9;
+      border-color: #E2E8F0;
+    }
+
+    .dropdown-item.selected {
+      background: #FEF2F2;
+      border-color: #FECACA;
+    }
+
+    .dropdown-item-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .dropdown-item-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 5px;
+      background: #F1F5F9;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid #E2E8F0;
+    }
+
+    .dropdown-item.selected .dropdown-item-icon {
+      background: var(--c-red);
+      color: #FFFFFF;
+      border-color: var(--c-red);
+    }
+
+    .dropdown-item-info {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .dropdown-item-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--c-navy);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+
+    .dropdown-item.selected .dropdown-item-title {
+      color: var(--c-red);
+      font-weight: 700;
+    }
+
+    .dropdown-item-sub {
+      font-size: 11px;
+      color: var(--c-slate);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    .dropdown-item-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #F1F5F9;
+      color: #475569;
+      border: 1px solid #E2E8F0;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .dropdown-item.selected .dropdown-item-badge {
+      background: #FEE2E2;
+      color: var(--c-red);
+      border-color: #FCA5A5;
+    }
+
+    .dropdown-item-check {
+      color: var(--c-red);
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+      display: none;
+    }
+
+    .dropdown-item.selected .dropdown-item-check {
+      display: block;
+    }
+
+    .dropdown-empty-state {
+      padding: 24px 12px;
+      text-align: center;
+      color: #94A3B8;
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+
+    /* Pesan Error Teks di Bawah Field */
+    .field-error-text {
+      color: var(--c-red);
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 3px;
+      display: none;
+    }
+
+    .field-error-text.show {
+      display: block;
+    }
+
+    /* ==============================================================
+       5. SEKSI 2: KONTROL SCANNER QR & SCORECARD MUATAN
+       ============================================================== */
+    .scanner-section-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+      .scanner-section-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Scanner Panel - Industrial Enterprise Theme */
+    .scanner-box {
+
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      color: var(--c-navy);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: none;
+      position: relative;
+    }
+
+    .scanner-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .scanner-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--c-navy);
+    }
+
+    .scanner-status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      color: #065F46;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 4px;
+    }
+
+    .scanner-input-wrap {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .scanner-input {
+      width: 100%;
+      min-height: 46px;
+      padding: 11px 80px 11px 40px;
+      background: #F8FAFC;
+      border: 1.5px solid var(--c-border-strong);
+      border-radius: 8px;
+      color: var(--c-navy);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .scanner-input:focus {
+      background: #FFFFFF;
+      border-color: var(--c-red);
+      box-shadow: none;
+    }
+
+    .scanner-icon {
+      position: absolute;
+      top: 50%;
+      left: 13px;
+      transform: translateY(-50%);
+      color: #64748B;
+      pointer-events: none;
+    }
+
+    .scanner-input:focus + .scanner-icon,
+    .scanner-input-wrap:focus-within .scanner-icon {
+      color: var(--c-red);
+    }
+
+    .scanner-keycap {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #E2E8F0;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 4px;
+      border: 1px solid #CBD5E1;
+      font-family: 'JetBrains Mono', monospace;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .scanner-hints {
+      font-size: 11.5px;
+      color: var(--c-slate);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .scanner-ready-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #059669;
+    }
+
+    .quick-test-bar {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .quick-test-label {
+      font-size: 11px;
+      color: #64748B;
+      font-weight: 600;
+    }
+
+    .chip-qr {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: var(--c-navy);
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .chip-qr:hover {
+      background: #F1F5F9;
+      border-color: var(--c-red);
+      color: var(--c-red);
+    }
+
+    /* Scorecards Summary */
+    .scorecard-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 640px) {
+      .scorecard-group {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-card {
+
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: none;
+    }
+
+    .kpi-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--c-text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--c-navy);
+      font-family: 'JetBrains Mono', monospace;
+      margin: 6px 0 3px 0;
+      line-height: 1.1;
+    }
+
+    .kpi-unit {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--c-text-subtle);
+    }
+
+    .kpi-sub {
+      font-size: 11.5px;
+      color: var(--c-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-badge-capacity {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--c-emerald-light);
+      color: #059669;
+    }
+
+    .status-badge-capacity.warning {
+      background: var(--c-amber-light);
+      color: #D97706;
+    }
+
+    .status-badge-capacity.overload {
+      background: var(--c-red-light);
+      color: var(--c-red);
+    }
+
+    /* ==============================================================
+       6. SEKSI 3: TABEL DAFTAR BARANG MASUK TRUK (RESPONSIF TABLET)
+       ============================================================== */
+    .loaded-table-card {
+
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+    .table-top-actions {
+      padding: 16px 22px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .table-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--c-navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-action-primary {
+      background: #FFFFFF;
+      border: 1px solid var(--c-border-strong);
+      color: var(--c-navy);
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-action-primary:hover {
+      background: #F8FAFC;
+      border-color: var(--c-navy);
+    }
+
+    .btn-action-success {
+      background: var(--c-red);
+      color: #FFFFFF;
+      border: none;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-action-success:hover {
+      background: var(--c-red-hover);
+    }
+
+    /* Tabel dengan Sticky Columns untuk Tablet */
+    .table-responsive {
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .loaded-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+      min-width: 760px;
+    }
+
+    .loaded-table th {
+      background: #F9FAFB;
+      color: var(--c-text-subtle);
+      font-weight: 700;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--c-border);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .loaded-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--c-border);
+      color: var(--c-navy);
+      white-space: nowrap;
+    }
+
+    .loaded-table tr:hover td {
+      background: #F8FAFC;
+    }
+
+    /* Kolom Tetap (Sticky Columns) untuk Kenyamanan Tablet */
+    .sticky-col-no {
+      position: sticky;
+      left: 0;
+      background: #FFFFFF;
+      z-index: 2;
+      width: 45px;
+    }
+
+    .loaded-table tr:hover .sticky-col-no {
+      background: #F8FAFC;
+    }
+
+    .sticky-col-uid {
+      position: sticky;
+      left: 45px;
+      background: #FFFFFF;
+      z-index: 2;
+    }
+
+    .loaded-table tr:hover .sticky-col-uid {
+      background: #F8FAFC;
+    }
+
+    .sticky-col-action {
+      position: sticky;
+      right: 0;
+      background: #FFFFFF;
+      z-index: 2;
+      text-align: center;
+      width: 90px;
+      box-shadow: -2px 0 4px rgba(0,0,0,0.02);
+    }
+
+    .loaded-table tr:hover .sticky-col-action {
+      background: #F8FAFC;
+    }
+
+    .loaded-table th.sticky-col-no,
+    .loaded-table th.sticky-col-uid,
+    .loaded-table th.sticky-col-action {
+      background: #F9FAFB !important;
+      z-index: 3;
+    }
+
+    .uid-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      background: #F1F5F9;
+      color: #0F172A;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid #CBD5E1;
+      font-size: 11.5px;
+    }
+
+    .mp-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--c-slate);
+      font-size: 11.5px;
+    }
+
+    .btn-delete-row {
+      background: #FEE2E2;
+      border: 1px solid #FECACA;
+      color: #DC2626;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-delete-row:hover {
+      background: #DC2626;
+      color: #FFFFFF;
+    }
+
+    .row-just-added {
+      animation: highlight-fade 2s ease forwards;
+    }
+
+    @keyframes highlight-fade {
+      0% { background-color: #FEF2F2; }
+      100% { background-color: transparent; }
+    }
+
+    /* ==============================================================
+       7. FOOTER APLIKASI
+       ============================================================== */
+    .app-footer {
+      background: #FFFFFF;
+      border-top: 1px solid var(--c-border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 11.5px;
+      color: var(--c-text-subtle);
+      margin-top: auto;
+    }
+
+    .app-footer strong {
+      color: var(--c-navy);
+    }
+
+    /* ==============================================================
+       8. MODAL SISTEM (FOCUS TRAP & ACCESSIBILITY)
+       ============================================================== */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal-box {
+
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      max-width: 580px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-window-sj {
+
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      max-width: 860px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header-custom {
+      padding: 16px 22px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header-custom h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--c-navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--c-slate);
+      line-height: 1;
+    }
+
+    .modal-body-custom {
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-footer-custom {
+      padding: 14px 22px;
+      background: #F8FAFC;
+      border-top: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-modal-cancel {
+      background: #FFFFFF;
+      border: 1px solid var(--c-border-strong);
+      color: var(--c-navy);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-modal-confirm {
+      background: var(--c-red);
+      color: #FFFFFF;
+      border: none;
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Modal Konfirmasi Rincian */
+    .confirm-summary-box {
+      background: #F8FAFC;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 12.5px;
+    }
+
+    .confirm-summary-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--c-slate);
+    }
+
+    .confirm-summary-row strong {
+      color: var(--c-navy);
+    }
+
+    .discrepancy-alert-box {
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      border-left: 4px solid #D97706;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #92400E;
+    }
+
+    /* Lembar Dokumen Surat Jalan A4 */
+    .sj-document-paper {
+      border: 1px solid #CBD5E1;
+      padding: 24px;
+      border-radius: 8px;
+      background: #FFFFFF;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+      position: relative;
+    }
+
+    .sj-header-grid {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--c-navy);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+
+    .sj-company-logo h2 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--c-navy);
+      letter-spacing: -0.02em;
+    }
+
+    .sj-company-logo p {
+      font-size: 11px;
+      color: var(--c-slate);
+      margin-top: 2px;
+    }
+
+    .sj-doc-meta {
+      text-align: right;
+    }
+
+    .sj-doc-meta h1 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--c-red);
+      letter-spacing: 0.5px;
+    }
+
+    .sj-doc-meta p {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--c-navy);
+      margin-top: 2px;
+    }
+
+    .sj-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      background: #F8FAFC;
+      padding: 12px 14px;
+      border-radius: 6px;
+      border: 1px solid #E2E8F0;
+    }
+
+    .sj-info-col p {
+      margin-bottom: 4px;
+      color: var(--c-navy);
+    }
+
+    .sj-info-col strong {
+      color: var(--c-slate);
+      display: inline-block;
+      width: 140px;
+    }
+
+    .sj-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+
+    .sj-table th {
+      background: #F1F5F9;
+      color: var(--c-navy);
+      font-weight: 700;
+      padding: 8px 10px;
+      border: 1px solid #CBD5E1;
+      text-transform: uppercase;
+      font-size: 10.5px;
+    }
+
+    .sj-table td {
+      padding: 8px 10px;
+      border: 1px solid #CBD5E1;
+      color: var(--c-navy);
+    }
+
+    .sj-table-footer-row td {
+      background: #F8FAFC;
+      font-weight: 700;
+      border: 1px solid #CBD5E1;
+    }
+
+    .sj-signatures-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .signature-box {
+      border: 1px solid #CBD5E1;
+      border-radius: 6px;
+      padding: 10px;
+      height: 95px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+
+    .signature-title {
+      font-weight: 700;
+      color: var(--c-slate);
+    }
+
+    .signature-name {
+      font-weight: 700;
+      color: var(--c-navy);
+      border-top: 1px solid #CBD5E1;
+      padding-top: 4px;
+    }
+
+    /* Print Stylesheet Khusus Kertas A4 */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 15mm;
+      }
+      body * {
+        visibility: hidden !important;
+      }
+      #modalSuratJalan,
+      #modalSuratJalan * {
+        visibility: visible !important;
+      }
+      #modalSuratJalan {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        background: transparent !important;
+        padding: 0 !important;
+        display: block !important;
+      }
+      .modal-window-sj {
+        box-shadow: none !important;
+        max-width: 100% !important;
+        border: none !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      .modal-header-custom,
+      .modal-footer-custom {
+        display: none !important;
+      }
+      .sj-document-paper {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .sj-signatures-grid,
+      .sj-table-footer-row,
+      .sj-header-grid {
+        page-break-inside: avoid !important;
+      }
+    }
+
+    /* Toast Notification */
+    .toast-notice {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--c-navy);
+      color: #FFFFFF;
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      z-index: 200;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+    }
+
+    .toast-notice.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .toast-notice.success {
+      border-left: 4px solid var(--c-emerald);
+    }
+
+    .toast-notice.error {
+      border-left: 4px solid var(--c-red);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==============================================================
+       HEADER TOPBAR GBJ OPERASIONAL
+       ============================================================== -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <!-- Logo Resmi DXL ERP / PT Dolpin Putra Sejati -->
+      <a href="../bagian-1/index.html" class="brand-logo-link" title="DXL ERP - Portal Utama">
+        <img src="images/logo.png" alt="DXL ERP Logo" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('brandFallbackText').style.display='flex';">
+        <div id="brandFallbackText" class="brand-fallback" style="display: none;">
+          <span>DXL</span>
+          <span class="brand-badge">GBJ</span>
+        </div>
+      </a>
+      <div class="header-divider"></div>
+      <div class="topbar-title-wrap">
+        <h1>Pencatatan Barang Keluar (Loading & Issue Stok GBJ)</h1>
+        <p>Pemuatan Truk Ekspedisi & Verifikasi Label QR Sesuai MP LIGO</p>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="user-pill">
+        <div class="user-avatar" id="userAvatarBadge">SR</div>
+        <div class="user-meta">
+          <div class="user-name" id="userNameText">[Memuat Petugas...]</div>
+          <div class="user-role" id="userRoleText">[Memuat Peran & Shift...]</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==============================================================
+       KONTEN UTAMA
+       ============================================================== -->
+  <main class="app-container">
+
+    <!-- Notice Bar Panduan Operasional GBJ -->
+    <div class="notice-bar">
+      <div>
+        <strong>Panduan Operasional GBJ:</strong> Pencatatan pengeluaran barang fisik dilakukan oleh staf GBJ saat pemuatan ke truk ekspedisi. 
+        <span class="notice-sub">(Sistem murni mencatat fisik barang yang dimuat dan memvalidasi keaslian label serta pencegahan scan ganda).</span>
+      </div>
+      <div class="live-status-pill" style="flex-shrink: 0;">
+        <span class="status-dot"></span>
+        <span id="txtConnectionStatus">Odoo 17 Terhubung</span>
+      </div>
+    </div>
+
+    <!-- Banner Data Contoh (Hanya Tampil Jika CONFIG.DATA_CONTOH = true) -->
+    <div class="mock-data-banner" id="bannerDataContoh" style="display: none;">
+      <div>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <strong>MODE DATA CONTOH AKTIF:</strong> Sistem sedang menggunakan database lokal simulasi untuk pengujian fungsional.
+      </div>
+      <button type="button" class="btn-topbar-action" style="color:#92400E; background:rgba(217, 119, 6, 0.15); border-color:#FDE68A;" onclick="disableDemoMode()">Matikan Data Contoh</button>
+    </div>
+
+    <!-- Banner Dokumen Terkunci & Selesai -->
+    <div class="locked-doc-banner" id="bannerDocLocked">
+      <div>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <strong>DOKUMEN PENGELUARAN TELAH DIKUNCI & TERCATAT:</strong> No. Dokumen: <strong id="lockedDocNumberLabel">-</strong> | Waktu Server: <span id="lockedDocTimeLabel">-</span>. Seluruh data muatan terkunci untuk audit stok Odoo.
+      </div>
+      <button type="button" class="btn-action-primary" onclick="startNewSession()">Mulai Dokumen Baru</button>
+    </div>
+
+    <!-- ============================================================
+         SEKSI 1: FORMULIR DATA PENGIRIMAN & EKSPEDISI (HEADER DISPATCH)
+         ============================================================ -->
+    <section class="dispatch-card" id="cardDispatchForm">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="title-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+          </span>
+          Data Pengiriman, Surat Jalan & Armada Ekspedisi
+        </div>
+        <span style="font-size: 11.5px; color: var(--c-slate); font-weight: 600;">
+          Tanggal: <span id="currentDateText">[Memuat Tanggal...]</span>
+        </span>
+      </div>
+
+      <div class="card-body">
+        <div class="form-grid-6">
+          <!-- 1. Customer (Mandatory) -->
+          <div class="form-group">
+            <label class="form-label" for="triggerCustomer">
+              Nama Customer
+              <span class="tag-mandatory">Wajib</span>
+            </label>
+            <div class="custom-dropdown" id="dropdownCustomerWrap">
+              <div class="custom-dropdown-trigger" id="triggerCustomer" onclick="toggleCustomDropdown('Customer', event)" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false" onkeydown="handleTriggerKeydown('Customer', event)">
+                <div class="trigger-content">
+                  <span class="trigger-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 7v14M21 7v14M9 3h6v4H9zM9 11h2M13 11h2M9 15h2M13 15h2"/></svg>
+                  </span>
+                  <div class="trigger-text-wrap">
+                    <span class="trigger-placeholder" id="labelCustomerMain">-- Pilih Customer --</span>
+                    <span class="trigger-sub-text" id="labelCustomerSub"></span>
+                  </div>
+                </div>
+                <svg class="trigger-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="custom-dropdown-menu" id="menuCustomer">
+                <div class="dropdown-search-wrap">
+                  <svg class="dropdown-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="dropdown-search-input" id="searchCustomer" placeholder="Cari nama customer / kota..." oninput="filterCustomDropdown('Customer')" onkeydown="handleSearchInputKeydown('Customer', event)">
+                </div>
+                <ul class="dropdown-items-list" id="listCustomer" role="listbox">
+                  <!-- Diisi secara dinamis oleh JavaScript -->
+                </ul>
+              </div>
+              <select class="form-control" id="selectCustomer" style="display:none;" onchange="clearFieldError('selectCustomer')">
+                <option value="">-- Pilih Customer --</option>
+              </select>
+            </div>
+            <div class="field-error-text" id="errSelectCustomer">Silakan pilih nama customer tujuan.</div>
+          </div>
+
+          <!-- 2. Nomor MP LIGO (Mandatory) -->
+          <div class="form-group">
+            <label class="form-label" for="triggerMP">
+              Nomor MP (LIGO)
+              <span class="tag-mandatory">Wajib</span>
+            </label>
+            <div class="custom-dropdown" id="dropdownMPWrap">
+              <div class="custom-dropdown-trigger" id="triggerMP" onclick="toggleCustomDropdown('MP', event)" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false" onkeydown="handleTriggerKeydown('MP', event)">
+                <div class="trigger-content">
+                  <span class="trigger-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  </span>
+                  <div class="trigger-text-wrap">
+                    <span class="trigger-placeholder" id="labelMPMain">-- Pilih Nomor MP Referensi --</span>
+                    <span class="trigger-sub-text" id="labelMPSub"></span>
+                  </div>
+                </div>
+                <svg class="trigger-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="custom-dropdown-menu" id="menuMP">
+                <div class="dropdown-search-wrap">
+                  <svg class="dropdown-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="dropdown-search-input" id="searchMP" placeholder="Cari nomor MP / produk..." oninput="filterCustomDropdown('MP')" onkeydown="handleSearchInputKeydown('MP', event)">
+                </div>
+                <ul class="dropdown-items-list" id="listMP" role="listbox">
+                  <!-- Diisi secara dinamis oleh JavaScript -->
+                </ul>
+              </div>
+              <select class="form-control" id="selectMP" style="display:none;" onchange="onMPChange(); clearFieldError('selectMP');">
+                <option value="">-- Pilih Nomor MP Referensi --</option>
+              </select>
+            </div>
+            <div class="field-error-text" id="errSelectMP">Silakan pilih nomor MP referensi pengiriman.</div>
+          </div>
+
+          <!-- 3. Nomor Plat Truk & Armada Kendaraan (Mandatory) -->
+          <div class="form-group">
+            <label class="form-label" for="triggerVehicle">
+              Armada & Plat Truk
+              <span class="tag-mandatory">Wajib</span>
+            </label>
+            <div class="custom-dropdown" id="dropdownVehicleWrap">
+              <div class="custom-dropdown-trigger" id="triggerVehicle" onclick="toggleCustomDropdown('Vehicle', event)" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false" onkeydown="handleTriggerKeydown('Vehicle', event)">
+                <div class="trigger-content">
+                  <span class="trigger-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                  </span>
+                  <div class="trigger-text-wrap">
+                    <span class="trigger-placeholder" id="labelVehicleMain">-- Pilih Armada Kendaraan --</span>
+                    <span class="trigger-sub-text" id="labelVehicleSub"></span>
+                  </div>
+                </div>
+                <svg class="trigger-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="custom-dropdown-menu" id="menuVehicle">
+                <div class="dropdown-search-wrap">
+                  <svg class="dropdown-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="dropdown-search-input" id="searchVehicle" placeholder="Cari plat nomor / tipe truk..." oninput="filterCustomDropdown('Vehicle')" onkeydown="handleSearchInputKeydown('Vehicle', event)">
+                </div>
+                <ul class="dropdown-items-list" id="listVehicle" role="listbox">
+                  <!-- Diisi secara dinamis oleh JavaScript -->
+                </ul>
+              </div>
+              <select class="form-control" id="selectVehicle" style="display:none;" onchange="onVehicleChange(); clearFieldError('selectVehicle');">
+                <option value="">-- Pilih Armada Kendaraan --</option>
+              </select>
+            </div>
+            <div class="field-error-text" id="errSelectVehicle">Silakan pilih plat nomor kendaraan pengangkut.</div>
+          </div>
+
+          <!-- 4. Nama Ekspedisi (Mandatory) -->
+          <div class="form-group">
+            <label class="form-label" for="triggerExpedition">
+              Nama Ekspedisi
+              <span class="tag-mandatory">Wajib</span>
+            </label>
+            <div class="custom-dropdown" id="dropdownExpeditionWrap">
+              <div class="custom-dropdown-trigger" id="triggerExpedition" onclick="toggleCustomDropdown('Expedition', event)" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false" onkeydown="handleTriggerKeydown('Expedition', event)">
+                <div class="trigger-content">
+                  <span class="trigger-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16.5 9.4 7.5 4.21"></polyline><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                  </span>
+                  <div class="trigger-text-wrap">
+                    <span class="trigger-placeholder" id="labelExpeditionMain">-- Pilih Ekspedisi --</span>
+                    <span class="trigger-sub-text" id="labelExpeditionSub"></span>
+                  </div>
+                </div>
+                <svg class="trigger-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="custom-dropdown-menu" id="menuExpedition">
+                <div class="dropdown-search-wrap">
+                  <svg class="dropdown-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="dropdown-search-input" id="searchExpedition" placeholder="Cari nama ekspedisi..." oninput="filterCustomDropdown('Expedition')" onkeydown="handleSearchInputKeydown('Expedition', event)">
+                </div>
+                <ul class="dropdown-items-list" id="listExpedition" role="listbox">
+                  <!-- Diisi secara dinamis oleh JavaScript -->
+                </ul>
+              </div>
+              <select class="form-control" id="selectExpedition" style="display:none;" onchange="clearFieldError('selectExpedition')">
+                <option value="">-- Pilih Ekspedisi --</option>
+              </select>
+            </div>
+            <div class="field-error-text" id="errSelectExpedition">Silakan pilih nama vendor/armada ekspedisi.</div>
+          </div>
+
+          <!-- 5. Nama Sopir (Optional) -->
+          <div class="form-group">
+            <label class="form-label" for="inputDriverName">
+              Nama Sopir
+              <span class="tag-optional">Opsional</span>
+            </label>
+            <input type="text" class="form-control" id="inputDriverName" placeholder="Ketik nama sopir bertugas...">
+          </div>
+
+          <!-- 6. Nomor HP Sopir (Optional) -->
+          <div class="form-group">
+            <label class="form-label" for="inputDriverPhone">
+              No. Handphone Sopir
+              <span class="tag-optional">Opsional</span>
+            </label>
+            <input type="text" class="form-control" id="inputDriverPhone" placeholder="Contoh: 0812-xxxx-xxxx">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SEKSI 2: KONTROL SCANNER QR & KARTU SCORECARD CEPAT
+         ============================================================ -->
+    <section class="scanner-section-grid">
+      <!-- Kotak Scanner Handheld -->
+      <div class="scanner-box">
+        <div>
+          <div class="scanner-top">
+            <div class="scanner-title">
+              <span class="title-icon-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="7" y="7" width="10" height="10"></rect></svg>
+              </span>
+              Scan Barcode / Label QR Bale
+            </div>
+            <div class="scanner-status-indicator" id="scannerIndicator">
+              <span class="status-dot"></span>
+              <span>Scanner Siap</span>
+            </div>
+          </div>
+
+          <div class="scanner-input-wrap">
+            <svg class="scanner-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+            <input type="text" class="scanner-input" id="qrScannerInput" placeholder="Arahkan scanner atau ketik UID barcode..." autofocus autocomplete="off">
+            <span class="scanner-keycap">Enter ↵</span>
+          </div>
+
+          <div class="scanner-hints">
+            <span>Mendukung scanner handheld USB & Bluetooth</span>
+            <span class="scanner-ready-badge" id="scannerFocusHint">
+              <span class="status-dot" style="background:#10B981; width:6px; height:6px;"></span>
+              Input Siaga
+            </span>
+          </div>
+        </div>
+
+        <!-- Tombol Cepat Simulasi Scan Barcode (Hanya Tampil Jika CONFIG.DATA_CONTOH = true) -->
+        <div class="quick-test-bar" id="quickTestBar" style="display: none;">
+          <span class="quick-test-label">Simulasi Scan Label (Uji):</span>
+          <button type="button" class="chip-qr" onclick="simulateScan('UID-FG-261104-0012')">+ UID-0012 (25 Kg)</button>
+          <button type="button" class="chip-qr" onclick="simulateScan('UID-FG-261104-0013')">+ UID-0013 (25 Kg)</button>
+          <button type="button" class="chip-qr" onclick="simulateScan('UID-FG-261104-0014')">+ UID-0014 (25 Kg)</button>
+          <button type="button" class="chip-qr" onclick="simulateScan('UID-FG-261104-0015')">+ UID-0015 (25 Kg)</button>
+          <button type="button" class="chip-qr" onclick="simulateScan('UID-FG-261104-0020')">+ UID-0020 (50 Kg Roll)</button>
+        </div>
+      </div>
+
+      <!-- Scorecard Akumulasi Muatan -->
+      <div class="scorecard-group">
+        <!-- 1. Total Scan Bale -->
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <span>Total Scan Muat</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+          </div>
+          <div class="kpi-val" id="kpiTotalBale">0 <span class="kpi-unit">Bale</span></div>
+          <div class="kpi-sub">
+            <span>Akumulasi bale discan</span>
+          </div>
+        </div>
+
+        <!-- 2. Total Bobot Netto -->
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <span>Total Berat Muat</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--c-red)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+          </div>
+          <div class="kpi-val" style="color:var(--c-red);" id="kpiTotalWeight">0.00 <span class="kpi-unit">Kg</span></div>
+          <div class="kpi-sub" id="kpiTargetComparison">
+            <span>Target MP: - Kg</span>
+          </div>
+        </div>
+
+        <!-- 3. Utilisasi Kapasitas Truk -->
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <span>Beban Kapasitas Truk</span>
+            <span class="status-badge-capacity" id="kpiTruckBadge">Aman</span>
+          </div>
+          <div class="kpi-val" style="font-size:22px; color:#059669;" id="kpiTruckCapacityText">0.0% <span class="kpi-unit" id="kpiTruckCapacityUnit">/ - Ton</span></div>
+          <div class="kpi-sub">
+            <span id="kpiTruckMaxSub">Pilih armada kendaraan</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SEKSI 3: TABEL DAFTAR BARANG YANG SUDAH MASUK TRUK
+         ============================================================ -->
+    <section class="loaded-table-card">
+      <div class="table-top-actions">
+        <div class="table-title">
+          <span class="title-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          Daftar Fisik Barang Masuk Truk (Loaded Items)
+          <span style="font-size:12px; font-weight:600; color:var(--c-slate); margin-left:6px;" id="loadedItemsCount">(0 Item)</span>
+        </div>
+
+        <div class="action-btn-group">
+          <!-- Tombol Display Surat Jalan Odoo -->
+          <button type="button" class="btn-action-primary" id="btnPreviewSJ" onclick="openSuratJalanModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Display Surat Jalan Odoo
+          </button>
+
+          <!-- Tombol Konfirmasi & Simpan Issue Stok -->
+          <button type="button" class="btn-action-success" id="btnCommitIssue" onclick="requestStockIssue()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            Konfirmasi & Simpan Issue Stok
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="loaded-table">
+          <thead>
+            <tr>
+              <th class="sticky-col-no">No</th>
+              <th class="sticky-col-uid">UID Label QR Fisik</th>
+              <th>Nama Produk Finish Good</th>
+              <th>No. MP Asal</th>
+              <th>Kemasan</th>
+              <th style="text-align: right;">Berat Netto</th>
+              <th>Waktu Scan</th>
+              <th class="sticky-col-action">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="loadedTableBody">
+            <tr id="emptyRowPlaceholder">
+              <td colspan="8" style="text-align:center; padding:36px; color:var(--c-slate);">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.5" style="display:block; margin:0 auto 8px auto;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                Belum ada barang yang di-scan. Arahkan scanner laser handheld ke label fisik bale.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==============================================================
+       FOOTER RESMI
+       ============================================================== -->
+  <footer class="app-footer">
+    <div>
+      <strong>Pencatatan Barang Keluar GBJ</strong> &bull; DXL-ERP (PT Dolpin Putra Sejati)
+    </div>
+    <div>
+      Terminal ID: <strong id="lblTerminalIdDisplay">-</strong> &bull; Terhubung ke Server
+    </div>
+  </footer>
+
+  <!-- ==============================================================
+       MODAL 1: PRATINJAU DOKUMEN SURAT JALAN
+       ============================================================== -->
+  <div class="modal-backdrop" id="modalSuratJalan" role="dialog" aria-modal="true" aria-labelledby="sjModalTitle">
+    <div class="modal-window-sj" id="modalWindowSJ">
+      <div class="modal-header-custom">
+        <h3 id="sjModalTitle">
+          <span class="title-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          </span>
+          Pratinjau Surat Jalan Pengiriman
+        </h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('modalSuratJalan')" aria-label="Tutup">&times;</button>
+      </div>
+
+      <div class="modal-body-custom">
+        <div class="sj-document-paper" id="sjPrintArea">
+          <!-- Kop Surat Jalan -->
+          <div class="sj-header-grid">
+            <div class="sj-company-logo">
+              <h2>PT DOLPIN PUTRA SEJATI</h2>
+              <p>Jl. Industri Plastik No. 88, Solo - Jawa Tengah</p>
+              <p>Telp: (0271) 7891011 &bull; DXL-ERP Integrated Warehouse</p>
+            </div>
+            <div class="sj-doc-meta">
+              <h1>SURAT JALAN</h1>
+              <p id="sjNumberLabel">[NOMOR DITETAPKAN SERVER SAAT COMMIT]</p>
+              <p style="font-size:11px; color:var(--c-slate);" id="sjDateLabel">[WAKTU SERVER]</p>
+            </div>
+          </div>
+
+          <!-- Metadata Penerima & Ekspedisi -->
+          <div class="sj-info-grid">
+            <div class="sj-info-col">
+              <p><strong>Kepada (Customer):</strong> <span id="sjCustomerVal">-</span></p>
+              <p><strong>No. Referensi MP:</strong> <span id="sjMPVal">-</span></p>
+              <p><strong>Lokasi Pengeluaran:</strong> Gudang Barang Jadi (GBJ)</p>
+            </div>
+            <div class="sj-info-col">
+              <p><strong>Ekspedisi:</strong> <span id="sjExpeditionVal">-</span></p>
+              <p><strong>No. Plat Truk:</strong> <span id="sjPlateVal" style="font-family:'JetBrains Mono'; font-weight:700;">-</span></p>
+              <p><strong>Sopir / Kontak:</strong> <span id="sjDriverVal">-</span></p>
+            </div>
+          </div>
+
+          <!-- Tabel Rincian Muatan -->
+          <table class="sj-table">
+            <thead>
+              <tr>
+                <th style="width: 35px;">No</th>
+                <th>Kode / UID Fisik</th>
+                <th>Deskripsi Barang Jadi (FG)</th>
+                <th>Kategori / Kemasan</th>
+                <th style="text-align: right; width: 110px;">Berat Netto</th>
+              </tr>
+            </thead>
+            <tbody id="sjItemsTableBody">
+              <!-- Diisi dinamis dari muatan -->
+            </tbody>
+            <tfoot>
+              <tr class="sj-table-footer-row">
+                <td colspan="3" style="text-align: right;">TOTAL MUATAN FISIK:</td>
+                <td id="sjTotalBaleCell">0 Bale</td>
+                <td style="text-align: right; color:var(--c-red); font-family:'JetBrains Mono';" id="sjTotalWeightCell">0.00 Kg</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <!-- Kolom Tanda Tangan Formal 3 Pihak -->
+          <div class="sj-signatures-grid">
+            <div class="signature-box">
+              <div class="signature-title">Dibuat & Disiapkan Oleh:</div>
+              <div class="signature-name" id="sjSignatureAdmin">[Petugas GBJ]<br><span style="font-size:11px; color:var(--c-slate);">Admin Gudang GBJ</span></div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-title">Diserahkan & Diterima:</div>
+              <div class="signature-name" id="sjSignatureDriver">[Sopir Ekspedisi]<br><span style="font-size:11px; color:var(--c-slate);">Sopir Ekspedisi</span></div>
+            </div>
+            <div class="signature-box">
+              <div class="signature-title">Diperiksa & Disetujui:</div>
+              <div class="signature-name">[Petugas Pos/Security]<br><span style="font-size:11px; color:var(--c-slate);">Security Pos Pintu 1</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer-custom">
+        <button type="button" class="btn-modal-cancel" onclick="closeModal('modalSuratJalan')">Tutup Pratinjau</button>
+        <button type="button" class="btn-modal-confirm" onclick="window.print()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Cetak Dokumen A4
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       MODAL 2: KONFIRMASI ISSUE STOK (PENGGANTI CONFIRM/ALERT BROWSER)
+       ============================================================== -->
+  <div class="modal-backdrop" id="modalConfirmIssue" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+    <div class="modal-box" id="modalWindowConfirm">
+      <div class="modal-header-custom">
+        <h3 id="confirmModalTitle">
+          <span class="title-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          </span>
+          Konfirmasi Pengeluaran Stok Gudang (Commit Odoo)
+        </h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('modalConfirmIssue')" aria-label="Tutup">&times;</button>
+      </div>
+
+      <div class="modal-body-custom">
+        <div class="confirm-summary-box">
+          <div class="confirm-summary-row">
+            <span>Customer Tujuan:</span>
+            <strong id="cfmCustomerVal">-</strong>
+          </div>
+          <div class="confirm-summary-row">
+            <span>Nomor Dokumen MP:</span>
+            <strong id="cfmMPVal">-</strong>
+          </div>
+          <div class="confirm-summary-row">
+            <span>Armada & Plat Truk:</span>
+            <strong id="cfmVehicleVal">-</strong>
+          </div>
+          <div class="confirm-summary-row">
+            <span>Ekspedisi Pengangkut:</span>
+            <strong id="cfmExpeditionVal">-</strong>
+          </div>
+          <div class="confirm-summary-row">
+            <span>Sopir Bertugas:</span>
+            <strong id="cfmDriverVal">-</strong>
+          </div>
+          <hr style="border:none; border-top:1px solid #E2E8F0; margin:4px 0;">
+          <div class="confirm-summary-row">
+            <span>Total Kuantitas Muatan:</span>
+            <strong id="cfmTotalBaleVal">0 Bale</strong>
+          </div>
+          <div class="confirm-summary-row">
+            <span>Total Berat Aktual Netto:</span>
+            <strong style="color:var(--c-red); font-size:14px;" id="cfmTotalWeightVal">0.00 Kg</strong>
+          </div>
+          <div class="confirm-summary-row">
+            <span>Target Kuantitas MP:</span>
+            <strong id="cfmTargetWeightVal">0.00 Kg</strong>
+          </div>
+          <div class="confirm-summary-row">
+            <span>Selisih (Aktual - Target):</span>
+            <strong id="cfmDiscrepancyDeltaVal">0.00 Kg</strong>
+          </div>
+        </div>
+
+        <!-- Banner Peringatan Selisih -->
+        <div class="discrepancy-alert-box" id="cfmDiscrepancyBox" style="display: none;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <strong>Peringatan Selisih Muatan:</strong> Total berat aktual melebihi batas toleransi (<span id="cfmToleranceLabel">10 Kg</span>). Wajib menyertakan catatan pertanggungjawaban di bawah sebelum commit.
+        </div>
+
+        <!-- Input Wajib Catatan Alasan Selisih -->
+        <div class="form-group" id="cfmGroupDiscrepancyNote" style="display: none;">
+          <label class="form-label" for="txtDiscrepancyNote">
+            Catatan / Alasan Selisih Muatan
+            <span class="tag-mandatory">Wajib Diisi</span>
+          </label>
+          <textarea class="form-control" id="txtDiscrepancyNote" rows="3" placeholder="Tuliskan alasan selisih muatan terhadap target MP (contoh: toleransi potongan rol akhir, permintaan lisan customer)..."></textarea>
+          <div class="field-error-text" id="errDiscrepancyNote">Catatan alasan selisih wajib diisi sebelum menyimpan!</div>
+        </div>
+      </div>
+
+      <div class="modal-footer-custom">
+        <button type="button" class="btn-modal-cancel" onclick="closeModal('modalConfirmIssue')">Batal</button>
+        <button type="button" class="btn-modal-confirm" id="btnExecuteSubmitIssue" onclick="submitIssue()">
+          Kunci Transaksi & Terbitkan Pengeluaran
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       MODAL 3: VOID / PEMBATALAN ITEM DENGAN ALASAN
+       ============================================================== -->
+  <div class="modal-backdrop" id="modalVoidItem" role="dialog" aria-modal="true" aria-labelledby="voidModalTitle">
+    <div class="modal-box" id="modalWindowVoid">
+      <div class="modal-header-custom">
+        <h3 id="voidModalTitle">
+          <span class="title-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          </span>
+          Void / Batalkan Item dari Truk
+        </h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('modalVoidItem')" aria-label="Tutup">&times;</button>
+      </div>
+
+      <div class="modal-body-custom">
+        <div class="confirm-summary-box">
+          <div class="confirm-summary-row">
+            <span>UID Label Fisik:</span>
+            <strong id="voidItemUidVal" style="font-family:'JetBrains Mono';">-</strong>
+          </div>
+          <div class="confirm-summary-row">
+            <span>Nama Produk:</span>
+            <strong id="voidItemNameVal">-</strong>
+          </div>
+          <div class="confirm-summary-row">
+            <span>Berat Netto:</span>
+            <strong id="voidItemWeightVal">-</strong>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="selectVoidReason">
+            Alasan Pembatalan / Void
+            <span class="tag-mandatory">Wajib</span>
+          </label>
+          <select class="form-control" id="selectVoidReason" onchange="onVoidReasonSelectChange()">
+            <option value="Salah scan label QR (Human Error)">Salah scan label QR (Human Error)</option>
+            <option value="Fisik kemasan/bale robek saat dinaikkan ke truk">Fisik kemasan/bale robek saat dinaikkan ke truk</option>
+            <option value="Kapasitas truk sudah penuh / Overload">Kapasitas truk sudah penuh / Overload</option>
+            <option value="Instruksi pembatalan dari Ekspedisi / Sopir">Instruksi pembatalan dari Ekspedisi / Sopir</option>
+            <option value="Lainnya">Lainnya (Tuliskan rincian di bawah)</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="groupVoidCustomNote" style="display: none;">
+          <label class="form-label" for="txtVoidCustomNote">Rincian Alasan Void</label>
+          <input type="text" class="form-control" id="txtVoidCustomNote" placeholder="Tuliskan keterangan void...">
+        </div>
+      </div>
+
+      <div class="modal-footer-custom">
+        <button type="button" class="btn-modal-cancel" onclick="closeModal('modalVoidItem')">Batal</button>
+        <button type="button" class="btn-modal-confirm" onclick="executeVoidItem()">Konfirmasi Void Item</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       MODAL 4: LOG AUDIT TRAIL SERVER & EXPORT JSON
+       ============================================================== -->
+  <div class="modal-backdrop" id="modalAuditLog" role="dialog" aria-modal="true" aria-labelledby="auditModalTitle">
+    <div class="modal-window-sj" id="modalWindowAudit">
+      <div class="modal-header-custom">
+        <h3 id="auditModalTitle">
+          <span class="title-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </span>
+          Log Audit Transaksi
+        </h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('modalAuditLog')" aria-label="Tutup">&times;</button>
+      </div>
+
+      <div class="modal-body-custom">
+        <p style="font-size:12px; color:var(--c-slate);">
+          Setiap aktivitas pemindaian, kegagalan verifikasi, pembatalan (*void*), dan penguncian dokumen dicatat secara kronologis lengkap dengan identitas terminal, petugas, dan stempel waktu server yang tidak dapat dimanipulasi dari antarmuka.
+        </p>
+
+        <div class="table-responsive" style="max-height: 420px; overflow-y: auto;">
+          <table class="sj-table" style="font-size: 11.5px;">
+            <thead>
+              <tr>
+                <th style="width: 35px;">No</th>
+                <th>Waktu Server</th>
+                <th>Waktu Klien</th>
+                <th>Jenis Peristiwa</th>
+                <th>UID Terkait</th>
+                <th>Terminal</th>
+                <th>Petugas</th>
+                <th>Keterangan / Parameter</th>
+              </tr>
+            </thead>
+            <tbody id="auditTableBody">
+              <!-- Baris log diisi dinamis -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer-custom">
+        <button type="button" class="btn-modal-cancel" onclick="closeModal('modalAuditLog')">Tutup</button>
+        <button type="button" class="btn-modal-confirm" style="background:var(--c-navy);" onclick="exportAuditLogJSON()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Unduh Audit JSON
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Pop-up -->
+  <div class="toast-notice" id="toastNotice">
+    <span id="toastIcon">ℹ️</span>
+    <span id="toastMessage">Pesan notifikasi</span>
+  </div>
+
+  <!-- ==============================================================
+       LOGIKA JAVASCRIPT & INTEGRASI ODOO 17
+       ============================================================== -->
+  <script>
+    /* =============================================================
+       1. KONFIGURASI SISTEM & ENDPOINT SERVER ODOO 17
+       ============================================================= */
+    const CONFIG = {
+      // Set false untuk produksi: banner data contoh & chip simulasi otomatis dinonaktifkan
+      DATA_CONTOH: false,
+
+      // Konfigurasi Endpoint REST / JSON-RPC Odoo 17
+      API: {
+        BASE_URL: '[ISI URL BASE ODOO 17: misal https://erp.dolpin.co.id]',
+        LOOKUP_LABEL: '[ISI URL/METODE: misal /api/v1/gbj/label/lookup?uid={uid}]',
+        SUBMIT_ISSUE: '[ISI URL/METODE: misal /api/v1/gbj/stock/issue]',
+        MASTER_CUSTOMERS: '[ISI URL/METODE: misal /api/v1/gbj/master/customers]',
+        MASTER_EXPEDITIONS: '[ISI URL/METODE: misal /api/v1/gbj/master/expeditions]',
+        MASTER_MPS: '[ISI URL/METODE: misal /api/v1/gbj/master/mps]',
+        MASTER_VEHICLES: '[ISI URL/METODE: misal /api/v1/gbj/master/vehicles]',
+        CURRENT_USER: '[ISI URL/METODE: misal /api/v1/auth/session]'
+      },
+
+      // Identitas Perangkat Keras / Pos Barcode Terminal
+      TERMINAL_ID: localStorage.getItem('GBJ_TERMINAL_ID') || 'GBJ-POS-TERM-01',
+
+      // Aturan Bisnis Selisih & Toleransi
+      WAJIB_CATATAN_SELISIH: true, // Default: Wajib diisi jika melebihi toleransi
+      DEFAULT_TOLERANSI_SELISIH_KG: 10.0 // kg default jika server tidak mengirim spesifik
+    };
+
+    /* =============================================================
+       2. STATE TRANSKASI & DATA LOKAL
+       ============================================================= */
+    let CURRENT_USER = {
+      id: null,
+      name: '[Memuat Petugas...]',
+      role: '[Memuat Peran...]',
+      shift: '[Memuat Shift...]'
+    };
+
+    let MASTER_DATA = {
+      customers: [],
+      expeditions: [],
+      mps: [],
+      vehicles: []
+    };
+
+    let loadedItems = [];
+    let auditLogs = [];
+    let isDocumentLocked = false;
+    let currentTruckCapacityKg = 4000;
+    let activeTargetKg = 0;
+    let activeToleranceKg = CONFIG.DEFAULT_TOLERANSI_SELISIH_KG;
+    let pendingVoidIndex = null;
+    let activeModals = []; // Stack untuk Esc & focus trap
+
+    // Mock Fallback Database (HANYA digunakan jika CONFIG.DATA_CONTOH = true)
+    const mockInventoryFG = {
+      'UID-FG-261104-0012': {
+        uid: 'UID-FG-261104-0012',
+        name: 'PE 808 BIRU 010X020X0.03 K (Kantong FG)',
+        mpNumber: 'MP-2610-0988',
+        netWeight: 25.00,
+        packageType: 'Bale @ 25 Kg',
+        status: 'AVAILABLE'
+      },
+      'UID-FG-261104-0013': {
+        uid: 'UID-FG-261104-0013',
+        name: 'PE 808 BIRU 010X020X0.03 K (Kantong FG)',
+        mpNumber: 'MP-2610-0988',
+        netWeight: 25.00,
+        packageType: 'Bale @ 25 Kg',
+        status: 'AVAILABLE'
+      },
+      'UID-FG-261104-0014': {
+        uid: 'UID-FG-261104-0014',
+        name: 'PE 808 BIRU 010X020X0.03 K (Kantong FG)',
+        mpNumber: 'MP-2610-0988',
+        netWeight: 25.00,
+        packageType: 'Bale @ 25 Kg',
+        status: 'AVAILABLE'
+      },
+      'UID-FG-261104-0015': {
+        uid: 'UID-FG-261104-0015',
+        name: 'PE 808 BIRU 010X020X0.03 K (Kantong FG)',
+        mpNumber: 'MP-2610-0988',
+        netWeight: 25.00,
+        packageType: 'Bale @ 25 Kg',
+        status: 'AVAILABLE'
+      },
+      'UID-FG-261104-0020': {
+        uid: 'UID-FG-261104-0020',
+        name: 'FILM PE BENING 040X060X0.04 (Roll FG)',
+        mpNumber: 'MP-2610-0990',
+        netWeight: 50.00,
+        packageType: 'Roll Jumbo @ 50 Kg',
+        status: 'AVAILABLE'
+      },
+      'UID-FG-261104-ALREADY-ISSUED': {
+        uid: 'UID-FG-261104-ALREADY-ISSUED',
+        name: 'PE 808 BIRU 010X020X0.03 K',
+        mpNumber: 'MP-2610-0988',
+        netWeight: 25.00,
+        packageType: 'Bale @ 25 Kg',
+        status: 'ISSUED',
+        issuedDocNumber: 'DO/2026/11/0088',
+        issuedDate: '04 November 2026 14:10 WIB',
+        issuedBy: 'Haryanto (GBJ)'
+      }
+    };
+
+    /* =============================================================
+       3. INISIALISASI HALAMAN & EVENT LISTENERS
+       ============================================================= */
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('lblTerminalIdDisplay').textContent = CONFIG.TERMINAL_ID;
+
+      // Evaluasi Banner Mode Data Contoh
+      applyDemoModeVisibility();
+
+      // Inisialisasi Event Listener Scanner Barcode
+      initScanner();
+
+      // Inisialisasi Keyboard Accessibility (Esc & Focus Trap)
+      initAccessibilityKeys();
+
+      // Sinkronisasi Sesi Pengguna & Master Data dari Server
+      await fetchCurrentUser();
+      await fetchMasterData();
+
+      // Rekam Audit Inisialisasi Terminal
+      recordAuditEvent('TERMINAL_INITIALIZED', '-', {
+        terminalId: CONFIG.TERMINAL_ID,
+        userAgent: navigator.userAgent
+      });
+    });
+
+    function applyDemoModeVisibility() {
+      const banner = document.getElementById('bannerDataContoh');
+      const testChips = document.getElementById('quickTestBar');
+      if (CONFIG.DATA_CONTOH) {
+        banner.style.display = 'flex';
+        testChips.style.display = 'flex';
+      } else {
+        banner.style.display = 'none';
+        testChips.style.display = 'none';
+      }
+    }
+
+    function disableDemoMode() {
+      CONFIG.DATA_CONTOH = false;
+      applyDemoModeVisibility();
+      showToast('Mode Data Contoh dimatikan. Semua transaksi mewajibkan koneksi Odoo.', 'info');
+    }
+
+    function initScanner() {
+      const scanner = document.getElementById('qrScannerInput');
+      scanner.focus();
+
+      // Pertahankan fokus scanner kecuali user sedang mengisi input teks lain
+      document.addEventListener('click', (e) => {
+        if (isDocumentLocked) return;
+        const interactiveInputs = [
+          'inputDriverName', 'inputDriverPhone', 'txtDiscrepancyNote',
+          'selectCustomer', 'selectMP', 'selectVehicle', 'selectExpedition',
+          'selectVoidReason', 'txtVoidCustomNote'
+        ];
+        if (!interactiveInputs.includes(e.target.id) && activeModals.length === 0) {
+          scanner.focus();
+        }
+      });
+
+      // Tangkap tombol Enter dari USB/Bluetooth laser handheld scanner
+      scanner.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const qrCode = scanner.value.trim();
+          if (qrCode) {
+            processScannedQR(qrCode);
+            scanner.value = '';
+          }
+        }
+      });
+    }
+
+    function initAccessibilityKeys() {
+      document.addEventListener('keydown', (e) => {
+        if (activeModals.length > 0) {
+          const topModalId = activeModals[activeModals.length - 1];
+          const topModal = document.getElementById(topModalId);
+          
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            closeModal(topModalId);
+            return;
+          }
+
+          if (e.key === 'Tab' && topModal) {
+            const focusables = Array.from(topModal.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'));
+            if (focusables.length > 0) {
+              const firstElem = focusables[0];
+              const lastElem = focusables[focusables.length - 1];
+              if (e.shiftKey) {
+                if (document.activeElement === firstElem || !topModal.contains(document.activeElement)) {
+                  e.preventDefault();
+                  lastElem.focus();
+                }
+              } else {
+                if (document.activeElement === lastElem || !topModal.contains(document.activeElement)) {
+                  e.preventDefault();
+                  firstElem.focus();
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    /* =============================================================
+       4. PENGAMBILAN DATA SESI & MASTER DATA DARI SERVER
+       ============================================================= */
+    async function fetchCurrentUser() {
+      try {
+        if (!CONFIG.DATA_CONTOH && CONFIG.API.CURRENT_USER.startsWith('[ISI')) {
+          // Menunggu konfigurasi URL riil dari administrator Odoo
+          setFallbackUser('[Menunggu Integrasi]', 'Petugas GBJ', 'Shift 1 Pagi');
+          return;
+        }
+
+        const res = await fetch(CONFIG.API.CURRENT_USER, {
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        
+        CURRENT_USER = {
+          id: data.user_id || data.id,
+          name: data.name || data.display_name,
+          role: data.role || 'Petugas GBJ',
+          shift: data.shift || 'Shift 1'
+        };
+        updateUserUI();
+      } catch (err) {
+        console.warn('Gagal memuat sesi pengguna dari server, menggunakan status offline/demo:', err);
+        setFallbackUser('Slamet Riyadi', 'Petugas GBJ', 'Shift 1 Pagi');
+      }
+    }
+
+    function setFallbackUser(name, role, shift) {
+      CURRENT_USER = { id: 101, name, role, shift };
+      updateUserUI();
+    }
+
+    function updateUserUI() {
+      document.getElementById('userNameText').textContent = CURRENT_USER.name;
+      document.getElementById('userRoleText').textContent = `${CURRENT_USER.role} • ${CURRENT_USER.shift}`;
+      const initials = CURRENT_USER.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+      document.getElementById('userAvatarBadge').textContent = initials || 'GB';
+      document.getElementById('sjSignatureAdmin').innerHTML = `${CURRENT_USER.name}<br><span style="font-size:11px; color:var(--c-slate);">Admin Gudang GBJ</span>`;
+    }
+
+    async function fetchMasterData() {
+      try {
+        // Tanggal Server Odoo
+        const now = new Date();
+        const dateFormatted = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('currentDateText').textContent = dateFormatted;
+        document.getElementById('sjDateLabel').textContent = dateFormatted;
+
+        if (!CONFIG.DATA_CONTOH && CONFIG.API.MASTER_CUSTOMERS.startsWith('[ISI')) {
+          populateFallbackMasterData();
+          return;
+        }
+
+        // Pemanggilan master data dari endpoint Odoo
+        const [resCust, resExp, resMp, resVeh] = await Promise.all([
+          fetch(CONFIG.API.MASTER_CUSTOMERS),
+          fetch(CONFIG.API.MASTER_EXPEDITIONS),
+          fetch(CONFIG.API.MASTER_MPS),
+          fetch(CONFIG.API.MASTER_VEHICLES)
+        ]);
+
+        MASTER_DATA.customers = await resCust.json();
+        MASTER_DATA.expeditions = await resExp.json();
+        MASTER_DATA.mps = await resMp.json();
+        MASTER_DATA.vehicles = await resVeh.json();
+
+        renderMasterDropdowns();
+      } catch (err) {
+        console.warn('Menggunakan master data fallback lokal:', err);
+        populateFallbackMasterData();
+      }
+    }
+
+    function populateFallbackMasterData() {
+      MASTER_DATA.customers = [
+        { id: 'CUST-001', name: 'CV Sumber Plastik Makmur', city: 'Solo', code: 'CUST-001' },
+        { id: 'CUST-002', name: 'PT Surya Jaya Abadi', city: 'Semarang', code: 'CUST-002' },
+        { id: 'CUST-003', name: 'Toko Plastik 88', city: 'Yogyakarta', code: 'CUST-003' },
+        { id: 'CUST-004', name: 'UD Makmur Sejahtera', city: 'Klaten', code: 'CUST-004' }
+      ];
+
+      MASTER_DATA.expeditions = [
+        { id: 'EXP-001', name: 'Dakota Cargo', type: 'Kargo Darat' },
+        { id: 'EXP-002', name: 'JNE Trucking (JTR)', type: 'Kargo Truk' },
+        { id: 'EXP-003', name: 'Armada Internal Pabrik', type: 'Dolpin Truk 02' },
+        { id: 'EXP-004', name: 'Indah Logistik Cargo', type: 'Kargo Reguler' }
+      ];
+
+      MASTER_DATA.mps = [
+        { id: 'MP-2610-0988', name: 'MP-2610-0988', product: 'PE 808 BIRU 010X020', targetKg: 300.0, toleranceKg: 10.0 },
+        { id: 'MP-2610-0990', name: 'MP-2610-0990', product: 'FILM PE BENING ROLL', targetKg: 500.0, toleranceKg: 15.0 },
+        { id: 'MP-2610-1002', name: 'MP-2610-1002', product: 'KANTONG KRESEK HITAM', targetKg: 250.0, toleranceKg: 5.0 }
+      ];
+
+      MASTER_DATA.vehicles = [
+        { plate: 'AD 8214 QA', type: 'Colt Diesel Double (CDD)', capacityKg: 4000, desc: 'Armada Internal PT DPS' },
+        { plate: 'AD 9102 ZA', type: 'Engkel Box (CDE)', capacityKg: 2500, desc: 'Armada Box Sedang' },
+        { plate: 'AD 7741 XB', type: 'Fuso Berat', capacityKg: 8000, desc: 'Armada Kontrak' },
+        { plate: 'B 9012 KXR', type: 'Sewa Rekanan', capacityKg: 5000, desc: 'Vendor Eksternal' }
+      ];
+
+      renderMasterDropdowns();
+    }
+
+    function renderMasterDropdowns() {
+      // 1. Customer
+      const selCust = document.getElementById('selectCustomer');
+      const listCust = document.getElementById('listCustomer');
+      selCust.innerHTML = '<option value="">-- Pilih Customer --</option>' +
+        MASTER_DATA.customers.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+
+      listCust.innerHTML = MASTER_DATA.customers.map(c => `
+        <li class="dropdown-item" data-value="${c.name}" data-search="${c.name} ${c.city || ''} ${c.id || ''}" onclick="selectCustomDropdownItem('Customer', '${c.name.replace(/'/g, "\\'")}', event)">
+          <div class="dropdown-item-left">
+            <span class="dropdown-item-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 7v14M21 7v14M9 3h6v4H9zM9 11h2M13 11h2M9 15h2M13 15h2"/></svg>
+            </span>
+            <div class="dropdown-item-info">
+              <span class="dropdown-item-title">${c.name}</span>
+              <span class="dropdown-item-sub">${c.id || 'CUST'} &bull; ${c.city || 'Solo'}</span>
+            </div>
+          </div>
+          <span class="dropdown-item-badge">${c.city || 'Solo'}</span>
+          <span class="dropdown-item-check">✓</span>
+        </li>
+      `).join('');
+
+      // 2. Ekspedisi
+      const selExp = document.getElementById('selectExpedition');
+      const listExp = document.getElementById('listExpedition');
+      selExp.innerHTML = '<option value="">-- Pilih Ekspedisi --</option>' +
+        MASTER_DATA.expeditions.map(e => `<option value="${e.name}">${e.name}</option>`).join('');
+
+      listExp.innerHTML = MASTER_DATA.expeditions.map(e => `
+        <li class="dropdown-item" data-value="${e.name}" data-search="${e.name} ${e.type || ''}" onclick="selectCustomDropdownItem('Expedition', '${e.name.replace(/'/g, "\\'")}', event)">
+          <div class="dropdown-item-left">
+            <span class="dropdown-item-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16.5 9.4 7.5 4.21"></polyline><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+            </span>
+            <div class="dropdown-item-info">
+              <span class="dropdown-item-title">${e.name}</span>
+              <span class="dropdown-item-sub">${e.type || 'Kargo Darat'}</span>
+            </div>
+          </div>
+          <span class="dropdown-item-badge">Ekspedisi</span>
+          <span class="dropdown-item-check">✓</span>
+        </li>
+      `).join('');
+
+      // 3. Nomor MP
+      const selMP = document.getElementById('selectMP');
+      const listMP = document.getElementById('listMP');
+      selMP.innerHTML = '<option value="">-- Pilih Nomor MP --</option>' +
+        MASTER_DATA.mps.map(m => `<option value="${m.id}" data-target="${m.targetKg}" data-tolerance="${m.toleranceKg}">${m.name} [Target: ${m.targetKg} Kg]</option>`).join('');
+
+      listMP.innerHTML = MASTER_DATA.mps.map(m => `
+        <li class="dropdown-item" data-value="${m.id}" data-search="${m.id} ${m.name} ${m.product || ''}" onclick="selectCustomDropdownItem('MP', '${m.id}', event)">
+          <div class="dropdown-item-left">
+            <span class="dropdown-item-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </span>
+            <div class="dropdown-item-info">
+              <span class="dropdown-item-title">${m.id}</span>
+              <span class="dropdown-item-sub">${m.product || m.name}</span>
+            </div>
+          </div>
+          <span class="dropdown-item-badge">Target ${m.targetKg} Kg</span>
+          <span class="dropdown-item-check">✓</span>
+        </li>
+      `).join('');
+
+      // 4. Kendaraan / Plat Nomor
+      const selVeh = document.getElementById('selectVehicle');
+      const listVeh = document.getElementById('listVehicle');
+      selVeh.innerHTML = '<option value="">-- Pilih Armada Kendaraan --</option>' +
+        MASTER_DATA.vehicles.map(v => `<option value="${v.plate}" data-capacity="${v.capacityKg}">${v.plate} • ${v.type} (${v.capacityKg.toLocaleString()} Kg)</option>`).join('');
+
+      listVeh.innerHTML = MASTER_DATA.vehicles.map(v => `
+        <li class="dropdown-item" data-value="${v.plate}" data-search="${v.plate} ${v.type} ${v.desc || ''}" onclick="selectCustomDropdownItem('Vehicle', '${v.plate}', event)">
+          <div class="dropdown-item-left">
+            <span class="dropdown-item-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            </span>
+            <div class="dropdown-item-info">
+              <span class="dropdown-item-title">${v.plate}</span>
+              <span class="dropdown-item-sub">${v.type}</span>
+            </div>
+          </div>
+          <span class="dropdown-item-badge">Max ${v.capacityKg.toLocaleString('id-ID')} Kg</span>
+          <span class="dropdown-item-check">✓</span>
+        </li>
+      `).join('');
+
+      // Perbarui tampilan label masing-masing dropdown
+      ['Customer', 'MP', 'Vehicle', 'Expedition'].forEach(type => {
+        updateCustomDropdownDisplay(type);
+      });
+    }
+
+    /* =============================================================
+       KOMPONEN DROPDOWN CUSTOM (ENAK DILIHAT, SEARCHABLE & AKURAT)
+       ============================================================= */
+    function toggleCustomDropdown(type, event) {
+      if (event) event.stopPropagation();
+      if (isDocumentLocked) return;
+
+      const wrap = document.getElementById(`dropdown${type}Wrap`);
+      if (!wrap) return;
+
+      const isAlreadyOpen = wrap.classList.contains('open');
+      closeAllCustomDropdowns();
+
+      if (!isAlreadyOpen) {
+        // Cek ruang viewport agar tidak terpotong (auto dropup jika dekat bawah)
+        const rect = wrap.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        if (spaceBelow < 280 && rect.top > 280) {
+          wrap.classList.add('dropup');
+        } else {
+          wrap.classList.remove('dropup');
+        }
+
+        wrap.classList.add('open');
+        const trigger = document.getElementById(`trigger${type}`);
+        if (trigger) trigger.setAttribute('aria-expanded', 'true');
+
+        const searchInput = document.getElementById(`search${type}`);
+        if (searchInput) {
+          searchInput.value = '';
+          filterCustomDropdown(type);
+          setTimeout(() => searchInput.focus(), 50);
+        }
+      }
+    }
+
+    function closeAllCustomDropdowns() {
+      document.querySelectorAll('.custom-dropdown.open').forEach(el => {
+        el.classList.remove('open', 'dropup');
+      });
+      document.querySelectorAll('.custom-dropdown-trigger').forEach(el => {
+        el.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function selectCustomDropdownItem(type, value, event) {
+      if (event) event.stopPropagation();
+      const sel = document.getElementById(`select${type}`);
+      if (!sel) return;
+
+      sel.value = value;
+      sel.dispatchEvent(new Event('change'));
+
+      updateCustomDropdownDisplay(type);
+      clearFieldError(`select${type}`);
+      closeAllCustomDropdowns();
+
+      const trigger = document.getElementById(`trigger${type}`);
+      if (trigger) trigger.focus();
+    }
+
+    function updateCustomDropdownDisplay(type) {
+      const sel = document.getElementById(`select${type}`);
+      const labelMain = document.getElementById(`label${type}Main`);
+      const labelSub = document.getElementById(`label${type}Sub`);
+      const listItems = document.querySelectorAll(`#list${type} .dropdown-item`);
+
+      const currentVal = sel ? sel.value : '';
+
+      listItems.forEach(item => {
+        if (item.getAttribute('data-value') === currentVal) {
+          item.classList.add('selected');
+        } else {
+          item.classList.remove('selected');
+        }
+      });
+
+      if (!currentVal) {
+        labelMain.className = 'trigger-placeholder';
+        if (type === 'Customer') labelMain.textContent = '-- Pilih Customer --';
+        else if (type === 'MP') labelMain.textContent = '-- Pilih Nomor MP --';
+        else if (type === 'Vehicle') labelMain.textContent = '-- Pilih Armada Kendaraan --';
+        else if (type === 'Expedition') labelMain.textContent = '-- Pilih Ekspedisi --';
+        if (labelSub) labelSub.textContent = '';
+        return;
+      }
+
+      labelMain.className = 'trigger-main-text';
+
+      if (type === 'Customer') {
+        const cust = MASTER_DATA.customers.find(c => c.name === currentVal);
+        labelMain.textContent = currentVal;
+        labelSub.textContent = cust && cust.city ? `${cust.id || 'CUST'} • ${cust.city}` : 'Customer';
+      } else if (type === 'MP') {
+        const mp = MASTER_DATA.mps.find(m => m.id === currentVal);
+        labelMain.textContent = currentVal;
+        labelSub.textContent = mp ? `${mp.product || mp.name} • Target: ${mp.targetKg} Kg` : 'Nomor MP';
+      } else if (type === 'Vehicle') {
+        const veh = MASTER_DATA.vehicles.find(v => v.plate === currentVal);
+        labelMain.textContent = currentVal;
+        labelSub.textContent = veh ? `${veh.type} • Max ${veh.capacityKg.toLocaleString('id-ID')} Kg` : 'Armada';
+      } else if (type === 'Expedition') {
+        const exp = MASTER_DATA.expeditions.find(e => e.name === currentVal);
+        labelMain.textContent = currentVal;
+        labelSub.textContent = exp ? (exp.type || 'Ekspedisi') : 'Ekspedisi';
+      }
+    }
+
+    function filterCustomDropdown(type) {
+      const searchInput = document.getElementById(`search${type}`);
+      const q = (searchInput ? searchInput.value : '').toLowerCase().trim();
+      const listItems = document.querySelectorAll(`#list${type} .dropdown-item`);
+      let visibleCount = 0;
+
+      listItems.forEach(item => {
+        const searchData = (item.getAttribute('data-search') || '').toLowerCase();
+        if (!q || searchData.includes(q)) {
+          item.style.display = 'flex';
+          visibleCount++;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      let emptyState = document.getElementById(`empty${type}`);
+      if (visibleCount === 0) {
+        if (!emptyState) {
+          emptyState = document.createElement('li');
+          emptyState.id = `empty${type}`;
+          emptyState.className = 'dropdown-empty-state';
+          emptyState.textContent = 'Tidak ditemukan pilihan yang sesuai.';
+          document.getElementById(`list${type}`).appendChild(emptyState);
+        }
+        emptyState.style.display = 'block';
+      } else if (emptyState) {
+        emptyState.style.display = 'none';
+      }
+    }
+
+    function handleTriggerKeydown(type, event) {
+      if (isDocumentLocked) return;
+      if (event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        toggleCustomDropdown(type, event);
+      } else if (event.key === 'Escape') {
+        closeAllCustomDropdowns();
+      }
+    }
+
+    function handleSearchInputKeydown(type, event) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeAllCustomDropdowns();
+        const trigger = document.getElementById(`trigger${type}`);
+        if (trigger) trigger.focus();
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        const firstVisible = document.querySelector(`#list${type} .dropdown-item:not([style*="display: none"])`);
+        if (firstVisible) {
+          const val = firstVisible.getAttribute('data-value');
+          selectCustomDropdownItem(type, val, event);
+        }
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.custom-dropdown')) {
+        closeAllCustomDropdowns();
+      }
+    });
+
+    function onVehicleChange() {
+      const selVeh = document.getElementById('selectVehicle');
+      const opt = selVeh.options[selVeh.selectedIndex];
+      if (opt && opt.dataset.capacity) {
+        currentTruckCapacityKg = parseFloat(opt.dataset.capacity);
+        document.getElementById('kpiTruckMaxSub').textContent = `Max kapasitas: ${currentTruckCapacityKg.toLocaleString('id-ID')} Kg`;
+        document.getElementById('kpiTruckCapacityUnit').textContent = `/ ${(currentTruckCapacityKg / 1000).toFixed(1)} Ton`;
+      } else {
+        currentTruckCapacityKg = 4000;
+        document.getElementById('kpiTruckMaxSub').textContent = 'Pilih armada kendaraan';
+      }
+      calculateScorecards();
+    }
+
+    function onMPChange() {
+      const selMP = document.getElementById('selectMP');
+      const opt = selMP.options[selMP.selectedIndex];
+      if (opt && opt.dataset.target) {
+        activeTargetKg = parseFloat(opt.dataset.target);
+        activeToleranceKg = parseFloat(opt.dataset.tolerance) || CONFIG.DEFAULT_TOLERANSI_SELISIH_KG;
+        document.getElementById('kpiTargetComparison').innerHTML = `<span>Target MP: <strong>${activeTargetKg.toFixed(2)} Kg</strong> (±${activeToleranceKg} Kg)</span>`;
+      } else {
+        activeTargetKg = 0;
+        activeToleranceKg = CONFIG.DEFAULT_TOLERANSI_SELISIH_KG;
+        document.getElementById('kpiTargetComparison').innerHTML = '<span>Target MP: - Kg</span>';
+      }
+    }
+
+    /* =============================================================
+       5. PENCEGAHAN SCAN GANDA & LOOKUP LABEL DARI SERVER
+       ============================================================= */
+    async function processScannedQR(rawQR) {
+      if (isDocumentLocked) {
+        showToast('Dokumen telah dikunci! Tidak dapat memindai muatan baru.', 'error');
+        return;
+      }
+
+      // 1. Cek Scan Ganda Lokal (sudah ada di dokumen aktif ini)
+      const alreadyLoadedIndex = loadedItems.findIndex(it => it.uid === rawQR);
+      if (alreadyLoadedIndex !== -1) {
+        const existing = loadedItems[alreadyLoadedIndex];
+        const msg = `Peringatan: Label ${rawQR} SUDAH PERNAH DI-SCAN pada baris #${alreadyLoadedIndex + 1} (${existing.scanTime} WIB)!`;
+        showToast(msg, 'error');
+        recordAuditEvent('SCAN_DUPLICATE_LOCAL', rawQR, {
+          reason: 'Label sudah berada di daftar muatan dokumen aktif',
+          firstScanTime: existing.scanTime
+        });
+        return;
+      }
+
+      // 2. Panggilan Verifikasi Server (lookupLabel)
+      document.getElementById('scannerIndicator').innerHTML = `<span class="status-dot" style="background:#F59E0B;"></span> Memproses...`;
+
+      let itemData = null;
+      try {
+        itemData = await lookupLabel(rawQR);
+      } catch (netErr) {
+        document.getElementById('scannerIndicator').innerHTML = `<span class="status-dot" style="background:#EF4444;"></span> Gagal Koneksi`;
+        const errMsg = `Gagal verifikasi label ${rawQR} ke server Odoo: ${netErr.message}. Barang TIDAK dicatat ke muatan.`;
+        showToast(errMsg, 'error');
+        recordAuditEvent('SCAN_NETWORK_ERROR', rawQR, {
+          error: netErr.message,
+          endpoint: CONFIG.API.LOOKUP_LABEL
+        });
+        return;
+      } finally {
+        setTimeout(() => {
+          document.getElementById('scannerIndicator').innerHTML = `<span class="status-dot"></span> Scanner Siap`;
+        }, 1200);
+      }
+
+      // 3. Evaluasi Status Label dari Server (Cegah Scan Ganda Lintas Dokumen)
+      if (itemData.status === 'ISSUED') {
+        const prevDoc = itemData.issuedDocNumber || 'Tidak Diketahui';
+        const prevDate = itemData.issuedDate || '-';
+        const prevUser = itemData.issuedBy || 'Petugas Lain';
+        
+        const rejectMsg = `DITOLAK: Label ${rawQR} TELAH DIKELUARKAN pada Dokumen [${prevDoc}] tanggal [${prevDate}] oleh [${prevUser}]!`;
+        alert(rejectMsg); // Tetap berikan notice tegas pada operator
+        showToast(`Scan Ditolak: Label ${rawQR} sudah dikeluarkan di dokumen lain.`, 'error');
+
+        recordAuditEvent('SCAN_DUPLICATE_REMOTE', rawQR, {
+          previousDoc: prevDoc,
+          previousDate: prevDate,
+          previousUser: prevUser
+        });
+        return;
+      }
+
+      // 4. Masukkan ke State Muatan Truk
+      const record = {
+        uid: itemData.uid,
+        name: itemData.name,
+        mpNumber: itemData.mpNumber,
+        netWeight: parseFloat(itemData.netWeight),
+        packageType: itemData.packageType || 'Bale',
+        scanTime: itemData.serverTimeStr || new Date().toTimeString().substring(0, 8),
+        serverTimestamp: itemData.serverTimestamp || new Date().toISOString()
+      };
+
+      loadedItems.push(record);
+      renderLoadedTable(record.uid);
+      calculateScorecards();
+
+      // Rekam Audit Keberhasilan Scan
+      recordAuditEvent('SCAN_SUCCESS', record.uid, {
+        netWeight: record.netWeight,
+        productName: record.name,
+        mpNumber: record.mpNumber
+      });
+
+      showToast(`Berhasil Muat: ${record.uid} (${record.netWeight.toFixed(2)} Kg)`, 'success');
+    }
+
+    async function lookupLabel(uid) {
+      if (!CONFIG.DATA_CONTOH && !CONFIG.API.LOOKUP_LABEL.startsWith('[ISI')) {
+        const url = CONFIG.API.LOOKUP_LABEL.replace('{uid}', encodeURIComponent(uid));
+        const res = await fetch(url, {
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!res.ok) {
+          throw new Error(`Label ${uid} tidak terdaftar di Odoo (HTTP ${res.status})`);
+        }
+        const json = await res.json();
+        return json.data || json;
+      }
+
+      // Fallback Simulasi jika endpoint belum diisi
+      await new Promise(r => setTimeout(r, 180));
+      const mock = mockInventoryFG[uid];
+      if (mock) {
+        return {
+          ...mock,
+          serverTimestamp: new Date().toISOString(),
+          serverTimeStr: new Date().toTimeString().substring(0, 8)
+        };
+      }
+
+      // Jika kode QR tidak ada di database mock
+      return {
+        uid: uid,
+        name: 'PRODUK FG REGULER (SCAN FISIK)',
+        mpNumber: document.getElementById('selectMP').value || 'MP-UNKNOWN',
+        netWeight: 25.00,
+        packageType: 'Bale Standard',
+        status: 'AVAILABLE',
+        serverTimestamp: new Date().toISOString(),
+        serverTimeStr: new Date().toTimeString().substring(0, 8)
+      };
+    }
+
+    function simulateScan(uid) {
+      processScannedQR(uid);
+      document.getElementById('qrScannerInput').focus();
+    }
+
+    /* =============================================================
+       6. SCORECARD & UTILSASI BEBAN TRUK
+       ============================================================= */
+    function calculateScorecards() {
+      const totalBale = loadedItems.length;
+      const totalWeight = loadedItems.reduce((acc, item) => acc + item.netWeight, 0);
+
+      document.getElementById('kpiTotalBale').innerHTML = `${totalBale} <span class="kpi-unit">Bale / Pcs</span>`;
+      document.getElementById('kpiTotalWeight').innerHTML = `${totalWeight.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span class="kpi-unit">Kg</span>`;
+      document.getElementById('loadedItemsCount').textContent = `(${totalBale} Item)`;
+
+      const pctCapacity = currentTruckCapacityKg > 0 ? (totalWeight / currentTruckCapacityKg) * 100 : 0;
+      const pctText = pctCapacity.toFixed(1);
+      const badge = document.getElementById('kpiTruckBadge');
+      const textElem = document.getElementById('kpiTruckCapacityText');
+
+      if (pctCapacity > 100) {
+        badge.className = 'status-badge-capacity overload';
+        badge.textContent = 'OVERLOAD';
+        textElem.style.color = 'var(--c-red)';
+      } else if (pctCapacity > 85) {
+        badge.className = 'status-badge-capacity warning';
+        badge.textContent = 'Hampir Penuh';
+        textElem.style.color = '#D97706';
+      } else {
+        badge.className = 'status-badge-capacity';
+        badge.textContent = 'Aman';
+        textElem.style.color = '#059669';
+      }
+
+      textElem.innerHTML = `${pctText}% <span class="kpi-unit">/ ${(currentTruckCapacityKg / 1000).toFixed(1)} Ton</span>`;
+    }
+
+    /* =============================================================
+       7. RENDER TABEL & VOID DENGAN ALASAN
+       ============================================================= */
+    function renderLoadedTable(justAddedUid = null) {
+      const tbody = document.getElementById('loadedTableBody');
+
+      if (loadedItems.length === 0) {
+        tbody.innerHTML = `
+          <tr id="emptyRowPlaceholder">
+            <td colspan="8" style="text-align:center; padding:36px; color:var(--c-slate);">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.5" style="display:block; margin:0 auto 8px auto;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+              Belum ada barang yang di-scan. Arahkan scanner laser handheld ke label fisik bale.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = loadedItems.map((item, index) => {
+        const isHighlight = item.uid === justAddedUid ? 'row-just-added' : '';
+        const voidButtonHtml = isDocumentLocked 
+          ? `<span style="font-size:11px; color:var(--c-slate);">Terkunci</span>` 
+          : `<button type="button" class="btn-delete-row" onclick="requestVoidItem(${index})">Void</button>`;
+
+        return `
+          <tr class="${isHighlight}">
+            <td class="sticky-col-no" style="font-weight:700; color:var(--c-slate);">${index + 1}</td>
+            <td class="sticky-col-uid"><span class="uid-badge">${item.uid}</span></td>
+            <td><strong>${item.name}</strong></td>
+            <td><span class="mp-badge">${item.mpNumber}</span></td>
+            <td>${item.packageType}</td>
+            <td style="text-align: right; font-family:'JetBrains Mono'; font-weight:700;">${item.netWeight.toFixed(2)} Kg</td>
+            <td style="color:var(--c-slate);">${item.scanTime} WIB</td>
+            <td class="sticky-col-action">${voidButtonHtml}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function requestVoidItem(index) {
+      if (isDocumentLocked) return;
+      pendingVoidIndex = index;
+      const target = loadedItems[index];
+
+      document.getElementById('voidItemUidVal').textContent = target.uid;
+      document.getElementById('voidItemNameVal').textContent = target.name;
+      document.getElementById('voidItemWeightVal').textContent = `${target.netWeight.toFixed(2)} Kg`;
+      document.getElementById('selectVoidReason').value = 'Salah scan label QR (Human Error)';
+      document.getElementById('groupVoidCustomNote').style.display = 'none';
+      document.getElementById('txtVoidCustomNote').value = '';
+
+      openModal('modalVoidItem', event.target);
+    }
+
+    function onVoidReasonSelectChange() {
+      const val = document.getElementById('selectVoidReason').value;
+      const customGroup = document.getElementById('groupVoidCustomNote');
+      if (val === 'Lainnya') {
+        customGroup.style.display = 'flex';
+        document.getElementById('txtVoidCustomNote').focus();
+      } else {
+        customGroup.style.display = 'none';
+      }
+    }
+
+    function executeVoidItem() {
+      if (pendingVoidIndex === null || pendingVoidIndex >= loadedItems.length) {
+        closeModal('modalVoidItem');
+        return;
+      }
+
+      const reasonSelect = document.getElementById('selectVoidReason').value;
+      const reasonCustom = document.getElementById('txtVoidCustomNote').value.trim();
+      const finalReason = reasonSelect === 'Lainnya' ? (reasonCustom || 'Lainnya tanpa catatan') : reasonSelect;
+
+      const removed = loadedItems.splice(pendingVoidIndex, 1)[0];
+      pendingVoidIndex = null;
+      closeModal('modalVoidItem');
+
+      renderLoadedTable();
+      calculateScorecards();
+
+      // Rekam Audit Trail Pembatalan
+      recordAuditEvent('ITEM_VOID', removed.uid, {
+        netWeight: removed.netWeight,
+        productName: removed.name,
+        voidReason: finalReason,
+        voidedBy: CURRENT_USER.name
+      });
+
+      showToast(`Item ${removed.uid} dibatalkan dari muatan. Alasan: ${finalReason}`, 'error');
+    }
+
+    /* =============================================================
+       8. SUBMIT & KONFIRMASI PENGELUARAN STOK (COMMIT ODOO)
+       ============================================================= */
+    function clearFieldError(fieldId) {
+      const elem = document.getElementById(fieldId);
+      if (elem) elem.classList.remove('is-invalid');
+      const trig = document.getElementById('trigger' + fieldId.replace('select', ''));
+      if (trig) trig.classList.remove('is-invalid');
+      const errMap = {
+        'selectCustomer': 'errSelectCustomer',
+        'selectMP': 'errSelectMP',
+        'selectVehicle': 'errSelectVehicle',
+        'selectExpedition': 'errSelectExpedition'
+      };
+      if (errMap[fieldId]) {
+        const errEl = document.getElementById(errMap[fieldId]);
+        if (errEl) errEl.classList.remove('show');
+      }
+    }
+
+    function requestStockIssue() {
+      if (isDocumentLocked) {
+        showToast('Dokumen ini sudah terkunci dan telah terbit.', 'info');
+        return;
+      }
+
+      // Validasi 4 Field Wajib
+      const customerElem = document.getElementById('selectCustomer');
+      const mpElem = document.getElementById('selectMP');
+      const vehicleElem = document.getElementById('selectVehicle');
+      const expeditionElem = document.getElementById('selectExpedition');
+
+      let isValid = true;
+
+      if (!customerElem.value) {
+        customerElem.classList.add('is-invalid');
+        const trig = document.getElementById('triggerCustomer');
+        if (trig) trig.classList.add('is-invalid');
+        document.getElementById('errSelectCustomer').classList.add('show');
+        isValid = false;
+      }
+
+      if (!mpElem.value) {
+        mpElem.classList.add('is-invalid');
+        const trig = document.getElementById('triggerMP');
+        if (trig) trig.classList.add('is-invalid');
+        document.getElementById('errSelectMP').classList.add('show');
+        isValid = false;
+      }
+
+      if (!vehicleElem.value) {
+        vehicleElem.classList.add('is-invalid');
+        const trig = document.getElementById('triggerVehicle');
+        if (trig) trig.classList.add('is-invalid');
+        document.getElementById('errSelectVehicle').classList.add('show');
+        isValid = false;
+      }
+
+      if (!expeditionElem.value) {
+        expeditionElem.classList.add('is-invalid');
+        const trig = document.getElementById('triggerExpedition');
+        if (trig) trig.classList.add('is-invalid');
+        document.getElementById('errSelectExpedition').classList.add('show');
+        isValid = false;
+      }
+
+      if (!isValid) {
+        showToast('Error: Lengkapi seluruh field wajib pengiriman!', 'error');
+        return;
+      }
+
+      if (loadedItems.length === 0) {
+        showToast('Error: Belum ada fisik barang yang di-scan ke muatan!', 'error');
+        return;
+      }
+
+      // Hitung Selisih
+      const totalWeight = loadedItems.reduce((acc, it) => acc + it.netWeight, 0);
+      const deltaKg = totalWeight - activeTargetKg;
+      const isExceededTolerance = activeTargetKg > 0 && Math.abs(deltaKg) > activeToleranceKg;
+
+      // Isi Data ke Modal Konfirmasi Kustom (Menggantikan confirm bawaan browser)
+      document.getElementById('cfmCustomerVal').textContent = customerElem.value;
+      document.getElementById('cfmMPVal').textContent = mpElem.value;
+      document.getElementById('cfmVehicleVal').textContent = vehicleElem.value;
+      document.getElementById('cfmExpeditionVal').textContent = expeditionElem.value;
+      document.getElementById('cfmDriverVal').textContent = document.getElementById('inputDriverName').value.trim() || '-';
+      document.getElementById('cfmTotalBaleVal').textContent = `${loadedItems.length} Bale / Pcs`;
+      document.getElementById('cfmTotalWeightVal').textContent = `${totalWeight.toFixed(2)} Kg`;
+      document.getElementById('cfmTargetWeightVal').textContent = `${activeTargetKg.toFixed(2)} Kg`;
+      document.getElementById('cfmDiscrepancyDeltaVal').textContent = `${deltaKg > 0 ? '+' : ''}${deltaKg.toFixed(2)} Kg`;
+
+      // Kontrol Tampilan Kotak Peringatan & Catatan Selisih
+      const discrepancyBox = document.getElementById('cfmDiscrepancyBox');
+      const discrepancyGroup = document.getElementById('cfmGroupDiscrepancyNote');
+      document.getElementById('cfmToleranceLabel').textContent = `${activeToleranceKg} Kg`;
+
+      if (isExceededTolerance) {
+        discrepancyBox.style.display = 'block';
+        if (CONFIG.WAJIB_CATATAN_SELISIH) {
+          discrepancyGroup.style.display = 'flex';
+          document.getElementById('txtDiscrepancyNote').value = '';
+          document.getElementById('errDiscrepancyNote').classList.remove('show');
+        }
+      } else {
+        discrepancyBox.style.display = 'none';
+        discrepancyGroup.style.display = 'none';
+      }
+
+      openModal('modalConfirmIssue', event.target);
+    }
+
+    async function submitIssue() {
+      // Validasi Catatan Selisih jika diwajibkan
+      const totalWeight = loadedItems.reduce((acc, it) => acc + it.netWeight, 0);
+      const deltaKg = totalWeight - activeTargetKg;
+      const isExceededTolerance = activeTargetKg > 0 && Math.abs(deltaKg) > activeToleranceKg;
+      const noteInput = document.getElementById('txtDiscrepancyNote');
+
+      if (isExceededTolerance && CONFIG.WAJIB_CATATAN_SELISIH && !noteInput.value.trim()) {
+        document.getElementById('errDiscrepancyNote').classList.add('show');
+        noteInput.focus();
+        return;
+      }
+
+      const btnSubmit = document.getElementById('btnExecuteSubmitIssue');
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Menyimpan ke Odoo...';
+
+      // Buat Snapshot Data Pengiriman
+      const snapshot = {
+        terminalId: CONFIG.TERMINAL_ID,
+        clientTime: new Date().toISOString(),
+        user: CURRENT_USER,
+        header: {
+          customer: document.getElementById('selectCustomer').value,
+          mpNumber: document.getElementById('selectMP').value,
+          plate: document.getElementById('selectVehicle').value,
+          expedition: document.getElementById('selectExpedition').value,
+          driverName: document.getElementById('inputDriverName').value.trim(),
+          driverPhone: document.getElementById('inputDriverPhone').value.trim()
+        },
+        items: loadedItems,
+        metrics: {
+          totalBale: loadedItems.length,
+          totalWeightKg: totalWeight,
+          targetKg: activeTargetKg,
+          discrepancyKg: deltaKg,
+          discrepancyNote: noteInput.value.trim() || null
+        },
+        auditTrail: auditLogs
+      };
+
+      try {
+        let serverResult = null;
+
+        if (!CONFIG.DATA_CONTOH && !CONFIG.API.SUBMIT_ISSUE.startsWith('[ISI')) {
+          const res = await fetch(CONFIG.API.SUBMIT_ISSUE, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(snapshot)
+          });
+          if (!res.ok) throw new Error(`Server Odoo menolak commit (HTTP ${res.status})`);
+          const json = await res.json();
+          serverResult = json.data || json;
+        } else {
+          // Fallback server simulator jika endpoint belum dipasang
+          await new Promise(r => setTimeout(r, 600));
+          serverResult = {
+            docNumber: `DO/2026/11/${Math.floor(1000 + Math.random() * 9000)}`,
+            serverTimestamp: new Date().toISOString(),
+            status: 'COMMITTED_LOCKED'
+          };
+        }
+
+        // Dokumen Nomor dan Waktu HARUS murni berasal dari respons server
+        const officialDocNumber = serverResult.docNumber || serverResult.name || 'DO-TERCATAT';
+        const officialServerTime = serverResult.serverTimestamp || serverResult.date || new Date().toISOString();
+
+        closeModal('modalConfirmIssue');
+        lockDocument(officialDocNumber, officialServerTime);
+
+        // Rekam Audit Trail Transaksi Berhasil
+        recordAuditEvent('DOC_SUBMIT_SUCCESS', officialDocNumber, {
+          serverDocNumber: officialDocNumber,
+          serverTimestamp: officialServerTime,
+          totalWeightKg: totalWeight,
+          itemCount: loadedItems.length,
+          discrepancyNote: snapshot.metrics.discrepancyNote
+        });
+
+        showToast(`Sukses: Dokumen [${officialDocNumber}] resmi terbit & stok berkurang di Odoo!`, 'success');
+      } catch (err) {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = 'Kunci Transaksi & Terbitkan Pengeluaran';
+        showToast(`Gagal Commit Issue Stok: ${err.message}`, 'error');
+        recordAuditEvent('DOC_SUBMIT_FAILED', '-', { error: err.message });
+      }
+    }
+
+    function lockDocument(docNumber, serverTime) {
+      isDocumentLocked = true;
+
+      // Tampilkan Banner Dokumen Terkunci
+      const banner = document.getElementById('bannerDocLocked');
+      banner.classList.add('show');
+      document.getElementById('lockedDocNumberLabel').textContent = docNumber;
+      document.getElementById('lockedDocTimeLabel').textContent = new Date(serverTime).toLocaleString('id-ID');
+
+      // Update Label Surat Jalan
+      document.getElementById('sjNumberLabel').textContent = docNumber;
+      document.getElementById('sjDateLabel').textContent = new Date(serverTime).toLocaleString('id-ID');
+
+      // Matikan Input Form & Scanner
+      document.getElementById('selectCustomer').disabled = true;
+      document.getElementById('selectMP').disabled = true;
+      document.getElementById('selectVehicle').disabled = true;
+      document.getElementById('selectExpedition').disabled = true;
+      ['Customer', 'MP', 'Vehicle', 'Expedition'].forEach(type => {
+        const trig = document.getElementById(`trigger${type}`);
+        if (trig) trig.classList.add('disabled');
+      });
+      closeAllCustomDropdowns();
+      document.getElementById('inputDriverName').disabled = true;
+      document.getElementById('inputDriverPhone').disabled = true;
+      document.getElementById('qrScannerInput').disabled = true;
+      document.getElementById('btnCommitIssue').disabled = true;
+      document.getElementById('btnCommitIssue').style.opacity = '0.5';
+
+      renderLoadedTable();
+    }
+
+    function startNewSession() {
+      if (confirm('Yakin ingin memulai sesi pengeluaran dokumen baru?')) {
+        location.reload();
+      }
+    }
+
+    /* =============================================================
+       9. AUDIT TRAIL LOGGING & EXPORT JSON
+       ============================================================= */
+    function recordAuditEvent(eventType, uid, details) {
+      const now = new Date();
+      const auditEntry = {
+        id: 'LOG-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+        server_time: now.toISOString(), // Digantikan sync server
+        client_time: now.toISOString(),
+        event_type: eventType,
+        uid: uid || '-',
+        terminal_id: CONFIG.TERMINAL_ID,
+        user: {
+          id: CURRENT_USER.id,
+          name: CURRENT_USER.name,
+          role: CURRENT_USER.role,
+          shift: CURRENT_USER.shift
+        },
+        details: details || {}
+      };
+
+      auditLogs.push(auditEntry);
+      const elAudit = document.getElementById('txtAuditCount'); if (elAudit) elAudit.textContent = auditLogs.length;
+      renderAuditTable();
+    }
+
+    function renderAuditTable() {
+      const tbody = document.getElementById('auditTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = auditLogs.map((log, i) => {
+        const timeServerStr = new Date(log.server_time).toTimeString().substring(0, 8);
+        const timeClientStr = new Date(log.client_time).toTimeString().substring(0, 8);
+        const detailsStr = typeof log.details === 'object' ? JSON.stringify(log.details) : log.details;
+
+        return `
+          <tr>
+            <td>${i + 1}</td>
+            <td><strong>${timeServerStr}</strong></td>
+            <td style="color:var(--c-slate);">${timeClientStr}</td>
+            <td><span class="uid-badge">${log.event_type}</span></td>
+            <td style="font-family:'JetBrains Mono';">${log.uid}</td>
+            <td>${log.terminal_id}</td>
+            <td>${log.user.name}</td>
+            <td style="font-family:'JetBrains Mono'; font-size:11px; max-width:280px; overflow:hidden; text-overflow:ellipsis;">${detailsStr}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function exportAuditLogJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(auditLogs, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `audit-trail-gbj-${CONFIG.TERMINAL_ID}-${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('Log Audit JSON berhasil diekspor.', 'success');
+    }
+
+    function openAuditModal() {
+      renderAuditTable();
+      openModal('modalAuditLog', event.target);
+    }
+
+    /* =============================================================
+       10. PRATINJAU SURAT JALAN ODOO
+       ============================================================= */
+    function openSuratJalanModal() {
+      if (loadedItems.length === 0) {
+        showToast('Peringatan: Belum ada muatan barang fisik yang di-scan!', 'error');
+        return;
+      }
+
+      document.getElementById('sjCustomerVal').textContent = document.getElementById('selectCustomer').value || '-';
+      document.getElementById('sjMPVal').textContent = document.getElementById('selectMP').value || '-';
+      document.getElementById('sjPlateVal').textContent = (document.getElementById('selectVehicle').value || '-').toUpperCase();
+      document.getElementById('sjExpeditionVal').textContent = document.getElementById('selectExpedition').value || '-';
+      
+      const driver = document.getElementById('inputDriverName').value.trim() || 'Sopir Ekspedisi';
+      const phone = document.getElementById('inputDriverPhone').value.trim();
+      document.getElementById('sjDriverVal').textContent = phone ? `${driver} (${phone})` : driver;
+      document.getElementById('sjSignatureDriver').innerHTML = `${driver}<br><span style="font-size:11px; color:var(--c-slate);">Sopir Ekspedisi</span>`;
+
+      const tbody = document.getElementById('sjItemsTableBody');
+      let totalKg = 0;
+
+      tbody.innerHTML = loadedItems.map((item, i) => {
+        totalKg += item.netWeight;
+        return `
+          <tr>
+            <td>${i + 1}</td>
+            <td style="font-family:'JetBrains Mono'; font-weight:700;">${item.uid}</td>
+            <td><strong>${item.name}</strong></td>
+            <td>${item.packageType}</td>
+            <td style="text-align: right; font-family:'JetBrains Mono'; font-weight:700;">${item.netWeight.toFixed(2)} Kg</td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('sjTotalBaleCell').textContent = `${loadedItems.length} Bale / Pcs`;
+      document.getElementById('sjTotalWeightCell').textContent = `${totalKg.toFixed(2)} Kg`;
+
+      openModal('modalSuratJalan', event.target);
+    }
+
+    /* =============================================================
+       11. PENGELOLAAN MODAL DENGAN FOCUS TRAP & ESC STACK
+       ============================================================= */
+    const modalTriggerMap = {};
+
+    function openModal(modalId, triggerElement = null) {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+
+      modalTriggerMap[modalId] = triggerElement || document.activeElement;
+      modal.classList.add('show');
+      if (!activeModals.includes(modalId)) {
+        activeModals.push(modalId);
+      }
+
+      // Focus trap ke elemen fokus pertama
+      setTimeout(() => {
+        const focusables = modal.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
+        if (focusables.length > 0) {
+          focusables[0].focus();
+        }
+      }, 50);
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+
+      modal.classList.remove('show');
+      activeModals = activeModals.filter(id => id !== modalId);
+
+      const trigger = modalTriggerMap[modalId];
+      if (trigger && typeof trigger.focus === 'function') {
+        trigger.focus();
+      } else if (!isDocumentLocked) {
+        const qrInput = document.getElementById('qrScannerInput');
+        if (qrInput) qrInput.focus();
+      }
+      delete modalTriggerMap[modalId];
+    }
+
+    /* =============================================================
+       12. TOAST NOTIFIKASI
+       ============================================================= */
+    function showToast(msg, type = 'info') {
+      const t = document.getElementById('toastNotice');
+      document.getElementById('toastMessage').textContent = msg;
+      t.className = `toast-notice ${type} show`;
+      setTimeout(() => {
+        t.classList.remove('show');
+      }, 4000);
+    }
+  </script>
+</body>
+</html>

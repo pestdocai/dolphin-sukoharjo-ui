@@ -1,0 +1,2859 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Input Aktual Produksi & BS - Karu | PT Dolpin Putra Sejati</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    /* ==============================================================
+       DXL ERP - Karu Shop Floor Execution (K-3)
+       Module: Formulir Input Aktual Timbangan & Pencatatan BS/Scrap
+       Tipografi: 100% Font Plus Jakarta Sans (Tegas, Modern, Jelas Terbaca)
+       Design: Layar Sentuh Tablet Ramah Usia 50+ (Touch Target 48px - 58px)
+       Pembaruan: Pemisahan Tiket (Bagus vs BS) & Default BS = 0.00
+       ============================================================== */
+
+    :root {
+      --bg-app: #F3F4F6;              /* Abu-abu terang industrial */
+      --c-navy: #111827;              /* Navy gelap primer */
+      --c-navy-light: #1F2937;
+      --c-red: #D62828;               /* Merah DXL primer */
+      --c-red-hover: #B91C1C;
+      --c-red-light: #FEF2F2;
+      --c-red-border: #FECACA;
+      --c-green: #10B981;             /* Hijau sukses/validasi */
+      --c-green-light: #ECFDF5;
+      --c-green-border: #A7F3D0;
+      --c-amber: #F59E0B;
+      --c-amber-light: #FEF3C7;
+      
+      --c-card: #FFFFFF;
+      --c-border: #E5E7EB;
+      --c-border-strong: #D1D5DB;
+      --c-text-main: #111827;
+      --c-text-muted: #4B5563;
+      --c-text-subtle: #6B7280;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body, button, input, select, textarea {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-app);
+      color: var(--c-text-main);
+      font-size: 13.5px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Scrollbar Minimalis */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(107, 114, 128, 0.3);
+      border-radius: 999px;
+    }
+
+    /* ==============================================================
+       1. TOP BAR & NAVIGASI KEMBALI (COMPACT TABLET: 64px)
+       ============================================================== */
+    .top-header {
+      background-color: var(--c-navy);
+      color: #FFFFFF;
+      min-height: 64px;
+      padding: 11px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      gap: 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Tombol Kembali ke Antrean (Touch Target Nyaman) */
+    .btn-back-nav {
+      min-height: 38px;
+      padding: 0 14px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: var(--radius-sm);
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-back-nav:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+    .btn-back-nav:active {
+      transform: scale(0.97);
+    }
+    .btn-back-nav svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo-img {
+      height: 34px;
+      max-width: 145px;
+      width: auto;
+      object-fit: contain;
+    }
+    .brand-text-fallback {
+      font-size: 16px;
+      font-weight: 800;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .brand-badge {
+      background: var(--c-red);
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .header-page-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Info Shift & Profil Karu (Sinkron dengan Karu 1) */
+    .header-shift-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #111827;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      letter-spacing: -0.01em;
+    }
+    .header-shift-badge svg {
+      width: 14px;
+      height: 14px;
+      stroke: #111827;
+      stroke-width: 2.2;
+    }
+    .karu-profile-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 4px 10px 4px 5px;
+      border-radius: 999px;
+    }
+    .karu-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--c-red);
+      color: #FFFFFF;
+      font-size: 11.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: -0.02em;
+    }
+    .karu-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+    .karu-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+    .karu-role {
+      font-size: 10.5px;
+      color: #9CA3AF;
+    }
+
+    /* ==============================================================
+       2. ORDER SUMMARY CARD (3-KOLOM MODERN SESUAI MOCKUP FIGMA)
+       ============================================================== */
+    .app-wrapper {
+      max-width: 1360px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 10px 16px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .order-summary-card {
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      padding: 10px 16px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .summary-grid-3col {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr 1.45fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    /* Kolom 1: Surat Perintah Kerja */
+    .summary-col-mo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-right: 12px;
+      border-right: 1px solid #F1F5F9;
+    }
+    .summary-doc-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: #EFF6FF;
+      border: 1px solid #DBEAFE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #2563EB;
+    }
+    .summary-doc-icon svg {
+      width: 17px;
+      height: 17px;
+      stroke: #2563EB;
+      stroke-width: 2.2;
+    }
+    .summary-mo-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .summary-col-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #64748B;
+      letter-spacing: -0.01em;
+    }
+    .summary-mo-number {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #0F172A;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .summary-mp-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1.5px 7px;
+      border-radius: 4px;
+      margin-top: 2px;
+      width: fit-content;
+      letter-spacing: -0.01em;
+    }
+    .summary-mp-badge strong {
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+
+    /* Kolom 2: Informasi Produk */
+    .summary-col-product {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-right: 12px;
+      border-right: 1px solid #F1F5F9;
+    }
+    .summary-roll-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: #F0F9FF;
+      border: 1px solid #BAE6FD;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #0284C7;
+    }
+    .summary-roll-icon svg {
+      width: 17px;
+      height: 17px;
+      stroke: #0284C7;
+      stroke-width: 2.2;
+    }
+    .summary-prod-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .summary-prod-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+    }
+    .summary-prod-size {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0F172A;
+      line-height: 1.15;
+    }
+    .summary-prod-sub {
+      font-size: 10px;
+      color: #64748B;
+      line-height: 1.25;
+      margin-top: 1px;
+    }
+
+    /* Kolom 3: Badges & KPI Cards */
+    .summary-col-kpi {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .summary-badges-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .meta-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-machine {
+      background: #DC2626;
+      color: #FFFFFF;
+      border: 1px solid #DC2626;
+    }
+    .badge-machine svg {
+      stroke: #FFFFFF !important;
+      width: 11px;
+      height: 11px;
+    }
+    .badge-shift {
+      background: #FFFFFF;
+      color: #1E293B;
+      border: 1px solid #CBD5E1;
+    }
+    .badge-shift svg {
+      width: 11px;
+      height: 11px;
+      stroke: #64748B;
+    }
+    .badge-status-inprog {
+      background: #FFFFFF;
+      color: #1E293B;
+      border: 1px solid #CBD5E1;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .status-dot-green {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10B981;
+      display: inline-block;
+    }
+    .btn-reprint-outline {
+      height: 25px;
+      padding: 0 9px;
+      background: #FFFFFF;
+      border: 1.5px solid #0F172A;
+      border-radius: 6px;
+      color: #0F172A;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      white-space: nowrap;
+    }
+    .btn-reprint-outline:hover {
+      background: #0F172A;
+      color: #FFFFFF;
+    }
+    .btn-reprint-outline:hover svg {
+      stroke: #FFFFFF;
+    }
+    .btn-reprint-outline svg {
+      width: 13px !important;
+      height: 13px !important;
+      stroke: currentColor;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* 2 KPI Mini Cards */
+    .summary-kpi-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .kpi-mini-card {
+      border-radius: 7px;
+      padding: 7px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    .kpi-card-accum {
+      background: #0F172A;
+      color: #FFFFFF;
+      border: 1px solid #1E293B;
+    }
+    .kpi-card-remain {
+      background: #DC2626;
+      color: #FFFFFF;
+      border: 1px solid #B91C1C;
+    }
+    .kpi-mini-header {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .kpi-card-accum .kpi-mini-header {
+      color: #94A3B8;
+    }
+    .kpi-card-accum .kpi-mini-header svg {
+      stroke: #10B981;
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+    .kpi-card-remain .kpi-mini-header {
+      color: rgba(255, 255, 255, 0.95);
+    }
+    .kpi-card-remain .kpi-mini-header svg {
+      stroke: #FFFFFF;
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+    .kpi-mini-value-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .kpi-mini-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
+      line-height: 1.15;
+      font-feature-settings: "tnum" 1;
+    }
+    .kpi-mini-uom {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .kpi-mini-sub {
+      font-size: 9.5px;
+      color: #94A3B8;
+      line-height: 1.2;
+    }
+    .kpi-card-remain .kpi-mini-sub {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .kpi-mini-sub strong {
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+
+    /* Progress Section */
+    .summary-progress-section {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      border-top: 1px solid #F1F5F9;
+      padding-top: 6px;
+    }
+    .progress-labels-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10.5px;
+    }
+    .progress-text-left {
+      color: #475569;
+    }
+    .progress-text-left strong {
+      color: #0F172A;
+      font-weight: 700;
+    }
+    .progress-pct-right {
+      font-size: 11px;
+      font-weight: 800;
+      color: #DC2626;
+    }
+    .progress-track-bg {
+      width: 100%;
+      height: 5px;
+      background: #E2E8F0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #DC2626;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+/* ==============================================================
+       3. PEMILIH TAHAPAN PROSES (PROCESS TAB SWITCHER)
+       ============================================================== */
+    .process-switcher-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      background: transparent;
+      padding: 0;
+      border: none;
+      box-shadow: none;
+    }
+    .process-tab-btn {
+      min-height: 38px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: all 0.15s ease;
+      background: #FFFFFF;
+      border: 1.5px solid var(--c-border);
+      color: #1E293B;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      font-family: inherit;
+    }
+    .process-tab-btn svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+    }
+    .process-tab-btn:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+    .process-tab-btn.active {
+      background: #0F172A;
+      border-color: #0F172A;
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+    }
+    .process-tab-btn.active svg {
+      stroke: #38BDF8;
+    }
+
+    /* Selector Aliran Roll Extruder (WIP vs Direct FG) */
+    .extruder-flow-selector {
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .flow-selector-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding-bottom: 4px;
+    }
+    .flow-label-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #334155;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .flow-label-left svg {
+      width: 15px;
+      height: 15px;
+      stroke: #2563EB;
+      stroke-width: 2.2;
+    }
+    .flow-badge-hint {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748B;
+      background: #F1F5F9;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .flow-radios-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .flow-radio-pill {
+      position: relative;
+      border: 1.5px solid var(--c-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      background: #F8FAFC;
+      transition: all 0.15s ease;
+      min-height: 44px;
+    }
+    .flow-radio-pill:hover {
+      background: #F1F5F9;
+      border-color: #94A3B8;
+    }
+    .flow-radio-pill.active {
+      background: #FFFFFF;
+      border-color: #2563EB;
+      box-shadow: 0 2px 8px -1px rgba(37, 99, 235, 0.12), 0 0 0 1px #2563EB;
+    }
+    .flow-radio-pill input[type="radio"] {
+      width: 17px;
+      height: 17px;
+      accent-color: #2563EB;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin: 0;
+    }
+    .flow-radio-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .flow-radio-text strong {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #0F172A;
+      line-height: 1.25;
+    }
+    .flow-radio-text span {
+      font-size: 11px;
+      color: #64748B;
+      line-height: 1.35;
+    }
+
+    /* ==============================================================
+       4. DUAL FORM INPUT GRID (MOCKUP FIGMA)
+       ============================================================== */
+    .form-dual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .form-card {
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: 14px;
+      padding: 0;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    /* Card Header Full Solid Color */
+    .card-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+    }
+    .form-card-good .card-section-header {
+      background: #10B981;
+    }
+    .form-card-scrap .card-section-header {
+      background: #DC2626;
+    }
+
+    .section-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-icon-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .card-icon-badge svg {
+      width: 17px;
+      height: 17px;
+      stroke: #FFFFFF;
+      stroke-width: 2.3;
+    }
+    .card-header-texts {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .card-header-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.2;
+    }
+    .card-header-sub {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.88);
+      line-height: 1.3;
+    }
+    .step-tag-pill {
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(255, 255, 255, 0.22);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .form-card-body {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+    }
+
+    /* Inner Input Container Box (Good & Scrap) */
+    .inner-input-box {
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .box-good {
+      background: #F0FDF4;
+      border: 1.5px solid #BBF7D0;
+    }
+    .box-scrap {
+      background: #FEF2F2;
+      border: 1.5px solid #FECACA;
+    }
+
+    .box-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+    .box-label-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+    .box-label-title svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+    }
+    .box-good .box-label-title {
+      color: #065F46;
+    }
+    .box-scrap .box-label-title {
+      color: #991B1B;
+    }
+    .box-label-hint {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748B;
+    }
+
+    /* Stepper Row */
+    .scale-stepper-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+    .btn-stepper {
+      width: 38px;
+      height: 38px;
+      border-radius: 7px;
+      background: #FFFFFF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 19px;
+      font-weight: 800;
+      transition: all 0.12s ease;
+      font-family: inherit;
+    }
+    .btn-stepper-good {
+      border: 2px solid #10B981;
+      color: #10B981;
+    }
+    .btn-stepper-good:hover {
+      background: #ECFDF5;
+    }
+    .btn-stepper-good:active {
+      background: #10B981;
+      color: #FFFFFF;
+    }
+    .btn-stepper-scrap {
+      border: 2px solid #DC2626;
+      color: #DC2626;
+    }
+    .btn-stepper-scrap:hover {
+      background: #FFF5F5;
+    }
+    .btn-stepper-scrap:active {
+      background: #DC2626;
+      color: #FFFFFF;
+    }
+
+    .scale-display-wrap {
+      flex: 1;
+      height: 38px;
+      background: #FFFFFF;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      position: relative;
+    }
+    .wrap-good {
+      border: 1.5px solid #BBF7D0;
+    }
+    .wrap-scrap {
+      border: 1.5px solid #FECACA;
+    }
+    .scale-number-input {
+      width: 100%;
+      height: 100%;
+      border: none !important;
+      outline: none !important;
+      background: transparent !important;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 800;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: -0.01em;
+      padding: 0;
+      box-shadow: none !important;
+      -moz-appearance: textfield;
+    }
+    .input-good {
+      color: #0F172A;
+    }
+    .input-scrap {
+      color: #DC2626;
+    }
+    .scale-number-input::-webkit-outer-spin-button,
+    .scale-number-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .scale-uom-suffix {
+      position: absolute;
+      right: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      user-select: none;
+    }
+    .uom-good {
+      color: #0F172A;
+    }
+    .uom-scrap {
+      color: #0F172A;
+    }
+
+    /* Quick Pills 5 Kolom */
+    .quick-add-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      width: 100%;
+    }
+    .btn-quick-pill {
+      min-height: 32px;
+      height: 32px;
+      background: #FFFFFF;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s ease;
+      font-family: inherit;
+      padding: 0 2px;
+      white-space: nowrap;
+    }
+    .pill-good {
+      border: 1px solid #BBF7D0;
+      color: #047857;
+    }
+    .pill-good:hover {
+      background: #ECFDF5;
+      border-color: #10B981;
+    }
+    .pill-good:active {
+      background: #10B981;
+      color: #FFFFFF;
+    }
+    .pill-scrap {
+      border: 1px solid #FECACA;
+      color: #DC2626;
+    }
+    .pill-scrap:hover {
+      background: #FFF5F5;
+      border-color: #DC2626;
+    }
+    .pill-scrap:active {
+      background: #DC2626;
+      color: #FFFFFF;
+    }
+    .btn-quick-reset {
+      background: #FFFFFF !important;
+      border: 1px solid #CBD5E1 !important;
+      color: #475569 !important;
+    }
+    .btn-quick-reset:hover {
+      background: #F1F5F9 !important;
+    }
+
+    /* Live Accumulation Box */
+    .live-accum-box {
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .live-accum-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #10B981;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .live-accum-icon svg {
+      width: 14px;
+      height: 14px;
+      stroke: #FFFFFF;
+      stroke-width: 2.5;
+    }
+    .accum-calc-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .accum-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #065F46;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .accum-calc-line {
+      font-size: 12.5px;
+      color: #065F46;
+      font-weight: 600;
+    }
+    .accum-calc-line strong {
+      color: #047857;
+      font-weight: 800;
+    }
+
+    /* Scrap Card Details (Reasons, Notes, SOW Notice) */
+    .scrap-form-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .form-group-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .reason-pills-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      max-height: 150px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .reason-pills-container::-webkit-scrollbar {
+      width: 5px;
+    }
+    .reason-pills-container::-webkit-scrollbar-track {
+      background: #F8FAFC;
+      border-radius: 999px;
+    }
+    .reason-pills-container::-webkit-scrollbar-thumb {
+      background: rgba(220, 38, 38, 0.25);
+      border-radius: 999px;
+    }
+    .reason-pills-container.is-disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .btn-reason-pill {
+      min-height: 36px;
+      padding: 6px 12px;
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: 7px;
+      color: var(--c-navy);
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.12s ease;
+      font-family: inherit;
+    }
+    .btn-reason-pill:hover {
+      background: #FEF2F2;
+      border-color: #FECACA;
+      color: var(--c-red);
+    }
+    .btn-reason-pill.active {
+      background: #FEF2F2;
+      border-color: var(--c-red);
+      color: var(--c-red);
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(220, 38, 38, 0.12);
+    }
+    .btn-reason-pill .pill-check-icon {
+      width: 14px;
+      height: 14px;
+      display: none;
+      flex-shrink: 0;
+      color: var(--c-red);
+    }
+    .btn-reason-pill.active .pill-check-icon {
+      display: block;
+    }
+    .textarea-notes-touch {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: 12px;
+      resize: vertical;
+      background: #FFFFFF;
+      color: #0F172A;
+      outline: none;
+    }
+    .textarea-notes-touch:focus {
+      border-color: #DC2626;
+      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12);
+    }
+    .sow-scrap-notice {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: #1E40AF;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.4;
+    }
+    .sow-scrap-notice svg {
+      width: 15px;
+      height: 15px;
+      stroke: #2563EB;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+/* ==============================================================
+       5. BOTTOM ACTION BAR (STICKY/FLOATING PANEL)
+       ============================================================== */
+    .bottom-action-panel {
+      background: #FFFFFF;
+      border: 1.5px solid var(--c-border);
+      border-radius: 12px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+      flex-wrap: wrap;
+    }
+
+    .action-summary-chips {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .summary-chip-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chip-item-icon {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #334155;
+    }
+    .chip-item-icon svg {
+      width: 20px !important;
+      height: 20px !important;
+      max-width: 20px !important;
+      max-height: 20px !important;
+      display: block;
+    }
+    .chip-item-icon.icon-good {
+      color: #0F172A;
+    }
+    .chip-item-icon.icon-scrap {
+      color: #DC2626;
+    }
+    .chip-item-icon.icon-stage {
+      color: #0F172A;
+    }
+
+    .chip-item-texts {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+    .chip-item-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748B;
+      letter-spacing: 0.01em;
+    }
+    .chip-item-val {
+      font-size: 14.5px;
+      font-weight: 800;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color: #0F172A;
+    }
+    .val-good { color: #10B981 !important; }
+    .val-scrap { color: #DC2626 !important; }
+
+    .bottom-action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    /* Tombol Sekunder BS Saja (Border Hitam/Navy, Bg Putih) */
+    .btn-action-bs-only {
+      min-height: 44px;
+      padding: 0 18px;
+      background: #FFFFFF;
+      color: #0F172A;
+      border: 1.5px solid #0F172A;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .btn-action-bs-only:hover {
+      background: #F8FAFC;
+      border-color: #000000;
+      color: #000000;
+    }
+    .btn-action-bs-only:active {
+      transform: scale(0.98);
+      background: #F1F5F9;
+    }
+    .btn-action-bs-only svg {
+      width: 17px !important;
+      height: 17px !important;
+      stroke: #0F172A;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    /* Tombol Utama Merah DXL (#DC2626) */
+    .btn-submit-execution {
+      min-height: 44px;
+      padding: 0 22px;
+      background: #DC2626;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .btn-submit-execution:hover {
+      background: #B91C1C;
+    }
+    .btn-submit-execution:active {
+      transform: scale(0.98);
+    }
+    .btn-submit-execution svg {
+      width: 17px !important;
+      height: 17px !important;
+      stroke: #FFFFFF;
+      flex-shrink: 0;
+      display: block;
+    }
+
+
+    /* ==============================================================
+       6. MODAL SUKSES & TRANSISI KE MODAL.HTML
+       ============================================================== */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(3px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: #111827;
+      border: 1px solid #1F2937;
+      border-radius: var(--radius-lg);
+      max-width: 480px;
+      width: 100%;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: modalZoomIn 0.2s ease-out;
+    }
+
+    @keyframes modalZoomIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-check-circle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1.5px solid rgba(16, 185, 129, 0.35);
+      color: var(--c-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+    .modal-check-circle svg {
+      width: 32px;
+      height: 32px;
+      stroke: currentColor;
+      stroke-width: 3;
+    }
+
+    .modal-h3 {
+      font-size: 19px;
+      font-weight: 800;
+      color: #FFFFFF;
+      line-height: 1.25;
+    }
+    .modal-subtext {
+      font-size: 13px;
+      color: #9CA3AF;
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+
+    .modal-receipt-card {
+      background: #1F2937;
+      border: 1px solid #374151;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      text-align: left;
+      font-size: 13px;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      color: #9CA3AF;
+    }
+    .receipt-row strong {
+      color: #F9FAFB;
+      font-weight: 700;
+    }
+
+    .modal-buttons-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-modal-print-qr {
+      min-height: 52px;
+      background: var(--c-red);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 14.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(214, 40, 40, 0.4);
+      transition: all 0.15s ease;
+    }
+    .btn-modal-print-qr:hover {
+      background: var(--c-red-hover);
+      box-shadow: 0 6px 18px rgba(214, 40, 40, 0.5);
+    }
+    .btn-modal-print-qr:active {
+      transform: scale(0.98);
+    }
+
+    .btn-modal-next-roll {
+      min-height: 46px;
+      background: #1F2937;
+      border: 1.5px solid #374151;
+      border-radius: var(--radius-sm);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #F3F4F6;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .btn-modal-next-roll:hover {
+      background: #374151;
+      border-color: #4B5563;
+      color: #FFFFFF;
+    }
+
+    .btn-modal-back-queue {
+      color: #9CA3AF;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 4px;
+      transition: color 0.15s ease;
+    }
+    .btn-modal-back-queue:hover {
+      color: #FFFFFF;
+    }
+
+    /* Toast Notification Stack */
+    .toast-box {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast-item {
+      background: var(--c-navy);
+      color: #FFFFFF;
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: toastFadeIn 0.2s ease-out;
+    }
+
+    @keyframes toastFadeIn {
+      from { transform: translateY(8px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ==============================================================
+       7. RESPONSIVE FOR TABLET PORTRAIT & MOBILE
+       ============================================================== */
+    @media (max-width: 960px) {
+      .summary-grid-3col {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .summary-col-mo,
+      .summary-col-product {
+        border-right: none;
+        padding-right: 0;
+        border-bottom: 1px solid #F1F5F9;
+        padding-bottom: 10px;
+      }
+      .summary-badges-row {
+        justify-content: flex-start;
+      }
+      .form-dual-grid {
+        grid-template-columns: 1fr;
+      }
+      .bottom-action-panel {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .bottom-action-buttons {
+        width: 100%;
+        flex-direction: column;
+      }
+      .btn-action-bs-only,
+      .btn-submit-execution {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top-header {
+        padding: 8px 12px;
+        min-height: 56px;
+      }
+      .header-page-title,
+      .header-divider,
+      .btn-back-nav span,
+      .header-shift-badge,
+      .karu-info,
+      .user-pill {
+        display: none;
+      }
+      .btn-back-nav {
+        padding: 0 8px;
+        min-width: 36px;
+        justify-content: center;
+      }
+      .app-wrapper {
+        padding: 10px 12px 20px;
+        gap: 10px;
+      }
+      .order-summary-card {
+        padding: 12px 14px;
+      }
+      .summary-meta-badges {
+        width: 100%;
+      }
+      .summary-row-product {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .product-kpi-container {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .kpi-mini-card {
+        min-width: 0;
+        padding: 6px 10px;
+      }
+      .kpi-mini-val {
+        font-size: 15px;
+      }
+      .process-switcher-container {
+        grid-template-columns: 1fr;
+      }
+      .process-tab-btn {
+        min-height: 38px;
+        font-size: 12.5px;
+      }
+      .form-card {
+        padding: 14px 16px;
+      }
+      .quick-add-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .scale-input-container {
+        padding: 12px 14px;
+      }
+      .btn-stepper {
+        width: 42px;
+        height: 42px;
+      }
+      .scale-display-wrap {
+        height: 42px;
+      }
+      .scale-number-input {
+        font-size: 22px;
+      }
+      .bottom-action-panel {
+        padding: 10px 14px;
+      }
+      .action-summary-chips {
+        justify-content: space-between;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==============================================================
+       1. TOP BAR (NAVY #111827)
+       ============================================================== -->
+  <header class="top-header">
+    <div class="header-left">
+      <!-- Tombol Navigasi Kembali ke Antrean -->
+      <a href="karu1.html" class="btn-back-nav" title="Kembali ke Daftar Antrean MO">
+        <svg viewBox="0 0 24 24" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>Antrean MO</span>
+      </a>
+
+      <div class="brand-group">
+        <img src="images/logo.png" alt="DXL ERP Logo" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';">
+        <div id="logoFallback" class="brand-text-fallback" style="display: none;">
+          <span>DXL</span>
+          <span class="brand-badge">SHOPFLOOR</span>
+        </div>
+      </div>
+
+      <div class="header-divider"></div>
+
+      <div class="header-page-title">
+        <span>Input Aktual &bull; Timbangan &amp; BS</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <!-- Info Shift Berjalan (Sinkron Karu 1) -->
+      <div class="header-shift-badge">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="txtHeaderShift">Shift 1 (Pagi) &bull; 07:00 - 15:00 WIB</span>
+      </div>
+
+      <div class="karu-profile-pill">
+        <div class="karu-avatar">SP</div>
+        <div class="karu-info">
+          <span class="karu-name">Supardi</span>
+          <span class="karu-role">KARU Regu A &bull; Online</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==============================================================
+       2. MAIN CONTENT AREA
+       ============================================================== -->
+  <main class="app-wrapper">
+
+    <!-- RINGKASAN PERINTAH KERJA (ORDER SUMMARY CARD) -->
+    <section class="order-summary-card">
+      
+      <div class="summary-grid-3col">
+        
+        <!-- KOLOM 1: SURAT PERINTAH KERJA (MO & MP) -->
+        <div class="summary-col-mo">
+          <div class="summary-doc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <div class="summary-mo-info">
+            <span class="summary-col-label">Surat Perintah Kerja</span>
+            <div class="summary-mo-number" id="dispMoCode">WH/MO/2026/0012</div>
+            <div class="summary-mp-badge" id="dispMpBadge" title="Nomor MP LIGO (SPM)">
+              No. MP: <strong id="dispMpCode">MP-2610-0988</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- KOLOM 2: INFORMASI PRODUK -->
+        <div class="summary-col-product">
+          <div class="summary-roll-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="3"/>
+              <line x1="12" y1="2" x2="12" y2="9"/>
+              <line x1="12" y1="15" x2="12" y2="22"/>
+            </svg>
+          </div>
+          <div class="summary-prod-info">
+            <span class="summary-prod-title">Roll Film PE Bening</span>
+            <div class="summary-prod-size" id="dispProductName">Ukuran 40&times;60</div>
+            <div class="summary-prod-sub" id="dispProductSpec">
+              Resin: PE Virgin Murni &bull; Tebal: 0.04 mm<br>
+              Formulir: BOM/SFG-PE/01
+            </div>
+          </div>
+        </div>
+
+        <!-- KOLOM 3: BADGES & KPI CARDS -->
+        <div class="summary-col-kpi">
+          <div class="summary-badges-row">
+            <span class="meta-badge badge-machine" id="dispMachineBadge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+              <span id="dispMachineText">Mesin: A01EXT</span>
+            </span>
+            <span class="meta-badge badge-shift" id="dispShiftBadge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span>Shift 1 (Pagi)</span>
+            </span>
+            <span class="meta-badge badge-status-inprog" id="dispStatusBadge">
+              <span class="status-dot-green"></span>
+              <span>Sedang Jalan</span>
+            </span>
+            <a href="modal.html?mode=reprint" class="btn-reprint-outline" id="btnReprintLink" title="Buka Riwayat Timbangan & Cetak Ulang Tiket Fisik">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              <span>Cetak Ulang</span>
+            </a>
+          </div>
+
+          <!-- 2 KPI Mini Cards -->
+          <div class="summary-kpi-pair">
+            <!-- KPI 1: Terkumpul Saat Ini -->
+            <div class="kpi-mini-card kpi-card-accum" title="Total output aktual yang terkumpul saat ini">
+              <div class="kpi-mini-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <span>Terkumpul Saat Ini</span>
+              </div>
+              <div class="kpi-mini-value-wrap">
+                <span class="kpi-mini-val" id="dispKpiCurrentAccum">1.170,00</span>
+                <span class="kpi-mini-uom" id="dispKpiUom1">Kg</span>
+              </div>
+              <div class="kpi-mini-sub" id="dispKpiPrevSub">
+                Sebelumnya: <strong id="dispActualPrev">1.170,00 Kg</strong>
+              </div>
+            </div>
+
+            <!-- KPI 2: Sisa Target MO -->
+            <div class="kpi-mini-card kpi-card-remain" title="Sisa target kekurangan output MO">
+              <div class="kpi-mini-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <span>Sisa Target MO</span>
+              </div>
+              <div class="kpi-mini-value-wrap">
+                <span class="kpi-mini-val" id="dispKpiRemaining">330,00</span>
+                <span class="kpi-mini-uom" id="dispKpiUom2">Kg</span>
+              </div>
+              <div class="kpi-mini-sub">
+                Target Total: <strong id="dispTargetTotal"><span id="dispKpiTargetText">1.500,00 Kg</span></strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ROW 2: PROGRESS BAR TARGET VS AKTUAL -->
+      <div class="summary-progress-section">
+        <div class="progress-labels-row">
+          <span class="progress-text-left" id="dispProgressLabel">
+            Terkumpul : <strong>1.170,00 Kg</strong> / Target : <strong>1.500,00 Kg</strong>
+          </span>
+          <span class="progress-pct-right" id="dispProgressPct">78.00%</span>
+        </div>
+        <div class="progress-track-bg">
+          <div class="progress-bar-fill" id="dispProgressBar" style="width: 78.0%;"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. PEMILIH TAHAPAN PROSES (PROCESS TAB SWITCHER) -->
+    <section class="process-switcher-container">
+      <button type="button" class="process-tab-btn active" id="tabExtruder" onclick="switchProcessTab('Extruder')">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/></svg>
+        <span>Tahap Extruder (Gulungan Roll / SFG)</span>
+      </button>
+
+      <button type="button" class="process-tab-btn" id="tabCutting" onclick="switchProcessTab('Cutting')">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+        <span>Tahap Cutting (Kantong Plastik / FG)</span>
+      </button>
+    </section>
+
+    <!-- 3B. PEMISAH ALIRAN ROL EXTRUDER (WIP CUTTING VS DIRECT FG) -->
+    <section class="extruder-flow-selector" id="boxExtruderFlow">
+      <div class="flow-selector-label">
+        <div class="flow-label-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/>
+            <path d="M18 9v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/><path d="M12 12v3"/>
+          </svg>
+          <span>Peruntukan Aliran Rol Extruder</span>
+        </div>
+        <span class="flow-badge-hint">Pilihan Aliran Output SFG</span>
+      </div>
+      <div class="flow-radios-grid">
+        <label class="flow-radio-pill active" id="optFlowWip">
+          <input type="radio" name="rollFlowType" value="WIP" checked onchange="onRollFlowChanged('WIP')">
+          <div class="flow-radio-text">
+            <strong>WIP Antrean Cutting</strong>
+            <span>Rol masuk buffer WIP untuk diproses ke mesin cutting (SFG)</span>
+          </div>
+        </label>
+        <label class="flow-radio-pill" id="optFlowDirect">
+          <input type="radio" name="rollFlowType" value="DIRECT_FG" onchange="onRollFlowChanged('DIRECT_FG')">
+          <div class="flow-radio-text">
+            <strong>Produk Langsung FG (Mulsa / PE Selang / PP Pish)</strong>
+            <span>Rol langsung jadi barang jadi tanpa proses cutting</span>
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <!-- 4. DUAL FORM INPUT GRID (BERDAMPINGAN RAPI) -->
+    <div class="form-dual-grid">
+
+      <!-- BAGIAN 1: INPUT HASIL PRODUKSI BAGUS (S02) -->
+      <section class="form-card form-card-good">
+        
+        <div class="card-section-header">
+          <div class="section-title-wrap">
+            <div class="card-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+                <path d="M9 12l2 2 4-4"></path>
+              </svg>
+            </div>
+            <div class="card-header-texts">
+              <h2 class="card-header-title">Hasil Timbangan Aktual</h2>
+              <span class="card-header-sub">Masukkan berat hasil timbang dan kuantitasnya</span>
+            </div>
+          </div>
+          <span class="step-tag-pill">Output</span>
+        </div>
+
+        <div class="form-card-body">
+          
+          <!-- Inner Box Hijau -->
+          <div class="inner-input-box box-good">
+            <div class="box-label-row">
+              <div class="box-label-title">
+                <span>Berat / Kuantitas Saat Ini:</span>
+              </div>
+            </div>
+
+            <div class="scale-stepper-row">
+              <button type="button" class="btn-stepper btn-stepper-good" onclick="stepGoodOutput(-1)" title="Kurangi 1">-</button>
+              <div class="scale-display-wrap wrap-good">
+                <input type="number" class="scale-number-input input-good" id="inputGoodQty" value="0.00" step="0.5" min="0" inputmode="decimal" placeholder="0.00" onfocus="this.select()" oninput="onGoodQtyInputChanged()">
+                <span class="scale-uom-suffix uom-good" id="goodUomSuffix">Kg</span>
+              </div>
+              <button type="button" class="btn-stepper btn-stepper-good" onclick="stepGoodOutput(1)" title="Tambah 1">+</button>
+            </div>
+
+            <!-- Quick Add Pills 5 Kolom -->
+            <div class="quick-add-grid">
+              <button type="button" class="btn-quick-pill pill-good" onclick="addGoodQuick(10)">+10 Kg</button>
+              <button type="button" class="btn-quick-pill pill-good" onclick="addGoodQuick(25)">+25 Kg</button>
+              <button type="button" class="btn-quick-pill pill-good" onclick="addGoodQuick(50)">+50 Kg</button>
+              <button type="button" class="btn-quick-pill pill-good" onclick="addGoodQuick(100)">+100 Kg</button>
+              <button type="button" class="btn-quick-pill btn-quick-reset" onclick="resetGoodQty()">↺ Reset</button>
+            </div>
+          </div>
+
+          <!-- Live Accumulation Calculation -->
+          <div class="live-accum-box">
+            <div class="live-accum-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div class="accum-calc-col">
+              <span class="accum-title">Perhitungan Akumulasi Selesai:</span>
+              <div class="accum-calc-line">
+                <strong id="calcFormula">1.170,00 + 0,00 = </strong>
+                <strong id="calcResult">1.170,00 Kg</strong>
+                <span id="calcPct"> (78.0% dari target total)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- BAGIAN 2: INPUT BARANG RUSAK / REJECT (S04 BS / SCRAP) - DEFAULT TO 0.00 -->
+      <section class="form-card form-card-scrap">
+        
+        <div class="card-section-header">
+          <div class="section-title-wrap">
+            <div class="card-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+                <path d="M12 3l1.5 5.5-3 3 3 3-1.5 6.5"></path>
+              </svg>
+            </div>
+            <div class="card-header-texts">
+              <h2 class="card-header-title">Pencatatan Barang Rusak / Scrap (BS)</h2>
+              <span class="card-header-sub">Catat barang yang tidak sesuai standar</span>
+            </div>
+          </div>
+          <span class="step-tag-pill">Scrap</span>
+        </div>
+
+        <div class="form-card-body">
+          
+          <!-- Inner Box Merah -->
+          <div class="inner-input-box box-scrap">
+            <div class="box-label-row">
+              <div class="box-label-title">
+                <span>Berat Barang BS / Reject:</span>
+              </div>
+              <span id="bsLabelHint" class="box-label-hint">(Default 0.00 Kg)</span>
+            </div>
+
+            <div class="scale-stepper-row">
+              <button type="button" class="btn-stepper btn-stepper-scrap" onclick="stepScrapQty(-1)" title="Kurangi 1">-</button>
+              <div class="scale-display-wrap wrap-scrap">
+                <input type="number" class="scale-number-input input-scrap" id="inputScrapQty" value="0.00" step="0.5" min="0" inputmode="decimal" placeholder="0.00" onfocus="this.select()" oninput="onScrapQtyInputChanged()">
+                <span class="scale-uom-suffix uom-scrap">Kg</span>
+              </div>
+              <button type="button" class="btn-stepper btn-stepper-scrap" onclick="stepScrapQty(1)" title="Tambah 1">+</button>
+            </div>
+
+            <!-- Quick Add Pills 5 Kolom -->
+            <div class="quick-add-grid">
+              <button type="button" class="btn-quick-pill pill-scrap" onclick="addScrapQuick(1)">+1 Kg</button>
+              <button type="button" class="btn-quick-pill pill-scrap" onclick="addScrapQuick(2)">+2 Kg</button>
+              <button type="button" class="btn-quick-pill pill-scrap" onclick="addScrapQuick(5)">+5 Kg</button>
+              <button type="button" class="btn-quick-pill pill-scrap" onclick="addScrapQuick(10)">+10 Kg</button>
+              <button type="button" class="btn-quick-pill btn-quick-reset" onclick="resetScrapQty()">↺ Reset</button>
+            </div>
+          </div>
+
+          <!-- Scope S03: Alasan Kerusakan / Klasifikasi Reject (Scrollable) -->
+          <div class="form-group-field">
+            <div class="field-label">
+              <span>Alasan Kerusakan / Klasifikasi Reject (Scope SO3):</span>
+              <span id="reasonStatusTag" style="font-size: 11px; font-weight: 600; color: #64748B;">(Terkunci: BS = 0 Kg)</span>
+            </div>
+            
+            <input type="hidden" id="selectedRejectReason" value="">
+
+            <div class="reason-pills-container is-disabled" id="reasonPillsWrap">
+              <!-- Di-render dinamis oleh JavaScript -->
+            </div>
+          </div>
+
+          <!-- Catatan Tambahan Opsional -->
+          <div class="form-group-field">
+            <label class="field-label" for="inputNotes">
+              <span>Catatan Tambahan Operator (Opsional):</span>
+            </label>
+            <textarea class="textarea-notes-touch" id="inputNotes" placeholder="Catatan kendala mesin, nomor karung scrap atau nomor pallet..."></textarea>
+          </div>
+
+          <!-- SOW Fase 1 Notice -->
+          <div class="sow-scrap-notice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <span><strong>Catatan SOW Fase 1:</strong> Pencatatan BS tidak melakukan pemblokiran stok bahan baku minus. Data disimpan langsung ke modul Scrap Odoo 18.</span>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- 5. BOTTOM ACTION PANEL (STICKY ACTION BAR) -->
+    <section class="bottom-action-panel">
+      
+      <!-- Summary Chips (Output Bagus, BS/Reject, Tahapan) -->
+      <div class="action-summary-chips">
+        
+        <!-- Chip 1: Output Bagus -->
+        <div class="summary-chip-item">
+          <div class="chip-item-icon icon-good">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+              <path d="M9 12l2 2 4-4"></path>
+            </svg>
+          </div>
+          <div class="chip-item-texts">
+            <span class="chip-item-label">Output Bagus</span>
+            <span class="chip-item-val val-good" id="summaryGoodVal">+0.00 Kg</span>
+          </div>
+        </div>
+
+        <!-- Chip 2: BS / Reject -->
+        <div class="summary-chip-item">
+          <div class="chip-item-icon icon-scrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+              <path d="M12 3l1.5 5.5-3 3 3 3-1.5 6.5"></path>
+            </svg>
+          </div>
+          <div class="chip-item-texts">
+            <span class="chip-item-label">BS / Reject</span>
+            <span class="chip-item-val val-scrap" id="summaryScrapVal">+0.00 Kg</span>
+          </div>
+        </div>
+
+        <!-- Chip 3: Tahapan -->
+        <div class="summary-chip-item">
+          <div class="chip-item-icon icon-stage">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <div class="chip-item-texts">
+            <span class="chip-item-label">Tahapan</span>
+            <span class="chip-item-val" id="summaryStepVal">Extruder (SFG)</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tombol Aksi Kanan -->
+      <div class="bottom-action-buttons">
+        
+        <!-- Tombol Sekunder: Simpan Khusus BS (Scrap Saja) -->
+        <button type="button" class="btn-action-bs-only" onclick="submitScrapOnly()" title="Gunakan jika hanya menimbang karung scrap sisa setting mesin">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span>Simpan Khusus BS (Scrap Saja)</span>
+        </button>
+
+        <!-- Tombol Utama: Simpan Hasil Produksi -->
+        <button type="button" class="btn-submit-execution" onclick="submitActualProduction()">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          <span>Simpan Hasil Produksi</span>
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==============================================================
+       6. MODAL SUKSES & CETAK QR CODE (LEADS TO MODAL.HTML)
+       ============================================================== -->
+  <div class="modal-backdrop" id="successModal">
+    <div class="modal-box">
+      
+      <div class="modal-check-circle" id="modalStatusIcon">
+        <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+
+      <div>
+        <h3 class="modal-h3" id="modalMainTitle">Data Produksi Berhasil Disimpan!</h3>
+        <p class="modal-subtext" id="modalSubTitle">Output timbangan aktual telah dicatat ke sistem Odoo MRP PT Dolpin Putra Sejati.</p>
+      </div>
+
+      <!-- Detail Rekap Cetak -->
+      <div class="modal-receipt-card">
+        <div class="receipt-row">
+          <span>Nomor MO:</span>
+          <strong id="recMoCode">MO/2026/10/0012</strong>
+        </div>
+        <div class="receipt-row" id="rowRecMp">
+          <span>Nomor MP LIGO:</span>
+          <strong id="recMpCode" style="color: #38BDF8;">MP-2610-0988</strong>
+        </div>
+        <div class="receipt-row">
+          <span>Tahapan / Mesin:</span>
+          <strong id="recMachine">Extruder &bull; EXT-01</strong>
+        </div>
+        <div class="receipt-row" id="rowRecFlow">
+          <span>Peruntukan Rol:</span>
+          <strong id="recFlowText">WIP Antrean Cutting</strong>
+        </div>
+        <div class="receipt-row" id="rowRecGood">
+          <span>Hasil Bagus (Netto):</span>
+          <strong id="recGoodQty" style="color: var(--c-green);">0.00 Kg</strong>
+        </div>
+        <div class="receipt-row" id="rowRecScrap">
+          <span>Barang BS / Reject:</span>
+          <strong id="recScrapQty" style="color: var(--c-red);">0.00 Kg</strong>
+        </div>
+        <div class="receipt-row" id="rowRecReason" style="display: none;">
+          <span>Alasan Reject:</span>
+          <strong id="recReason">-</strong>
+        </div>
+        <div class="receipt-row">
+          <span>Tipe Tiket Fisik:</span>
+          <strong id="recTicketType" style="color: #38BDF8;">TIKET BARANG BAGUS</strong>
+        </div>
+        <div class="receipt-row">
+          <span>Karu Penanggung Jawab:</span>
+          <strong>Supardi (Regu A)</strong>
+        </div>
+      </div>
+
+      <div class="modal-buttons-group">
+        <!-- Tombol Menuju modal.html dengan parameter lengkap -->
+        <a id="btnGoToModal" href="modal.html" class="btn-modal-print-qr">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span id="btnGoToModalText">CETAK LABEL BARCODE QR ROLL</span>
+        </a>
+
+        <!-- Tombol Input Roll / Pack Berikutnya -->
+        <button type="button" class="btn-modal-next-roll" onclick="inputNextRoll()">
+          <span id="btnNextWeighingLabel">+ Input Timbangan Rol Berikutnya</span>
+        </button>
+
+        <!-- Tombol Kembali ke Antrean -->
+        <a href="karu1.html" class="btn-modal-back-queue">
+          Kembali ke Antrean MO
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Stack -->
+  <div class="toast-box" id="toastBox"></div>
+
+  <!-- ==============================================================
+       7. JAVASCRIPT LOGIC
+       ============================================================== -->
+  <script>
+    // State Aplikasi
+    let currentMoData = {
+      mo: 'MO/2026/10/0012',
+      mp: 'MP-2610-0988',
+      extDest: 'WIP',
+      prod: 'Roll Film PE Bening - Ukuran 40x60 (SFG Roll)',
+      spec: 'Resin: PE Virgin Murni &bull; Tebal: 0.04 mm &bull; Formula: BOM/SFG-PE/01',
+      target: 1500.00,
+      actualPrev: 1170.00,
+      step: 'Extruder',
+      machine: 'EXT-01',
+      shift: '1',
+      uom: 'Kg'
+    };
+
+    let inputGood = 0.00;
+    let inputScrap = 0.00;
+    let numpadBuffer = '';
+
+    // Master Alasan Kerusakan / Reject BS per Tahapan (Scope S03)
+    const rejectReasonsByStep = {
+      Extruder: [
+        'Suhu Tidak Stabil (Gosong / Gel Plastik)',
+        'Balon Meletus / Bubble Goyang',
+        'Ketebalan Rol Tidak Rata (Gauge Band)',
+        'Garis Die / Baret Permukaan Rol Film',
+        'Setting Awal Mesin & Kalibrasi Die Head',
+        'Bahan Baku Tercemar / Kontaminasi Kotoran',
+        'Lebar Rol Melar / Out of Tolerance',
+        'Korona Treat Lemah / Tidak Merata',
+        'Masalah Pendinginan (Air Ring Chiller Off)',
+        'Kerutan / Gelombang pada Gulungan (Wrinkles)'
+      ],
+      Cutting: [
+        'Las Sealing Bocor / Kurang Panas',
+        'Las Sealing Terbakar / Gosong (Overheat)',
+        'Potongan Miring / Pisau Pemotong Tumpul',
+        'Hasil Plong / Pon Handle Sobek / Rusak',
+        'Ukuran Panjang / Lebar Melar (Out of Spec)',
+        'Sablon Cacat / Tinta Meleber / Blur',
+        'Lipatan Samping (Gusset) Tidak Simetris',
+        'Statik Tinggi (Plastik Lengket Susah Buka)',
+        'Setting Awal Mesin & Sample Uji Coba',
+        'Kotoran Debu / Bintik Oli Mesin'
+      ]
+    };
+
+    // 1. Inisialisasi Membaca Parameter URL (?mo=...&mp=...&prod=...)
+    document.addEventListener('DOMContentLoaded', () => {
+      initFromUrlParams();
+      updateDisplayValues();
+      updateAccumulationCalculation();
+      checkScrapState();
+      updateActionSummary();
+    });
+
+    function initFromUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      
+      if (params.get('mo')) currentMoData.mo = params.get('mo');
+      if (params.get('mp')) currentMoData.mp = params.get('mp');
+      if (params.get('prod')) currentMoData.prod = params.get('prod');
+      if (params.get('target')) currentMoData.target = parseFloat(params.get('target')) || 1500.0;
+      if (params.get('step')) currentMoData.step = params.get('step');
+      if (params.get('machine')) currentMoData.machine = params.get('machine');
+      if (params.get('shift')) currentMoData.shift = params.get('shift');
+      if (params.get('uom')) currentMoData.uom = params.get('uom');
+      if (params.get('ext_dest')) currentMoData.extDest = params.get('ext_dest');
+
+      if (params.get('berat')) {
+        const b = parseFloat(params.get('berat'));
+        if (!isNaN(b) && b >= 0) {
+          inputGood = b;
+          document.getElementById('inputGoodQty').value = inputGood.toFixed(2);
+          numpadBuffer = inputGood.toFixed(2);
+        }
+      }
+
+      // Tentukan default actualPrev berdasarkan target
+      if (currentMoData.target <= 500) {
+        currentMoData.actualPrev = 320.00;
+      } else if (currentMoData.target <= 1000) {
+        currentMoData.actualPrev = 650.00;
+      } else {
+        currentMoData.actualPrev = 1170.00;
+      }
+
+      // Sesuaikan spec string jika ada
+      if (currentMoData.prod.includes('Kantong') || currentMoData.prod.includes('Klip')) {
+        currentMoData.spec = 'Bahan: HD/PE &bull; Tipe: Kantong Potong Sealing &bull; Formula: BOM/FG-KNT/01';
+      }
+    }
+
+    function updateDisplayValues() {
+      document.getElementById('dispMoCode').textContent = currentMoData.mo;
+      
+      const elMp = document.getElementById('dispMpCode');
+      if (elMp) elMp.textContent = currentMoData.mp;
+
+      document.getElementById('dispProductName').textContent = currentMoData.prod;
+      document.getElementById('dispProductSpec').innerHTML = currentMoData.spec;
+      document.getElementById('dispMachineText').textContent = `Mesin: ${currentMoData.machine}`;
+      document.getElementById('dispShiftBadge').textContent = `Shift ${currentMoData.shift} (Pagi)`;
+      document.getElementById('dispActualPrev').textContent = currentMoData.actualPrev.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+      document.getElementById('dispTargetTotal').textContent = `${currentMoData.target.toLocaleString('id-ID', { minimumFractionDigits: 2 })} ${currentMoData.uom}`;
+      document.getElementById('goodUomSuffix').textContent = currentMoData.uom;
+
+      // Update Tautan Riwayat & Cetak Ulang di Header
+      const reprintUrl = `modal.html?mode=reprint&mo=${encodeURIComponent(currentMoData.mo)}&mp=${encodeURIComponent(currentMoData.mp)}&prod=${encodeURIComponent(currentMoData.prod)}&machine=${encodeURIComponent(currentMoData.machine)}&step=${encodeURIComponent(currentMoData.step)}&shift=${encodeURIComponent(currentMoData.shift)}&uom=${encodeURIComponent(currentMoData.uom)}`;
+      document.getElementById('btnReprintLink').href = reprintUrl;
+
+      // Sync Process Switcher Tab & Dynamic Reason Pills
+      switchProcessTab(currentMoData.step, false);
+    }
+
+    // 2. Process Tab Switcher (Extruder vs Cutting) & Pemisah Aliran Extruder
+    function switchProcessTab(stepName, showFeedback = true) {
+      currentMoData.step = stepName;
+      const tabExt = document.getElementById('tabExtruder');
+      const tabCut = document.getElementById('tabCutting');
+      const boxFlow = document.getElementById('boxExtruderFlow');
+
+      const btnNextLabel = document.getElementById('btnNextWeighingLabel');
+      if (stepName === 'Extruder') {
+        tabExt.classList.add('active');
+        tabCut.classList.remove('active');
+        document.getElementById('summaryStepVal').textContent = 'Extruder (SFG)';
+        if (boxFlow) boxFlow.style.display = 'block';
+        if (btnNextLabel) btnNextLabel.textContent = '+ Input Timbangan Rol Berikutnya';
+      } else {
+        tabExt.classList.remove('active');
+        tabCut.classList.add('active');
+        document.getElementById('summaryStepVal').textContent = 'Cutting (FG)';
+        if (boxFlow) boxFlow.style.display = 'none';
+        if (btnNextLabel) btnNextLabel.textContent = '+ Input Timbangan Pack/Bal Berikutnya';
+      }
+
+      // Render Dynamic Reason Pills sesuai tahapan
+      renderReasonPills(stepName);
+      checkScrapState();
+
+      // Update reprint URL parameter
+      const reprintUrl = `modal.html?mode=reprint&mo=${encodeURIComponent(currentMoData.mo)}&mp=${encodeURIComponent(currentMoData.mp)}&prod=${encodeURIComponent(currentMoData.prod)}&machine=${encodeURIComponent(currentMoData.machine)}&step=${encodeURIComponent(currentMoData.step)}&shift=${encodeURIComponent(currentMoData.shift)}&uom=${encodeURIComponent(currentMoData.uom)}`;
+      document.getElementById('btnReprintLink').href = reprintUrl;
+
+      if (showFeedback) {
+        showToast(`Tahapan proses dialihkan ke: ${stepName}`);
+      }
+    }
+
+    // Handler Pemisah Aliran Extruder (WIP vs Produk Langsung FG)
+    function onRollFlowChanged(flowType) {
+      currentMoData.extDest = flowType;
+      const optWip = document.getElementById('optFlowWip');
+      const optDirect = document.getElementById('optFlowDirect');
+      if (optWip && optDirect) {
+        if (flowType === 'DIRECT_FG') {
+          optWip.classList.remove('active');
+          optDirect.classList.add('active');
+        } else {
+          optWip.classList.add('active');
+          optDirect.classList.remove('active');
+        }
+      }
+      showToast(`Aliran Rol: ${flowType === 'DIRECT_FG' ? 'Produk Langsung FG' : 'WIP Antrean Cutting'}`);
+    }
+
+    // 3. Render Dinamis Tombol Pill Alasan BS (Scope S03)
+    function renderReasonPills(step) {
+      const wrap = document.getElementById('reasonPillsWrap');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      
+      const list = rejectReasonsByStep[step] || rejectReasonsByStep.Extruder;
+      const currentVal = document.getElementById('selectedRejectReason').value;
+
+      list.forEach(reason => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-reason-pill' + (currentVal === reason ? ' active' : '');
+        btn.innerHTML = `<span>${reason}</span><svg class="pill-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+        btn.onclick = () => selectReasonPill(reason, btn);
+        wrap.appendChild(btn);
+      });
+    }
+
+    function selectReasonPill(reasonText, btnElement) {
+      const hiddenInput = document.getElementById('selectedRejectReason');
+      const reasonTag = document.getElementById('reasonStatusTag');
+      
+      if (hiddenInput.value === reasonText) {
+        hiddenInput.value = '';
+        if (btnElement) btnElement.classList.remove('active');
+        reasonTag.innerHTML = inputScrap > 0 
+          ? '<span style="color: var(--c-red); font-weight: 700;">* Wajib Dipilih</span>'
+          : '<span style="color: #6B7280; font-weight: 500;">(Terkunci: BS = 0 Kg)</span>';
+      } else {
+        hiddenInput.value = reasonText;
+        const allPills = document.querySelectorAll('.btn-reason-pill');
+        allPills.forEach(p => p.classList.remove('active'));
+        if (btnElement) btnElement.classList.add('active');
+        reasonTag.innerHTML = '<span style="color: var(--c-green); font-weight: 700;">Alasan Terpilih</span>';
+        showToast(`Alasan BS: "${reasonText}"`);
+      }
+    }
+
+    // 4. Stepper & Quick Pills Logika Hasil Bagus (S02)
+    function stepGoodOutput(delta) {
+      let val = parseFloat(document.getElementById('inputGoodQty').value) || 0;
+      val = Math.max(0, val + delta);
+      document.getElementById('inputGoodQty').value = val.toFixed(2);
+      numpadBuffer = val.toFixed(2);
+      inputGood = val;
+      updateAccumulationCalculation();
+      updateActionSummary();
+    }
+
+    function addGoodQuick(delta) {
+      let val = parseFloat(document.getElementById('inputGoodQty').value) || 0;
+      val = val + delta;
+      document.getElementById('inputGoodQty').value = val.toFixed(2);
+      numpadBuffer = val.toFixed(2);
+      inputGood = val;
+      updateAccumulationCalculation();
+      updateActionSummary();
+      showToast(`+${delta} ${currentMoData.uom} ditambahkan ke timbangan`);
+    }
+
+    function resetGoodQty() {
+      document.getElementById('inputGoodQty').value = '0.00';
+      numpadBuffer = '';
+      inputGood = 0;
+      updateAccumulationCalculation();
+      updateActionSummary();
+      showToast('Nilai timbangan di-reset ke 0');
+    }
+
+    function onGoodQtyInputChanged() {
+      inputGood = Math.max(0, parseFloat(document.getElementById('inputGoodQty').value) || 0);
+      numpadBuffer = inputGood > 0 ? inputGood.toString() : '';
+      updateAccumulationCalculation();
+      updateActionSummary();
+    }
+
+    // Virtual Touch Numpad Handlers
+    function numpadPress(char) {
+      const inputEl = document.getElementById('inputGoodQty');
+      let currentValStr = inputEl.value;
+
+      if (numpadBuffer === '' && (currentValStr === '0.00' || currentValStr === '0')) {
+        if (char === '.') {
+          numpadBuffer = '0.';
+        } else {
+          numpadBuffer = char;
+        }
+      } else {
+        if (char === '.' && numpadBuffer.includes('.')) return;
+        if (numpadBuffer.includes('.')) {
+          const parts = numpadBuffer.split('.');
+          if (parts[1] && parts[1].length >= 2) return;
+        }
+        numpadBuffer += char;
+      }
+
+      inputEl.value = numpadBuffer;
+      inputGood = parseFloat(numpadBuffer) || 0;
+      updateAccumulationCalculation();
+      updateActionSummary();
+    }
+
+    function numpadClear() {
+      resetGoodQty();
+    }
+
+    function numpadBackspace() {
+      const inputEl = document.getElementById('inputGoodQty');
+      if (numpadBuffer.length > 0) {
+        numpadBuffer = numpadBuffer.slice(0, -1);
+        if (numpadBuffer === '' || numpadBuffer === '0') {
+          numpadBuffer = '';
+          inputEl.value = '0.00';
+          inputGood = 0;
+        } else {
+          inputEl.value = numpadBuffer;
+          inputGood = parseFloat(numpadBuffer) || 0;
+        }
+      } else {
+        inputEl.value = '0.00';
+        inputGood = 0;
+      }
+      updateAccumulationCalculation();
+      updateActionSummary();
+    }
+
+    function numpadDone() {
+      const inputEl = document.getElementById('inputGoodQty');
+      let val = parseFloat(inputEl.value) || 0;
+      inputEl.value = val.toFixed(2);
+      numpadBuffer = val.toFixed(2);
+      inputGood = val;
+      updateAccumulationCalculation();
+      updateActionSummary();
+      showToast(`Nilai timbangan: ${inputEl.value} ${currentMoData.uom}`);
+    }
+
+    function updateAccumulationCalculation() {
+      const prev = currentMoData.actualPrev;
+      const cur = inputGood;
+      const totalAccum = prev + cur;
+      const target = currentMoData.target;
+      const pct = target > 0 ? ((totalAccum / target) * 100).toFixed(1) : '0.0';
+      const remaining = Math.max(0, target - totalAccum);
+
+      document.getElementById('calcFormula').textContent = `${prev.toLocaleString('id-ID', { minimumFractionDigits: 2 })} + ${cur.toLocaleString('id-ID', { minimumFractionDigits: 2 })} = `;
+      document.getElementById('calcResult').textContent = `${totalAccum.toLocaleString('id-ID', { minimumFractionDigits: 2 })} ${currentMoData.uom}`;
+      document.getElementById('calcPct').textContent = ` (${pct}% dari target total)`;
+
+      // Update Header Progress Bar
+      document.getElementById('dispProgressPct').textContent = `${pct}%`;
+      document.getElementById('dispProgressBar').style.width = `${Math.min(pct, 100)}%`;
+
+      // Update KPI Cards di Header Ringkasan MO
+      const elKpiCurrent = document.getElementById('dispKpiCurrentAccum');
+      const elKpiRemaining = document.getElementById('dispKpiRemaining');
+      const elKpiPrevSub = document.getElementById('dispKpiPrevSub');
+      const elKpiTarget = document.getElementById('dispKpiTargetText');
+      const elKpiUom1 = document.getElementById('dispKpiUom1');
+      const elKpiUom2 = document.getElementById('dispKpiUom2');
+
+      if (elKpiCurrent) elKpiCurrent.textContent = totalAccum.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+      if (elKpiRemaining) elKpiRemaining.textContent = remaining.toLocaleString('id-ID', { minimumFractionDigits: 2 });
+      if (elKpiUom1) elKpiUom1.textContent = currentMoData.uom;
+      if (elKpiUom2) elKpiUom2.textContent = currentMoData.uom;
+      if (elKpiTarget) elKpiTarget.textContent = `${target.toLocaleString('id-ID', { minimumFractionDigits: 2 })} ${currentMoData.uom}`;
+
+      if (elKpiPrevSub) {
+        if (cur > 0) {
+          elKpiPrevSub.innerHTML = `Sebelumnya: ${prev.toLocaleString('id-ID', { minimumFractionDigits: 2 })} + <span style="color: #34D399; font-weight: 700;">${cur.toFixed(2)}</span>`;
+        } else {
+          elKpiPrevSub.innerHTML = `Sebelumnya: <strong>${prev.toLocaleString('id-ID', { minimumFractionDigits: 2 })} ${currentMoData.uom}</strong>`;
+        }
+      }
+    }
+
+    // 5. Logika Interaktif Kuantitas BS & Pil Alasan Kerusakan
+    function checkScrapState() {
+      const wrap = document.getElementById('reasonPillsWrap');
+      const hiddenInput = document.getElementById('selectedRejectReason');
+      const reasonTag = document.getElementById('reasonStatusTag');
+      const bsHint = document.getElementById('bsLabelHint');
+
+      if (!wrap || !hiddenInput || !reasonTag || !bsHint) return;
+
+      if (inputScrap > 0) {
+        wrap.classList.remove('is-disabled');
+        wrap.classList.remove('disabled');
+        bsHint.textContent = `(${inputScrap.toFixed(2)} Kg terdata)`;
+        bsHint.style.color = 'var(--c-red)';
+
+        if (!hiddenInput.value || hiddenInput.value === '') {
+          reasonTag.innerHTML = '<span style="color: var(--c-red); font-weight: 700;">* Wajib Dipilih</span>';
+        } else {
+          reasonTag.innerHTML = '<span style="color: var(--c-green); font-weight: 700;">Alasan Terpilih</span>';
+        }
+      } else {
+        wrap.classList.add('is-disabled');
+        wrap.classList.add('disabled');
+        hiddenInput.value = '';
+        const allPills = document.querySelectorAll('.btn-reason-pill');
+        allPills.forEach(p => p.classList.remove('active'));
+        bsHint.textContent = '(Default 0.00 Kg)';
+        bsHint.style.color = 'var(--c-text-subtle)';
+        reasonTag.innerHTML = '<span style="color: #6B7280; font-weight: 500;">(Terkunci: BS = 0 Kg)</span>';
+      }
+    }
+
+    function stepScrapQty(delta) {
+      let val = parseFloat(document.getElementById('inputScrapQty').value) || 0;
+      val = Math.max(0, val + delta);
+      document.getElementById('inputScrapQty').value = val.toFixed(2);
+      inputScrap = val;
+      numpadScrapBuffer = inputEl.value;
+      checkScrapState();
+      updateActionSummary();
+    }
+
+    function addScrapQuick(delta) {
+      let val = parseFloat(document.getElementById('inputScrapQty').value) || 0;
+      val = Math.max(0, val + delta);
+      document.getElementById('inputScrapQty').value = val.toFixed(2);
+      inputScrap = val;
+      checkScrapState();
+      updateActionSummary();
+      showToast(`+${delta} Kg BS ditambahkan`);
+    }
+
+    let numpadScrapBuffer = '';
+
+    function numpadScrapPress(char) {
+      const inputEl = document.getElementById('inputScrapQty');
+      let currentValStr = inputEl.value;
+
+      if (numpadScrapBuffer === '' && (currentValStr === '0.00' || currentValStr === '0')) {
+        if (char === '.') {
+          numpadScrapBuffer = '0.';
+        } else {
+          numpadScrapBuffer = char;
+        }
+      } else {
+        if (char === '.' && numpadScrapBuffer.includes('.')) return;
+        if (numpadScrapBuffer.includes('.')) {
+          const parts = numpadScrapBuffer.split('.');
+          if (parts[1] && parts[1].length >= 2) return;
+        }
+        numpadScrapBuffer += char;
+      }
+
+      inputEl.value = numpadScrapBuffer;
+      inputScrap = parseFloat(numpadScrapBuffer) || 0;
+      checkScrapState();
+      updateActionSummary();
+    }
+
+    function numpadScrapClear() {
+      resetScrapQty();
+    }
+
+    function numpadScrapBackspace() {
+      const inputEl = document.getElementById('inputScrapQty');
+      if (numpadScrapBuffer.length > 0) {
+        numpadScrapBuffer = numpadScrapBuffer.slice(0, -1);
+        if (numpadScrapBuffer === '' || numpadScrapBuffer === '0') {
+          numpadScrapBuffer = '';
+          inputEl.value = '0.00';
+          inputScrap = 0;
+        } else {
+          inputEl.value = numpadScrapBuffer;
+          inputScrap = parseFloat(numpadScrapBuffer) || 0;
+        }
+      } else {
+        inputEl.value = '0.00';
+        inputScrap = 0;
+      }
+      checkScrapState();
+      updateActionSummary();
+    }
+
+    function resetScrapQty() {
+      document.getElementById('inputScrapQty').value = '0.00';
+      inputScrap = 0;
+      checkScrapState();
+      updateActionSummary();
+      showToast('Kuantitas BS di-reset ke 0.00 Kg');
+    }
+
+    function onScrapQtyInputChanged() {
+      let val = parseFloat(document.getElementById('inputScrapQty').value);
+      if (isNaN(val) || val < 0) val = 0;
+      inputScrap = val;
+      checkScrapState();
+      updateActionSummary();
+    }
+
+    function updateActionSummary() {
+      inputScrap = Math.max(0, parseFloat(document.getElementById('inputScrapQty').value) || 0);
+      document.getElementById('summaryGoodVal').textContent = `+${inputGood.toFixed(2)} ${currentMoData.uom}`;
+      document.getElementById('summaryScrapVal').textContent = `+${inputScrap.toFixed(2)} ${currentMoData.uom}`;
+    }
+
+    // 6. Eksekusi Tombol Utama: SIMPAN HASIL PRODUKSI (Bagus Saja atau Keduanya)
+    // Non-blocking inventory: sistem mengizinkan simpan tanpa memblokir jika stok bahan baku kosong/minus
+    function submitActualProduction() {
+      if (inputGood <= 0 && inputScrap <= 0) {
+        alert('Perhatian: Masukkan angka timbangan hasil bagus atau kuantitas BS terlebih dahulu.');
+        return;
+      }
+
+      // Validasi Alasan Kerusakan jika BS > 0
+      const hiddenReason = document.getElementById('selectedRejectReason');
+      const reason = hiddenReason ? hiddenReason.value : '';
+      if (inputScrap > 0 && (!reason || reason === '')) {
+        alert('Perhatian: Terdapat BS sebesar ' + inputScrap.toFixed(2) + ' Kg.\nMohon pilih salah satu Alasan Kerusakan / Klasifikasi Reject terlebih dahulu.');
+        const wrap = document.getElementById('reasonPillsWrap');
+        if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      const notes = document.getElementById('inputNotes').value.trim();
+
+      // Menentukan Tipe Cetak Sesuai Logika Spesifikasi SOW
+      let tipeCetak = 'bagus';
+      if (inputGood > 0 && inputScrap > 0) {
+        tipeCetak = 'keduanya';
+      } else if (inputGood <= 0 && inputScrap > 0) {
+        tipeCetak = 'bs_only';
+      } else {
+        tipeCetak = 'bagus';
+      }
+
+      bukaModalKonfirmasi(tipeCetak, reason, notes);
+    }
+
+    // 7. Eksekusi Tombol Sekunder: SIMPAN KHUSUS BS (SCRAP SAJA)
+    function submitScrapOnly() {
+      if (inputScrap <= 0) {
+        alert('Perhatian: Masukkan kuantitas BS / Scrap (> 0 Kg) terlebih dahulu menggunakan tombol stepper atau pengetikan.');
+        document.getElementById('inputScrapQty').focus();
+        return;
+      }
+
+      const hiddenReason = document.getElementById('selectedRejectReason');
+      const reason = hiddenReason ? hiddenReason.value : '';
+      if (!reason || reason === '') {
+        alert('Perhatian: Mohon pilih salah satu Alasan Kerusakan / Klasifikasi Reject terlebih dahulu.');
+        const wrap = document.getElementById('reasonPillsWrap');
+        if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      const notes = document.getElementById('inputNotes').value.trim();
+      bukaModalKonfirmasi('bs_only', reason, notes);
+    }
+
+    // 8. Pengisian Data dan Tampilan Modal Konfirmasi Menuju modal.html
+    function bukaModalKonfirmasi(tipeCetak, reason, notes) {
+      const modalMainTitle = document.getElementById('modalMainTitle');
+      const modalSubTitle = document.getElementById('modalSubTitle');
+      const recTicketType = document.getElementById('recTicketType');
+      const btnGoToModalText = document.getElementById('btnGoToModalText');
+      const rowRecGood = document.getElementById('rowRecGood');
+      const rowRecScrap = document.getElementById('rowRecScrap');
+      const rowRecReason = document.getElementById('rowRecReason');
+
+      document.getElementById('recMoCode').textContent = currentMoData.mo;
+      
+      const recMp = document.getElementById('recMpCode');
+      if (recMp) recMp.textContent = currentMoData.mp;
+
+      document.getElementById('recMachine').innerHTML = `${currentMoData.step} &bull; ${currentMoData.machine}`;
+      
+      const elFlow = document.getElementById('recFlowText');
+      const rowFlow = document.getElementById('rowRecFlow');
+      if (currentMoData.step === 'Extruder') {
+        if (rowFlow) rowFlow.style.display = 'flex';
+        if (elFlow) elFlow.textContent = currentMoData.extDest === 'DIRECT_FG' 
+          ? 'Produk Langsung FG (Mulsa / PE Selang / PP Pish)' 
+          : 'WIP Antrean Cutting';
+      } else {
+        if (rowFlow) rowFlow.style.display = 'none';
+      }
+
+      document.getElementById('recGoodQty').textContent = `${inputGood.toFixed(2)} ${currentMoData.uom}`;
+      document.getElementById('recScrapQty').textContent = `${inputScrap.toFixed(2)} ${currentMoData.uom}`;
+      document.getElementById('recReason').textContent = reason || '-';
+
+      // Penyesuaian Visual berdasarkan tipe_cetak
+      if (tipeCetak === 'bagus') {
+        modalMainTitle.textContent = 'Hasil Produksi Bagus Disimpan!';
+        modalSubTitle.textContent = 'Output roll bagus dicatat ke Odoo. Tiket produksi (SFG/FG) siap dicetak.';
+        recTicketType.textContent = 'Label Hijau: Tiket Produksi (SFG/FG)';
+        recTicketType.style.color = 'var(--c-green)';
+        btnGoToModalText.textContent = 'CETAK LABEL BARANG BAGUS';
+        rowRecGood.style.display = 'flex';
+        rowRecScrap.style.display = 'none';
+        rowRecReason.style.display = 'none';
+      } else if (tipeCetak === 'keduanya') {
+        modalMainTitle.textContent = 'Hasil Produksi & BS Berhasil Disimpan!';
+        modalSubTitle.textContent = 'Tercatat output bagus & scrap terpisah. Sistem menghasilkan 2 tiket fisik terpisah.';
+        recTicketType.textContent = '2 Label: Bagus (Hijau) & BS Scrap (Merah)';
+        recTicketType.style.color = '#38BDF8';
+        recTicketType.style.color = 'var(--c-amber)';
+        btnGoToModalText.textContent = 'CETAK 2 LABEL (BAGUS & BS)';
+        rowRecGood.style.display = 'flex';
+        rowRecScrap.style.display = 'flex';
+        rowRecReason.style.display = 'flex';
+      } else if (tipeCetak === 'bs_only') {
+        modalMainTitle.textContent = 'Pencatatan BS (Scrap Saja) Disimpan!';
+        modalSubTitle.textContent = 'Scrap S04 telah dicatat tanpa roll barang bagus. Tiket khusus scrap siap dicetak.';
+        recTicketType.textContent = 'Label Merah: Tiket BS (Scrap S04)';
+        recTicketType.style.color = 'var(--c-red)';
+        btnGoToModalText.textContent = 'CETAK LABEL BS (SCRAP S04)';
+        rowRecGood.style.display = 'none';
+        rowRecScrap.style.display = 'flex';
+        rowRecReason.style.display = 'flex';
+      }
+
+      // Siapkan URL menuju modal.html dengan parameter lengkap sesuai spesifikasi SOW
+      const modalParams = new URLSearchParams({
+        mo: currentMoData.mo,
+        mp: currentMoData.mp,
+        prod: currentMoData.prod,
+        berat: tipeCetak === 'bs_only' ? '0.00' : inputGood.toFixed(2),
+        bs: inputScrap.toFixed(2),
+        alasan: inputScrap > 0 ? (reason || '-') : '-',
+        shift: currentMoData.shift,
+        step: currentMoData.step,
+        machine: currentMoData.machine,
+        uom: currentMoData.uom,
+        tipe_cetak: tipeCetak,
+        ext_dest: currentMoData.extDest,
+        notes: notes
+      });
+
+      document.getElementById('btnGoToModal').href = `modal.html?${modalParams.toString()}`;
+
+      // Tampilkan Modal
+      document.getElementById('successModal').style.display = 'flex';
+      showToast('Data berhasil disimpan ke antrean cetak!');
+    }
+
+    function inputNextRoll() {
+      // Simpan akumulasi ke previous dan reset input
+      currentMoData.actualPrev += inputGood;
+      inputGood = 0;
+      inputScrap = 0;
+      numpadBuffer = '';
+      document.getElementById('inputGoodQty').value = '0.00';
+      document.getElementById('inputScrapQty').value = '0.00';
+      document.getElementById('inputNotes').value = '';
+
+      checkScrapState();
+      updateDisplayValues();
+      updateAccumulationCalculation();
+      updateActionSummary();
+
+      document.getElementById('successModal').style.display = 'none';
+      showToast('Form siap untuk input timbangan ' + (currentMoData.step === 'Cutting' ? 'pack/bal' : 'rol') + ' berikutnya');
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+
+    function showToast(msg) {
+      const container = document.getElementById('toastBox');
+      const toast = document.createElement('div');
+      toast.className = 'toast-item';
+      toast.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>${msg}</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.2s';
+        setTimeout(() => toast.remove(), 250);
+      }, 2600);
+    }
+
+  </script>
+</body>
+</html>
